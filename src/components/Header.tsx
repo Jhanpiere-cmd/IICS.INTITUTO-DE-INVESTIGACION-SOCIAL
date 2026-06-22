@@ -40,25 +40,9 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
         
         {/* Logo and Brand */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('inicio', '#inicio')}>
-          {/* Interconnected digital emblem */}
           <div className="relative flex h-9 w-9 items-center justify-center">
-            <svg viewBox="0 0 100 100" className="h-5.5 w-5.5 text-cyan-400" fill="currentColor">
-              <circle cx="50" cy="50" r="10" />
-              <circle cx="50" cy="18" r="7" />
-              <circle cx="50" cy="82" r="7" />
-              <circle cx="18" cy="50" r="7" />
-              <circle cx="82" cy="50" r="7" />
-              <circle cx="28" cy="28" r="5" />
-              <circle cx="72" cy="72" r="5" />
-              <circle cx="72" cy="28" r="5" />
-              <circle cx="28" cy="72" r="5" />
-              {/* Connected web lines */}
-              <line x1="50" y1="18" x2="50" y2="82" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-              <line x1="18" y1="50" x2="82" y2="50" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-              <line x1="28" y1="28" x2="72" y2="72" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-              <line x1="28" y1="72" x2="72" y2="28" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-            </svg>
-            <div className="absolute inset-0 rounded-none bg-cyan-400/10 blur-sm"></div>
+            <img src="/logo-iics.png" alt="Logo IICS" className="h-8.5 w-8.5 object-contain z-10" />
+            <div className="absolute inset-0 rounded-full bg-cyan-400/5 blur-sm"></div>
           </div>
 
           <div className="flex flex-col">

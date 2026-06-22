@@ -50,13 +50,7 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
           <div className="md:col-span-4 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <div className="relative flex h-8 w-8 items-center justify-center">
-                <svg viewBox="0 0 100 100" className="h-4.5 w-4.5 text-cyan-400" fill="currentColor">
-                  <circle cx="50" cy="50" r="10" />
-                  <circle cx="50" cy="18" r="7" />
-                  <circle cx="50" cy="82" r="7" />
-                  <circle cx="18" cy="50" r="7" />
-                  <circle cx="82" cy="50" r="7" />
-                </svg>
+                <img src="/logo-iics.png" alt="Logo IICS" className="h-7 w-7 object-contain z-10" />
               </div>
               <span className="text-xl font-black text-white font-sans uppercase tracking-tight">
                 IICS
