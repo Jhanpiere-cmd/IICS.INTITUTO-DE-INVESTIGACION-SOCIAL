@@ -49,12 +49,9 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
           {/* Logo brand stack column */}
           <div className="md:col-span-4 flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <div className="relative flex h-8 w-8 items-center justify-center">
-                <img src="/logo-iics.png" alt="Logo IICS" className="h-7 w-7 object-contain z-10" />
+              <div className="relative flex h-14 w-14 items-center justify-center">
+                <img src="/logo-iics.png" alt="Logo IICS" className="h-13 w-13 object-contain z-10" />
               </div>
-              <span className="text-xl font-black text-white font-sans uppercase tracking-tight">
-                IICS
-              </span>
             </div>
             
             <p className="text-xs text-gray-400 max-w-xs leading-relaxed">

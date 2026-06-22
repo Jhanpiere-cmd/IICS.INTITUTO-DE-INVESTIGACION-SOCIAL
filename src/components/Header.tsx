@@ -40,23 +40,17 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
         
         {/* Logo and Brand */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('inicio', '#inicio')}>
-          <div className="relative flex h-9 w-9 items-center justify-center">
-            <img src="/logo-iics.png" alt="Logo IICS" className="h-8.5 w-8.5 object-contain z-10" />
+          <div className="relative flex h-14 w-14 items-center justify-center">
+            <img src="/logo-iics.png" alt="Logo IICS" className="h-13 w-13 object-contain z-10" />
             <div className="absolute inset-0 rounded-full bg-cyan-400/5 blur-sm"></div>
           </div>
 
           <div className="flex flex-col">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-xl font-extrabold tracking-tight text-white font-sans">
-                IICS
-              </span>
-              <span className="hidden h-3.5 w-px bg-gray-700 sm:inline-block"></span>
-              <span id="logo-tagline" className="hidden text-[9px] font-medium uppercase tracking-widest text-[#0099ff] sm:inline-block">
-                Investigación
-              </span>
-            </div>
-            <span className="text-[8.5px] leading-3 text-gray-400 tracking-tight font-sans">
-              Instituto de Investigación Científica Social <b className="text-cyan-400 font-semibold text-[8.5px]">Privado e Independiente</b>
+            <span id="logo-tagline" className="text-[10px] font-bold uppercase tracking-widest text-[#0099ff]">
+              Investigación
+            </span>
+            <span className="text-[9px] leading-3 text-gray-400 tracking-tight font-sans">
+              Instituto de Investigación Científica Social <b className="text-cyan-400 font-semibold text-[9px]">Privado e Independiente</b>
             </span>
           </div>
         </div>
