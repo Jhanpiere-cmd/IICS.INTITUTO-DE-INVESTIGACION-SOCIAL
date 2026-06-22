@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Global assignment safety shim for sandboxed frame environments
+      (function() {
+        const patchWritable = (obj, prop) => {
+          try {
+            // Find where the property descriptor is in the prototype chain
+            let current = obj;
+            let desc = null;
+            while (current) {
+              desc = Object.getOwnPropertyDescriptor(current, prop);
+              if (desc) break;
+              current = Object.getPrototypeOf(current);
+            }
+
+            // If we found the descriptor, and it's configurable but lacks a setter, patch it there
+            if (desc) {
+              if (!desc.set && desc.configurable) {
+                let val = current[prop];
+                Object.defineProperty(current, prop, {
+                  get: () => val,
+                  set: (newVal) => { val = newVal; },
+                  configurable: true,
+                  enumerable: true
+                });
+                return;
+              }
+            }
+
+            // Otherwise, get the current value (preserving the native function/class)
+            let val = obj[prop];
+
+            // Try defining it on Window.prototype (obj.__proto__) to intercept window.prop assignments
+            if (obj.__proto__) {
+              try {
+                Object.defineProperty(obj.__proto__, prop, {
+                  get: () => val,
+                  set: (newVal) => { val = newVal; },
+                  configurable: true,
+                  enumerable: true
+                });
+                return;
+              } catch (e) {
+                // Fall through to try defining on the instance
+              }
+            }
+
+            // Fallback: Try defining the property with a getter/setter directly on the instance
+            Object.defineProperty(obj, prop, {
+              get: () => val,
+              set: (newVal) => { val = newVal; },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (e) {
+            console.warn(`[IICS-Shim] Failed to patch ${prop}`, e);
+          }
+        };
+        patchWritable(window, 'fetch');
+        patchWritable(window, 'FormData');
+        patchWritable(window, 'Request');
+        patchWritable(window, 'Response');
+        patchWritable(window, 'Headers');
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Google AI Studio App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

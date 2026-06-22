@@ -1,0 +1,6 @@
+{
+  "name": "IICS Cajamarca",
+  "description": "Instituto de Investigación Científica Social - Observatorio Sociológico de Cajamarca",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
