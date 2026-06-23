@@ -82,3 +82,69 @@
   background: #0099ff;
 }
 
+/* Premium Glassmorphic Card base */
+.glass-card {
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(0, 153, 255, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 153, 255, 0.12),
+              inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+}
+
+/* Ambient glow blobs animation */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-25px) scale(1.1) rotate(10deg);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 18s infinite ease-in-out;
+}
+
+@keyframes float-slower {
+  0%, 100% {
+    transform: translateY(0px) scale(1.1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(20px) scale(0.9) rotate(-10deg);
+  }
+}
+
+.animate-float-slower {
+  animation: float-slower 24s infinite ease-in-out;
+}
+
+/* Radar Pulse effect */
+@keyframes radar-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+.radar-ring-1 {
+  animation: radar-ping 2.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.radar-ring-2 {
+  animation: radar-ping 2.5s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  animation-delay: 1.25s;
+}
+
+

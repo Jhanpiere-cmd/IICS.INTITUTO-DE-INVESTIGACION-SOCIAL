@@ -126,7 +126,7 @@ export default function FeatureGrid() {
     switch (id) {
       case 'observatorio':
         return (
-          <div className="bg-[#030304] border border-gray-900 p-6 rounded-none font-mono text-[11px] w-full max-w-md mx-auto">
+          <div className="glass-card rounded-xl p-6 font-mono text-[11px] w-full max-w-md mx-auto">
             <div className="flex justify-between items-center text-gray-500 mb-4 border-b border-gray-950 pb-2">
               <span className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase tracking-wider">
                 <Activity className="h-3.5 w-3.5 animate-pulse" /> INDICADOR DE TENSIÓN
@@ -158,7 +158,7 @@ export default function FeatureGrid() {
 
       case 'laboratorio':
         return (
-          <div className="bg-[#030304] border border-gray-900 p-6 rounded-none font-mono text-[11px] w-full max-w-md mx-auto">
+          <div className="glass-card rounded-xl p-6 font-mono text-[11px] w-full max-w-md mx-auto">
             <div className="flex justify-between items-center text-gray-500 mb-4 border-b border-gray-950 pb-2">
               <span className="text-cyan-400 font-bold uppercase tracking-wider">ANALIZADOR NLP SENTIMENTS</span>
               <span className="text-emerald-400 font-bold">ACTIVO</span>
@@ -187,22 +187,22 @@ export default function FeatureGrid() {
 
       case 'academia':
         return (
-          <div className="bg-[#030304] border border-gray-900 p-6 rounded-none w-full max-w-md mx-auto">
-            <div className="flex justify-between items-center text-gray-500 font-mono text-[10px] mb-4 border-b border-gray-950 pb-2">
+          <div className="glass-card rounded-xl p-6 w-full max-w-md mx-auto">
+            <div className="flex justify-between items-center text-gray-500 font-mono text-[10px] mb-4 border-b border-white/[0.06] pb-2">
               <span className="text-cyan-400 font-bold uppercase tracking-wider">ESTADÍSTICAS BECARIOS</span>
               <span className="text-emerald-400 font-bold">CONVOCATORIA ABIERTA</span>
             </div>
 
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="bg-gray-950 border border-gray-900 p-4">
+              <div className="glass-card rounded-lg p-4">
                 <span className="text-2xl font-black text-white font-mono block">25</span>
                 <span className="text-[9px] text-cyan-400 font-mono font-bold mt-1 block uppercase tracking-tight">Becarios</span>
               </div>
-              <div className="bg-gray-950 border border-gray-900 p-4">
+              <div className="glass-card rounded-lg p-4">
                 <span className="text-2xl font-black text-white font-mono block">4</span>
                 <span className="text-[9px] text-gray-500 font-mono font-bold mt-1 block uppercase tracking-tight">Mentores</span>
               </div>
-              <div className="bg-gray-950 border border-gray-900 p-4">
+              <div className="glass-card rounded-lg p-4">
                 <span className="text-2xl font-black text-white font-mono block">100%</span>
                 <span className="text-[9px] text-emerald-400 font-mono font-bold mt-1 block uppercase tracking-tight">Sustento</span>
               </div>
@@ -212,21 +212,21 @@ export default function FeatureGrid() {
 
       case 'editorial':
         return (
-          <div className="bg-[#030304] border border-gray-900 p-6 rounded-none w-full max-w-md mx-auto">
-            <div className="flex justify-between items-center text-gray-500 font-mono text-[10px] mb-4 border-b border-gray-950 pb-2">
+          <div className="glass-card rounded-xl p-6 w-full max-w-md mx-auto">
+            <div className="flex justify-between items-center text-gray-500 font-mono text-[10px] mb-4 border-b border-white/[0.06] pb-2">
               <span className="text-cyan-400 font-bold uppercase tracking-wider">ÚLTIMO REPOSITORIO CIENTÍFICO</span>
               <span className="text-[#0099ff] font-bold">LIVE PRESS</span>
             </div>
 
             <div className="space-y-2.5">
-              <div className="bg-gray-950 border border-gray-900 p-3 flex justify-between items-center gap-3">
+              <div className="glass-card rounded-lg p-3 flex justify-between items-center gap-3 hover:border-cyan-500/25 transition-all duration-300">
                 <div className="truncate">
                   <span className="text-[8px] text-cyan-400 font-mono font-bold block">SCOPUS PAPER</span>
                   <span className="text-xs font-bold text-white block truncate">Mapeo del Corredor Minero Norte 2026</span>
                 </div>
                 <TrendingUp className="h-4 w-4 text-cyan-400 shrink-0" />
               </div>
-              <div className="bg-gray-950 border border-gray-900 p-3 flex justify-between items-center gap-3">
+              <div className="glass-card rounded-lg p-3 flex justify-between items-center gap-3 hover:border-purple-500/25 transition-all duration-300">
                 <div className="truncate">
                   <span className="text-[8px] text-purple-400 font-mono font-bold block">REPOSITORIO IICS</span>
                   <span className="text-xs font-bold text-white block truncate">Inteligencia Comunitaria y Escucha Social</span>
@@ -239,7 +239,7 @@ export default function FeatureGrid() {
 
       case 'documentales':
         return (
-          <div className="bg-[#030304] border border-gray-900 p-5 rounded-none overflow-hidden aspect-[2.4/1] w-full max-w-md mx-auto flex flex-col justify-between">
+          <div className="glass-card rounded-xl p-5 overflow-hidden aspect-[2.4/1] w-full max-w-md mx-auto flex flex-col justify-between">
             <div className="flex items-center justify-between text-gray-500 font-mono text-[9px] border-b border-gray-950 pb-2">
               <span className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase tracking-wider">
                 <Volume2 className="h-3.5 w-3.5 animate-pulse" /> AUDIO WAVEFORM
@@ -265,7 +265,7 @@ export default function FeatureGrid() {
 
       case 'tecnologia':
         return (
-          <div className="bg-[#030304] border border-gray-900 rounded-none w-full max-w-md mx-auto text-left font-mono overflow-hidden">
+          <div className="glass-card rounded-xl w-full max-w-md mx-auto text-left font-mono overflow-hidden">
             {/* Window title bar */}
             <div className="bg-gray-950/80 border-b border-gray-900 px-4 py-2.5 flex justify-between items-center text-[10px]">
               <span className="text-[#0099ff] font-bold tracking-tight uppercase flex items-center gap-2">
@@ -473,11 +473,11 @@ export default function FeatureGrid() {
                   </p>
 
                   {/* High quality mini stats list */}
-                  <div className="grid grid-cols-3 gap-3 border-t border-gray-950 pt-4">
+                  <div className="grid grid-cols-3 gap-3 border-t border-white/[0.06] pt-4">
                     {item.stats.map((stat, statIdx) => (
                       <div key={statIdx} className="text-left">
-                        <span className="text-[9px] text-gray-500 block font-mono font-bold uppercase tracking-wider">{stat.label}</span>
-                        <span className="text-[10px] text-white font-medium block mt-0.5 leading-none">{stat.value}</span>
+                        <span className="text-[9px] text-gray-400 block font-mono font-bold uppercase tracking-wider">{stat.label}</span>
+                        <span className="text-[11px] text-white font-semibold block mt-0.5 leading-none">{stat.value}</span>
                       </div>
                     ))}
                   </div>

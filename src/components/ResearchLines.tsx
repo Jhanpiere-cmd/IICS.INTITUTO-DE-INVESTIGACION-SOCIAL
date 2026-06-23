@@ -50,12 +50,12 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
           {lines.map((line, idx) => (
             <motion.div
               key={line.id}
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.4 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: idx * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => onOpenDetails(line)}
-              className="group flex flex-col justify-between bg-black border border-gray-900 rounded-none p-5 hover:bg-gray-950 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(0,240,255,0.06)] transition-all cursor-pointer h-full text-left"
+              className="group flex flex-col justify-between glass-card glass-card-hover rounded-xl p-5 cursor-pointer h-full text-left"
             >
               <div>
                 {/* Icon and Title horizontally aligned to be compact with no dead space */}
@@ -74,7 +74,7 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
               </div>
 
               {/* Action Saber mas link */}
-              <div className="mt-6 pt-3 border-t border-gray-900 flex items-center justify-between text-xs font-bold font-sans text-cyan-400 uppercase tracking-widest group-hover:text-cyan-300">
+              <div className="mt-6 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-bold font-sans text-cyan-400 uppercase tracking-widest group-hover:text-cyan-300">
                 <span>Saber más</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </div>

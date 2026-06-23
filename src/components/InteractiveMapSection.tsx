@@ -115,10 +115,10 @@ export default function InteractiveMapSection({
           </div>
 
           {/* Center Column: Interactive Network Map */}
-          <div className="lg:col-span-5 flex items-center justify-center relative min-h-[480px] bg-black border border-gray-900/60 rounded-none p-4 overflow-hidden">
+          <div className="lg:col-span-5 flex items-center justify-center relative min-h-[480px] glass-card rounded-xl p-4 overflow-hidden">
             
             {/* Holographic scanner active beams */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent animate-pulse"></div>
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/25 to-transparent animate-pulse"></div>
             
             <svg 
               viewBox="0 0 500 700" 
@@ -182,6 +182,32 @@ export default function InteractiveMapSection({
                         className="animate-pulse"
                       />
                     )}
+                    
+                    {/* Holographic Radar Pulse Rings */}
+                    {(isSelected || isHovered || prov.riskScore >= 7) && (
+                      <g>
+                        <circle
+                          cx={prov.coordinates.x}
+                          cy={prov.coordinates.y}
+                          r="18"
+                          fill="none"
+                          stroke={prov.riskScore >= 7 ? 'rgba(239, 68, 68, 0.45)' : 'rgba(0, 153, 255, 0.45)'}
+                          strokeWidth="1.5"
+                          className="radar-ring-1 origin-center"
+                          style={{ transformOrigin: `${prov.coordinates.x}px ${prov.coordinates.y}px` }}
+                        />
+                        <circle
+                          cx={prov.coordinates.x}
+                          cy={prov.coordinates.y}
+                          r="18"
+                          fill="none"
+                          stroke={prov.riskScore >= 7 ? 'rgba(239, 68, 68, 0.45)' : 'rgba(0, 153, 255, 0.45)'}
+                          strokeWidth="1"
+                          className="radar-ring-2 origin-center"
+                          style={{ transformOrigin: `${prov.coordinates.x}px ${prov.coordinates.y}px` }}
+                        />
+                      </g>
+                    )}
 
                     {/* Outer border line ring */}
                     <circle
@@ -235,7 +261,7 @@ export default function InteractiveMapSection({
                   initial={{ opacity: 0, scale: 0.95, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                  className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/95 border border-gray-800 rounded-none px-4 py-2.5 shadow-xl text-left min-w-[200px]"
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 glass-card rounded-xl px-4 py-2.5 shadow-2xl text-left min-w-[200px] z-20"
                 >
                   {(() => {
                     const hp = provinces.find((p) => p.id === hoveredProvinceId);
@@ -270,7 +296,7 @@ export default function InteractiveMapSection({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -15 }}
                 transition={{ duration: 0.2 }}
-                className="bg-black border border-gray-900 rounded-none p-6 shadow-xl text-left h-full flex flex-col justify-between"
+                className="glass-card rounded-xl p-6 shadow-xl text-left h-full flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3.5 mb-4">
