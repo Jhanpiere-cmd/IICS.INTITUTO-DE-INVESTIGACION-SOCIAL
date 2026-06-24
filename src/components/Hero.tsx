@@ -73,8 +73,8 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                 whileHover={{ y: -2 }}
                 className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
-                  <Clock className="h-3.5 w-3.5 animate-pulse" />
+                <div className="flex-shrink-0 text-cyan-400 mt-0.5">
+                  <Clock className="h-4.5 w-4.5 animate-pulse" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
@@ -92,8 +92,8 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                 whileHover={{ y: -2 }}
                 className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
-                  <LineChart className="h-3.5 w-3.5" />
+                <div className="flex-shrink-0 text-cyan-400 mt-0.5">
+                  <LineChart className="h-4.5 w-4.5" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
@@ -111,8 +111,8 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                 whileHover={{ y: -2 }}
                 className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
-                  <ShieldAlert className="h-3.5 w-3.5" />
+                <div className="flex-shrink-0 text-cyan-400 mt-0.5">
+                  <ShieldAlert className="h-4.5 w-4.5" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
@@ -130,8 +130,8 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                 whileHover={{ y: -2 }}
                 className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
-                  <Award className="h-3.5 w-3.5" />
+                <div className="flex-shrink-0 text-cyan-400 mt-0.5">
+                  <Award className="h-4.5 w-4.5" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
