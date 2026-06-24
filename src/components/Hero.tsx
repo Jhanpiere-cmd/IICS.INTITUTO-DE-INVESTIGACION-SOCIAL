@@ -77,7 +77,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                   <Clock className="h-3.5 w-3.5 animate-pulse" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
                     Monitoreo en tiempo real
                   </h4>
                   <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
@@ -96,7 +96,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                   <LineChart className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
                     Análisis avanzado
                   </h4>
                   <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
@@ -115,7 +115,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                   <ShieldAlert className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
                     Información para decidir
                   </h4>
                   <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
@@ -134,7 +134,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                   <Award className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
                     Formación de talento
                   </h4>
                   <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
