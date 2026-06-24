@@ -22,11 +22,6 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
           {/* Left Text Block */}
           <div className="lg:col-span-5 flex flex-col gap-4 lg:gap-5 text-left">
             
-            {/* Private & Independent Tag */}
-            <div className="inline-flex items-center gap-1.5 self-start uppercase font-mono text-[9px] tracking-widest text-[#0099ff] font-bold bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1">
-              <span>Instituto Privado de Investigación Científica Social</span>
-            </div>
-
             <h1 className="text-3xl sm:text-4xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight text-white font-sans max-w-lg">
               <span className="block drop-shadow-sm leading-tight">Comprendemos el presente.</span>
               <span className="block mt-1 bg-gradient-to-r from-cyan-400 via-[#0099ff] to-blue-600 bg-clip-text text-transparent drop-shadow-sm font-sans leading-tight">
