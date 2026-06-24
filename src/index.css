@@ -102,15 +102,15 @@
 /* Ambient glow blobs animation */
 @keyframes float-slow {
   0%, 100% {
-    transform: translateY(0px) scale(1) rotate(0deg);
+    transform: translateY(0px) scale(1);
   }
   50% {
-    transform: translateY(-25px) scale(1.1) rotate(10deg);
+    transform: translateY(-15px) scale(1.01);
   }
 }
 
 .animate-float-slow {
-  animation: float-slow 18s infinite ease-in-out;
+  animation: float-slow 8s infinite ease-in-out;
 }
 
 @keyframes float-slower {
