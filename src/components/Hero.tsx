@@ -20,7 +20,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
          <div className="grid grid-cols-1 items-center gap-6 lg:gap-8 xl:gap-12 lg:grid-cols-12">
           
           {/* Left Text Block */}
-          <div className="lg:col-span-5 flex flex-col gap-4 lg:gap-5 text-left">
+          <div className="lg:col-span-4 flex flex-col gap-4 lg:gap-5 text-left">
             
             <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white font-sans max-w-2xl uppercase">
               <span className="block drop-shadow-sm leading-tight">Comprendemos el presente.</span>
@@ -71,7 +71,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
           </div>
 
           {/* Right Interactive Panel Mockup */}
-          <div className="lg:col-span-7 w-full">
+          <div className="lg:col-span-8 w-full">
             {children}
           </div>
 

@@ -141,13 +141,11 @@ export default function App() {
           onExploreClick={() => setActiveModal('portal')}
           onWorkClick={() => setActiveModal('portal')}
         >
-          <div className="relative group overflow-hidden rounded-xl border border-white/[0.08] bg-black/45 backdrop-blur-md p-1.5 transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_35px_rgba(0,153,255,0.2)]">
-            <img 
-              src="/computador-iics.png" 
-              alt="Sistema IICS Observatorio" 
-              className="w-full h-auto object-cover rounded-lg shadow-2xl transition-transform duration-700 group-hover:scale-[1.01]" 
-            />
-          </div>
+          <img 
+            src="/computador-iics.png" 
+            alt="Sistema IICS Observatorio" 
+            className="w-full h-auto object-contain transition-transform duration-700 hover:scale-[1.02] drop-shadow-[0_10px_25px_rgba(0,153,255,0.15)]" 
+          />
         </Hero>
 
         {/* 4 FEATURE GRIDS METRICS */}
