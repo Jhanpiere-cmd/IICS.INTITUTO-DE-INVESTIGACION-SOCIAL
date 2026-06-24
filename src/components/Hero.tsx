@@ -71,7 +71,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
                   <Clock className="h-4.5 w-4.5 animate-pulse" />
@@ -90,7 +90,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
                   <LineChart className="h-4.5 w-4.5" />
@@ -109,7 +109,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
                   <ShieldAlert className="h-4.5 w-4.5" />
@@ -128,7 +128,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
                   <Award className="h-4.5 w-4.5" />
