@@ -52,16 +52,99 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 items-center gap-6 lg:gap-8 xl:gap-12 lg:grid-cols-12"
+          className="grid grid-cols-1 items-center gap-6 lg:gap-8 lg:grid-cols-12"
         >
           
-          {/* Left Column: Interactive Panel / Monitor (displays on left on desktop, bottom on mobile) */}
-          <motion.div 
-            variants={mapVariants}
-            className="lg:col-span-7 w-full order-2 lg:order-1"
-          >
-            {children}
-          </motion.div>
+          {/* Left Column: Interactive Panel / Monitor & Horizontal/Vertical Cards (displays on left, second on mobile) */}
+          <div className="lg:col-span-7 flex flex-col gap-6 order-2 lg:order-1">
+            <motion.div 
+              variants={mapVariants}
+              className="w-full relative"
+            >
+              {children}
+            </motion.div>
+
+            {/* Capability cards placed below the computer, stretching horizontally on large screens */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              
+              {/* Item 1: Monitoreo en tiempo real */}
+              <motion.div 
+                variants={itemVariants}
+                whileHover={{ y: -2 }}
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+              >
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                  <Clock className="h-3.5 w-3.5 animate-pulse" />
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                    Monitoreo en tiempo real
+                  </h4>
+                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                    Detectamos señales tempranas de tensión social
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Item 2: Análisis avanzado */}
+              <motion.div 
+                variants={itemVariants}
+                whileHover={{ y: -2 }}
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+              >
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                  <LineChart className="h-3.5 w-3.5" />
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                    Análisis avanzado
+                  </h4>
+                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                    Ciencia de datos aplicada a la sociología
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Item 3: Información para decidir */}
+              <motion.div 
+                variants={itemVariants}
+                whileHover={{ y: -2 }}
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+              >
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                  <ShieldAlert className="h-3.5 w-3.5" />
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                    Información para decidir
+                  </h4>
+                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                    Reportes claros para tomadores de decisiones
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Item 4: Formación de talento */}
+              <motion.div 
+                variants={itemVariants}
+                whileHover={{ y: -2 }}
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+              >
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                  <Award className="h-3.5 w-3.5" />
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
+                    Formación de talento
+                  </h4>
+                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                    Capacitamos investigadores para el desarrollo
+                  </p>
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
 
           {/* Right Column: Text Block (displays on right on desktop, top on mobile) */}
           <motion.div 
@@ -133,101 +216,6 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
           </motion.div>
 
         </motion.div>
-
-        {/* Restored Horizontal Grid section with Premium Animated Cards */}
-        <div className="mt-12 lg:mt-16 border-t border-white/[0.06] pt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            {/* Item 1: Monitoreo en tiempo real */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              whileHover={{ y: -4 }}
-              className="flex items-start gap-3.5 glass-card rounded-xl p-4.5 transition-all duration-300 hover:border-cyan-500/25 hover:shadow-[0_0_20px_rgba(0,153,255,0.08)] cursor-pointer text-left"
-            >
-              <div className="flex-shrink-0 text-cyan-400 p-2 bg-cyan-950/20 border border-cyan-900/30 rounded-lg">
-                <Clock className="h-5 w-5 animate-pulse" />
-              </div>
-              <div className="flex flex-col">
-                <h4 className="text-xs font-bold text-white tracking-wide uppercase font-mono">
-                  Monitoreo en tiempo real
-                </h4>
-                <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                  Detectamos señales tempranas de tensión social
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Item 2: Análisis avanzado */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              whileHover={{ y: -4 }}
-              className="flex items-start gap-3.5 glass-card rounded-xl p-4.5 transition-all duration-300 hover:border-cyan-500/25 hover:shadow-[0_0_20px_rgba(0,153,255,0.08)] cursor-pointer text-left"
-            >
-              <div className="flex-shrink-0 text-cyan-400 p-2 bg-cyan-950/20 border border-cyan-900/30 rounded-lg">
-                <LineChart className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <h4 className="text-xs font-bold text-white tracking-wide uppercase font-mono">
-                  Análisis avanzado
-                </h4>
-                <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                  Ciencia de datos aplicada a la sociología
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Item 3: Información para decidir */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              whileHover={{ y: -4 }}
-              className="flex items-start gap-3.5 glass-card rounded-xl p-4.5 transition-all duration-300 hover:border-cyan-500/25 hover:shadow-[0_0_20px_rgba(0,153,255,0.08)] cursor-pointer text-left"
-            >
-              <div className="flex-shrink-0 text-cyan-400 p-2 bg-cyan-950/20 border border-cyan-900/30 rounded-lg">
-                <ShieldAlert className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <h4 className="text-xs font-bold text-white tracking-wide uppercase font-mono">
-                  Información para decidir
-                </h4>
-                <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                  Reportes claros para tomadores de decisiones
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Item 4: Formación de talento */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              whileHover={{ y: -4 }}
-              className="flex items-start gap-3.5 glass-card rounded-xl p-4.5 transition-all duration-300 hover:border-cyan-500/25 hover:shadow-[0_0_20px_rgba(0,153,255,0.08)] cursor-pointer text-left"
-            >
-              <div className="flex-shrink-0 text-cyan-400 p-2 bg-cyan-950/20 border border-cyan-900/30 rounded-lg">
-                <Award className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <h4 className="text-xs font-bold text-white tracking-wide uppercase font-mono">
-                  Formación de talento
-                </h4>
-                <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                  Capacitamos investigadores para el desarrollo
-                </p>
-              </div>
-            </motion.div>
-
-          </div>
-        </div>
 
       </div>
 
