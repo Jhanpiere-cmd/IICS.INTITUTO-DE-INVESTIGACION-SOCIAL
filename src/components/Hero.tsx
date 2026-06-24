@@ -156,15 +156,15 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               variants={itemVariants}
               className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white font-sans max-w-2xl uppercase"
             >
-              <span className="block drop-shadow-sm leading-tight">Comprendemos el presente.</span>
-              <span className="block mt-1 bg-gradient-to-r from-cyan-400 via-[#0099ff] to-blue-600 bg-clip-text text-transparent drop-shadow-sm leading-tight">
+              <span className="block drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] leading-tight text-white">Comprendemos el presente.</span>
+              <span className="block mt-1 bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,153,255,0.45)] leading-tight glow-text-cyan">
                 Anticipamos el futuro.
               </span>
             </motion.h1>
 
             <motion.h2 
               variants={itemVariants}
-              className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider uppercase font-mono leading-relaxed"
+              className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider uppercase font-mono leading-relaxed glow-text-cyan/70"
             >
               Centro Privado de Investigación Científica, Sociología y Análisis Social
             </motion.h2>
