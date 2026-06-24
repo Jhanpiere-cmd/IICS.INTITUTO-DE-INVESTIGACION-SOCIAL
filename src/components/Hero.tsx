@@ -64,7 +64,10 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
           </motion.div>
 
           {/* Right Column: Text Block (displays on right on desktop, top on mobile) */}
-          <div className="lg:col-span-5 flex flex-col gap-4 lg:gap-5 text-left order-1 lg:order-2">
+          <motion.div 
+            variants={containerVariants}
+            className="lg:col-span-5 flex flex-col gap-4 lg:gap-5 text-left order-1 lg:order-2"
+          >
             
             <motion.h1 
               variants={itemVariants}
@@ -127,7 +130,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               </span>
             </motion.div>
 
-          </div>
+          </motion.div>
 
         </motion.div>
 

@@ -144,7 +144,7 @@ export default function App() {
           <img 
             src="/computador-iics.png" 
             alt="Sistema IICS Observatorio" 
-            className="w-full h-auto object-contain transition-transform duration-700 hover:scale-[1.02] drop-shadow-[0_10px_25px_rgba(0,153,255,0.15)]" 
+            className="w-[115%] max-w-none h-auto object-contain transition-transform duration-700 hover:scale-[1.03] drop-shadow-[0_20px_50px_rgba(0,153,255,0.25)] lg:-translate-x-12 select-none pointer-events-none" 
           />
         </Hero>
 
