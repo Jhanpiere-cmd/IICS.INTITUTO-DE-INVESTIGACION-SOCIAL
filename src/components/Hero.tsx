@@ -71,16 +71,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
                   <Clock className="h-3.5 w-3.5 animate-pulse" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
                     Monitoreo en tiempo real
                   </h4>
-                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
                     Detectamos señales tempranas de tensión social
                   </p>
                 </div>
@@ -90,16 +90,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
                   <LineChart className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
                     Análisis avanzado
                   </h4>
-                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
                     Ciencia de datos aplicada a la sociología
                   </p>
                 </div>
@@ -109,16 +109,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
                   <ShieldAlert className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
                     Información para decidir
                   </h4>
-                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
                     Reportes claros para tomadores de decisiones
                   </p>
                 </div>
@@ -128,16 +128,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/[0.05] hover:border-cyan-500/25 transition-all duration-300 cursor-pointer text-left"
+                className="flex items-start gap-2.5 glass-card rounded-none p-3 border border-white/15 hover:border-cyan-500/50 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
-                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/20 border border-cyan-900/30 rounded-none">
+                <div className="flex-shrink-0 text-cyan-400 p-1 bg-cyan-950/40 border border-cyan-500/30 rounded-none">
                   <Award className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col">
                   <h4 className="text-[9.5px] font-bold text-white tracking-wide uppercase font-mono leading-none">
                     Formación de talento
                   </h4>
-                  <p className="text-[9px] text-gray-400 mt-1 leading-snug">
+                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
                     Capacitamos investigadores para el desarrollo
                   </p>
                 </div>
