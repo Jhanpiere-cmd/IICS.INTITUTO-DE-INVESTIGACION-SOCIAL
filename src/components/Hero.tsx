@@ -17,65 +17,65 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
       <div className="absolute bottom-1/5 right-1/10 -z-10 h-96 w-96 rounded-full bg-blue-500/5 blur-[100px]"></div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-         <div className="grid grid-cols-1 items-center gap-6 lg:gap-8 xl:gap-12 lg:grid-cols-12">
-          
-          {/* Left Text Block */}
-          <div className="lg:col-span-4 flex flex-col gap-4 lg:gap-5 text-left">
+          <div className="grid grid-cols-1 items-center gap-6 lg:gap-8 xl:gap-12 lg:grid-cols-12">
             
-            <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white font-sans max-w-2xl uppercase">
-              <span className="block drop-shadow-sm leading-tight">Comprendemos el presente.</span>
-              <span className="block mt-1 bg-gradient-to-r from-cyan-400 via-[#0099ff] to-blue-600 bg-clip-text text-transparent drop-shadow-sm font-sans leading-tight">
-                Anticipamos el futuro.
-              </span>
-            </h1>
-
-            <h2 className="text-xs sm:text-xs font-bold text-cyan-300 tracking-wider uppercase font-mono">
-              Sociología de precisión para territorios complejos
-            </h2>
-
-            <p className="max-w-xl text-xs lg:text-sm md:text-sm leading-relaxed text-gray-400 tracking-wide">
-              Integramos sociología, ciencia de datos, inteligencia territorial y análisis digital para transformar información en decisiones estratégicas.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-1">
-              <button
-                id="btn-conoce-trabajo"
-                onClick={onWorkClick}
-                className="group flex items-center justify-center gap-2 rounded-none bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,153,255,0.25)] hover:scale-[1.02] cursor-pointer"
-              >
-                Conoce nuestro trabajo
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
-
-              <button
-                id="btn-explorar-dashboard"
-                onClick={onExploreClick}
-                className="group flex items-center justify-center gap-2 rounded-none bg-transparent hover:bg-gray-990 border border-gray-700/80 hover:border-gray-500 text-white px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all cursor-pointer"
-              >
-                <BarChart2 className="h-4 w-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-                Explorar Observatorio
-              </button>
+            {/* Left Column: Interactive Panel / Monitor (displays on left on desktop, bottom on mobile) */}
+            <div className="lg:col-span-7 w-full order-2 lg:order-1">
+              {children}
             </div>
 
-            {/* Secondary targets */}
-            <div className="flex items-center gap-2 mt-2 xl:mt-3 text-gray-400">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-start">
-                <Target className="h-4 w-4 text-cyan-400" />
+            {/* Right Column: Text Block (displays on right on desktop, top on mobile) */}
+            <div className="lg:col-span-5 flex flex-col gap-4 lg:gap-5 text-left order-1 lg:order-2">
+              
+              <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white font-sans max-w-2xl uppercase">
+                <span className="block drop-shadow-sm leading-tight">Comprendemos el presente.</span>
+                <span className="block mt-1 bg-gradient-to-r from-cyan-400 via-[#0099ff] to-blue-600 bg-clip-text text-transparent drop-shadow-sm leading-tight">
+                  Anticipamos el futuro.
+                </span>
+              </h1>
+
+              <h2 className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider uppercase font-mono leading-relaxed">
+                Centro Privado de Investigación Científica, Sociología y Análisis Social
+              </h2>
+
+              <p className="max-w-xl text-xs lg:text-sm leading-relaxed text-gray-400 tracking-wide font-sans">
+                Generamos estudios, monitoreo territorial, análisis de opinión pública y evidencia científica para instituciones, empresas y tomadores de decisión.
+              </p>
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-1">
+                <button
+                  id="btn-conoce-trabajo"
+                  onClick={onWorkClick}
+                  className="group flex items-center justify-center gap-2 rounded-none bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,153,255,0.25)] hover:scale-[1.02] cursor-pointer"
+                >
+                  Conoce nuestro trabajo
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </button>
+
+                <button
+                  id="btn-explorar-dashboard"
+                  onClick={onExploreClick}
+                  className="group flex items-center justify-center gap-2 rounded-none bg-transparent hover:bg-gray-990 border border-gray-700/80 hover:border-gray-500 text-white px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all cursor-pointer"
+                >
+                  <BarChart2 className="h-4 w-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                  Explorar Observatorio
+                </button>
               </div>
-              <span className="text-xs text-gray-300 tracking-wide font-sans">
-                Generamos conocimiento útil para la sociedad y la gestión pública.
-              </span>
+
+              {/* Secondary targets */}
+              <div className="flex items-center gap-2 mt-2 xl:mt-3 text-gray-400">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-start">
+                  <Target className="h-4 w-4 text-cyan-400" />
+                </div>
+                <span className="text-xs text-gray-300 tracking-wide font-sans">
+                  Generamos conocimiento útil para la sociedad y la gestión pública.
+                </span>
+              </div>
+
             </div>
 
           </div>
-
-          {/* Right Interactive Panel Mockup */}
-          <div className="lg:col-span-8 w-full">
-            {children}
-          </div>
-
-        </div>
 
         {/* Restored Horizontal Grid section */}
         <div className="mt-6 lg:mt-8 border-t border-gray-900 pt-6">
