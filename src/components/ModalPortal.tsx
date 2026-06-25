@@ -617,7 +617,8 @@ export default function ModalPortal({
         tools: ['SPSS', 'Zotero', 'Atlas.ti', 'Redacción de Papers'],
         studentPrice: 'S/. 300 total (S/. 100/mes)',
         professionalPrice: 'S/. 600 total (S/. 200/mes)',
-        icon: GraduationCap
+        icon: GraduationCap,
+        image: '/formacion_cientifica.png'
       },
       {
         id: 'taller-zotero',
@@ -627,7 +628,8 @@ export default function ModalPortal({
         tools: ['Zotero Desktop', 'Extensiones Web', 'Integración Word/LaTeX'],
         studentPrice: 'S/. 15 total',
         professionalPrice: 'S/. 50 total',
-        icon: BookOpen
+        icon: BookOpen,
+        image: '/taller_zotero.png'
       },
       {
         id: 'taller-datos',
@@ -637,7 +639,8 @@ export default function ModalPortal({
         tools: ['Atlas.ti 24', 'Minería de Textos', 'Modelado de Redes'],
         studentPrice: 'S/. 25 total',
         professionalPrice: 'S/. 120 total',
-        icon: Database
+        icon: Database,
+        image: '/taller_atlas.png'
       }
     ];
 
@@ -755,8 +758,12 @@ export default function ModalPortal({
                               className="bg-[#050506] border border-gray-900 hover:border-gray-800 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300"
                             >
                               <div className="flex items-start gap-4 text-left">
-                                <div className="p-3 bg-cyan-950/30 border border-cyan-500/20 text-cyan-400 shrink-0 mt-0.5">
-                                  <ProgIcon className="h-6 w-6" />
+                                <div className="h-16 w-16 bg-zinc-950 border border-zinc-800 shrink-0 mt-0.5 overflow-hidden">
+                                  <img 
+                                    src={prog.image} 
+                                    alt={prog.title} 
+                                    className="w-full h-full object-cover" 
+                                  />
                                 </div>
                                 <div className="space-y-1 max-w-lg">
                                   <div className="flex items-center gap-2">
