@@ -91,6 +91,11 @@ export default function ModalPortal({
   // CSV Download simulation message
   const [exportNotice, setExportNotice] = useState(false);
 
+  // Academia sub-views
+  const [afiSubView, setAfiSubView] = useState<'programs' | 'postulate' | 'enroll'>('programs');
+  const [selectedAfiProgram, setSelectedAfiProgram] = useState<string>('Formación Completa en Investigación (3 Meses)');
+  const [afiUserRole, setAfiUserRole] = useState<'estudiante' | 'profesional'>('estudiante');
+
   const triggerExportSimulation = () => {
     setExportNotice(true);
     setTimeout(() => setExportNotice(false), 3000);
@@ -594,6 +599,48 @@ export default function ModalPortal({
       }, 1500);
     };
 
+    const handleEnrollmentSubmit = (e: FormEvent) => {
+      e.preventDefault();
+      setIsSubmittingPostulation(true);
+      setTimeout(() => {
+        setIsSubmittingPostulation(false);
+        setPostulantSubmitted(true);
+      }, 1500);
+    };
+
+    const programsList = [
+      {
+        id: 'formacion-completa',
+        title: 'Programa de Formación Científica y Sociología de Precisión',
+        duration: '3 Meses (Semanal)',
+        description: 'Capacitación teórico-práctica en metodología científica, formulación de proyectos, redacción de papers indexados y gestión del desarrollo territorial.',
+        tools: ['SPSS', 'Zotero', 'Atlas.ti', 'Redacción de Papers'],
+        studentPrice: 'S/. 6 al mes',
+        professionalPrice: 'S/. 99 al mes',
+        icon: GraduationCap
+      },
+      {
+        id: 'taller-zotero',
+        title: 'Taller Práctico de Zotero y Gestores Bibliográficos',
+        duration: '2 Sesiones Intensivas',
+        description: 'Uso avanzado de Zotero para recopilación, organización, citas automatizadas y referencias bajo normas APA y Vancouver.',
+        tools: ['Zotero Desktop', 'Extensiones Web', 'Integración Word/LaTeX'],
+        studentPrice: 'S/. 15 total',
+        professionalPrice: 'S/. 50 total',
+        icon: BookOpen
+      },
+      {
+        id: 'taller-datos',
+        title: 'Taller de Atlas.ti & Análisis Cualitativo Territorial',
+        duration: '4 Sesiones Prácticas',
+        description: 'Metodologías cualitativas aplicadas, codificación, categorización e interpretación de discursos para prevención de conflictos.',
+        tools: ['Atlas.ti 24', 'Minería de Textos', 'Modelado de Redes'],
+        studentPrice: 'S/. 25 total',
+        professionalPrice: 'S/. 120 total',
+        icon: Database
+      }
+    ];
+
     return (
       <AnimatePresence>
         <motion.div
@@ -612,6 +659,7 @@ export default function ModalPortal({
               setPostulantUniversity('');
               setPostulantMotivation('');
               setPostulantFileLink('');
+              setAfiSubView('programs');
               onClose();
             }}
             className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
@@ -638,166 +686,458 @@ export default function ModalPortal({
                 </p>
               </div>
 
+              {/* Sub-view Navigation Tabs / Breadcrumb */}
+              {afiSubView !== 'programs' && (
+                <div className="mb-6 flex items-center gap-2 text-xs font-mono text-left">
+                  <button 
+                    onClick={() => { setAfiSubView('programs'); setPostulantSubmitted(false); }}
+                    className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    ACADEMIA AFI
+                  </button>
+                  <ChevronRight className="h-3 w-3 text-gray-600" />
+                  <span className="text-[#0099ff]">
+                    {afiSubView === 'postulate' ? 'POSTULACIÓN A BECA AFI' : 'INSCRIPCIÓN A PROGRAMA'}
+                  </span>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-                {/* Left Column: Postulation Form */}
-                <div className="lg:col-span-7 bg-[#050506] border border-gray-900 p-6 md:p-8 space-y-6">
-                  <div className="flex items-center gap-2.5 border-b border-gray-900 pb-4 text-left">
-                    <GraduationCap className="h-5 w-5 text-cyan-400" />
-                    <div>
-                      <h3 className="text-sm font-extrabold text-white uppercase font-sans">
-                        Ficha de Postulación Abierta
-                      </h3>
-                      <p className="text-[10px] font-mono text-gray-500">CONVOCATORIA ANUAL DE BECARIOS AFI 2026</p>
+                {/* Left Column: Dynamic Content based on afiSubView */}
+                <div className="lg:col-span-8 space-y-6">
+                  
+                  {afiSubView === 'programs' && (
+                    <div className="space-y-6">
+                      {/* Role selection toggle bar */}
+                      <div className="bg-[#050506] border border-gray-900 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="text-left">
+                          <h3 className="text-xs font-extrabold text-white uppercase tracking-wider font-mono">
+                            Estructura Tarifaria Ajustada
+                          </h3>
+                          <p className="text-[10px] text-gray-500 font-sans mt-0.5">
+                            Selecciona tu rol para visualizar los precios subsidiados según el modelo de sostenibilidad del IICS.
+                          </p>
+                        </div>
+                        <div className="flex gap-2 p-1 bg-black border border-gray-850 rounded-none shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setAfiUserRole('estudiante')}
+                            className={`px-4 py-2 font-mono text-[10px] uppercase font-bold transition-all cursor-pointer rounded-none ${
+                              afiUserRole === 'estudiante'
+                                ? 'bg-[#0099ff] text-black'
+                                : 'text-gray-400 hover:text-white bg-transparent'
+                            }`}
+                          >
+                            Soy Estudiante UNC / Pregrado
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setAfiUserRole('profesional')}
+                            className={`px-4 py-2 font-mono text-[10px] uppercase font-bold transition-all cursor-pointer rounded-none ${
+                              afiUserRole === 'profesional'
+                                ? 'bg-[#0099ff] text-black'
+                                : 'text-gray-400 hover:text-white bg-transparent'
+                            }`}
+                          >
+                            Soy Profesional / Egresado
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Programs Cards Grid */}
+                      <div className="grid grid-cols-1 gap-6">
+                        {programsList.map((prog) => {
+                          const ProgIcon = prog.icon;
+                          const currentPrice = afiUserRole === 'estudiante' ? prog.studentPrice : prog.professionalPrice;
+                          return (
+                            <div 
+                              key={prog.id}
+                              className="bg-[#050506] border border-gray-900 hover:border-gray-800 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300"
+                            >
+                              <div className="flex items-start gap-4 text-left">
+                                <div className="p-3 bg-cyan-950/30 border border-cyan-500/20 text-cyan-400 shrink-0 mt-0.5">
+                                  <ProgIcon className="h-6 w-6" />
+                                </div>
+                                <div className="space-y-1 max-w-lg">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[9px] font-mono text-cyan-500 font-bold border border-cyan-500/20 px-1.5 py-0.5 uppercase">
+                                      {prog.duration}
+                                    </span>
+                                    <span className="text-[9px] font-mono text-gray-500 font-bold uppercase">
+                                      Capacidades 2026
+                                    </span>
+                                  </div>
+                                  <h3 className="text-base font-black text-white font-sans mt-1">
+                                    {prog.title}
+                                  </h3>
+                                  <p className="text-xs text-gray-400 font-sans leading-relaxed">
+                                    {prog.description}
+                                  </p>
+                                  <div className="flex flex-wrap gap-1.5 pt-2">
+                                    {prog.tools.map((t, idx) => (
+                                      <span key={idx} className="text-[9px] font-mono bg-zinc-950 text-gray-400 border border-zinc-900 px-2 py-0.5">
+                                        {t}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-col items-start md:items-end justify-between gap-4 min-w-[200px] border-t md:border-t-0 border-zinc-900 pt-4 md:pt-0">
+                                <div className="text-left md:text-right">
+                                  <span className="text-[9px] font-mono text-gray-500 uppercase block">Costo de Inversión</span>
+                                  <span className="text-2xl font-black text-[#0099ff] font-mono">{currentPrice}</span>
+                                </div>
+                                <div className="flex flex-col w-full gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedAfiProgram(prog.title);
+                                      setAfiSubView('enroll');
+                                    }}
+                                    className="w-full text-center px-4 py-2.5 bg-[#0099ff] hover:bg-[#0088ee] text-black font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                                  >
+                                    Inscribirse en el Curso
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedAfiProgram(prog.title);
+                                      setAfiSubView('postulate');
+                                    }}
+                                    className="w-full text-center px-4 py-2.5 bg-white hover:bg-gray-100 text-[#0099ff] border border-[#0099ff] font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                                  >
+                                    Postula a nuestras Becas AFI
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-
-                  {postulantSubmitted ? (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="py-12 px-4 text-center space-y-4 border border-emerald-500/20 bg-emerald-950/15"
-                    >
-                      <div className="h-12 w-12 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto">
-                        <Check className="h-6 w-6 stroke-[3]" />
-                      </div>
-                      <h4 className="text-base font-extrabold text-white uppercase font-sans">
-                        ¡Postulación Registrada con Éxito!
-                      </h4>
-                      <p className="text-xs text-gray-300 leading-relaxed font-sans max-w-md mx-auto">
-                        Hola <b className="text-white">{postulantName}</b>, hemos guardado tus datos en el buzón central AFI. El comité académico evaluará tu postulación y se comunicará contigo vía WhatsApp o correo electrónico (<span className="text-cyan-400 font-mono">{postulantEmail}</span>) a la brevedad.
-                      </p>
-                      <button
-                        onClick={() => {
-                          setPostulantSubmitted(false);
-                          setPostulantName('');
-                          setPostulantEmail('');
-                          setPostulantPhone('');
-                          setPostulantUniversity('');
-                          setPostulantMotivation('');
-                          setPostulantFileLink('');
-                        }}
-                        className="mt-6 text-xs text-cyan-400 font-mono uppercase underline hover:text-white cursor-pointer bg-transparent border-none"
-                      >
-                        Enviar otra postulación
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <form onSubmit={handlePostulationSubmit} className="space-y-4 text-left font-sans text-xs">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
-                            Nombres y Apellidos Completos
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="Ej. Juan Pérez Medina"
-                            value={postulantName}
-                            onChange={(e) => setPostulantName(e.target.value)}
-                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
-                            Correo Electrónico
-                          </label>
-                          <input
-                            type="email"
-                            required
-                            placeholder="Ej. juan.perez@unc.edu.pe"
-                            value={postulantEmail}
-                            onChange={(e) => setPostulantEmail(e.target.value)}
-                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
-                            Número de Celular / WhatsApp
-                          </label>
-                          <input
-                            type="tel"
-                            required
-                            placeholder="Ej. 987654321"
-                            value={postulantPhone}
-                            onChange={(e) => setPostulantPhone(e.target.value)}
-                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
-                            Universidad y Carrera / Especialidad
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="Ej. UNC - Sociología / 8vo ciclo"
-                            value={postulantUniversity}
-                            onChange={(e) => setPostulantUniversity(e.target.value)}
-                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
-                          Carta de Motivación / Interés en Investigación Social
-                        </label>
-                        <textarea
-                          required
-                          rows={4}
-                          placeholder="Describe brevemente tu interés en la sociología empírica, qué temas territoriales te apasionan de Cajamarca y por qué deseas ser parte de AFI..."
-                          value={postulantMotivation}
-                          onChange={(e) => setPostulantMotivation(e.target.value)}
-                          className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none resize-none focus:border-cyan-500 transition-colors"
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
-                          Enlace a Borrador o CV (Opcional)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Ej. Enlace a Google Drive o LinkedIn..."
-                          value={postulantFileLink}
-                          onChange={(e) => setPostulantFileLink(e.target.value)}
-                          className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
-                        />
-                      </div>
-
-                      <div className="pt-3 border-t border-gray-900 mt-6 text-[10px] text-gray-550 flex items-start gap-1.5 leading-normal">
-                        <AlertOctagon className="h-4 w-4 text-[#0099ff] shrink-0 mt-0.5" />
-                        <span>Declaro que soy estudiante o egresado residente de la región Cajamarca y los datos consignados son verdaderos.</span>
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={isSubmittingPostulation}
-                        className="w-full flex items-center justify-center gap-2 bg-[#0099ff]/10 hover:bg-[#0099ff]/20 text-[#0099ff] border border-[#0099ff]/30 py-3.5 font-mono text-[11px] uppercase font-bold transition-all cursor-pointer shadow-[0_0_12px_rgba(0,153,255,0.05)]"
-                      >
-                        {isSubmittingPostulation ? (
-                          <span className="flex items-center gap-1.5">
-                            <span className="h-3 w-3 rounded-full border border-cyan-500/20 border-t-cyan-500 animate-spin"></span>
-                            Procesando Postulación...
-                          </span>
-                        ) : (
-                          <>
-                            <Send className="h-3.5 w-3.5" />
-                            <span>Enviar Postulación Científica</span>
-                          </>
-                        )}
-                      </button>
-                    </form>
                   )}
+
+                  {afiSubView === 'postulate' && (
+                    <div className="bg-[#050506] border border-gray-900 p-6 md:p-8 space-y-6">
+                      <div className="flex items-center gap-2.5 border-b border-gray-900 pb-4 text-left">
+                        <GraduationCap className="h-5 w-5 text-cyan-400" />
+                        <div>
+                          <h3 className="text-sm font-extrabold text-white uppercase font-sans">
+                            Postulación a Beca de Cobertura Total AFI
+                          </h3>
+                          <p className="text-[10px] font-mono text-gray-500 uppercase">PROGRAMA: {selectedAfiProgram}</p>
+                        </div>
+                      </div>
+
+                      {postulantSubmitted ? (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="py-12 px-4 text-center space-y-4 border border-emerald-500/20 bg-emerald-950/15"
+                        >
+                          <div className="h-12 w-12 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto">
+                            <Check className="h-6 w-6 stroke-[3]" />
+                          </div>
+                          <h4 className="text-base font-extrabold text-white uppercase font-sans">
+                            ¡Postulación Registrada con Éxito!
+                          </h4>
+                          <p className="text-xs text-gray-300 leading-relaxed font-sans max-w-md mx-auto">
+                            Hola <b className="text-white">{postulantName}</b>, hemos guardado tus datos en el buzón central AFI. El comité académico evaluará tu postulación y se comunicará contigo vía WhatsApp o correo electrónico (<span className="text-cyan-400 font-mono">{postulantEmail}</span>) a la brevedad.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPostulantSubmitted(false);
+                              setPostulantName('');
+                              setPostulantEmail('');
+                              setPostulantPhone('');
+                              setPostulantUniversity('');
+                              setPostulantMotivation('');
+                              setPostulantFileLink('');
+                              setAfiSubView('programs');
+                            }}
+                            className="mt-6 text-xs text-cyan-400 font-mono uppercase underline hover:text-white cursor-pointer bg-transparent border-none"
+                          >
+                            Volver al Catálogo
+                          </button>
+                        </motion.div>
+                      ) : (
+                        <form onSubmit={handlePostulationSubmit} className="space-y-4 text-left font-sans text-xs">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Nombres y Apellidos Completos
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                placeholder="Ej. Juan Pérez Medina"
+                                value={postulantName}
+                                onChange={(e) => setPostulantName(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Correo Electrónico
+                              </label>
+                              <input
+                                type="email"
+                                required
+                                placeholder="Ej. juan.perez@unc.edu.pe"
+                                value={postulantEmail}
+                                onChange={(e) => setPostulantEmail(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Número de Celular / WhatsApp
+                              </label>
+                              <input
+                                type="tel"
+                                required
+                                placeholder="Ej. 987654321"
+                                value={postulantPhone}
+                                onChange={(e) => setPostulantPhone(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Universidad y Carrera / Especialidad
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                placeholder="Ej. UNC - Sociología / 8vo ciclo"
+                                value={postulantUniversity}
+                                onChange={(e) => setPostulantUniversity(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                              Carta de Motivación / Interés en Investigación Social
+                            </label>
+                            <textarea
+                              required
+                              rows={4}
+                              placeholder="Describe brevemente tu interés en la sociología empírica, qué temas territoriales te apasionan de Cajamarca y por qué deseas ser parte de AFI..."
+                              value={postulantMotivation}
+                              onChange={(e) => setPostulantMotivation(e.target.value)}
+                              className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none resize-none focus:border-cyan-500 transition-colors"
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                              Enlace a Borrador o CV (Opcional)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Ej. Enlace a Google Drive o LinkedIn..."
+                              value={postulantFileLink}
+                              onChange={(e) => setPostulantFileLink(e.target.value)}
+                              className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                            />
+                          </div>
+
+                          <div className="pt-3 border-t border-gray-900 mt-6 text-[10px] text-gray-550 flex items-start gap-1.5 leading-normal">
+                            <AlertOctagon className="h-4 w-4 text-[#0099ff] shrink-0 mt-0.5" />
+                            <span>Declaro que soy estudiante o egresado residente de la región Cajamarca y los datos consignados son verdaderos.</span>
+                          </div>
+
+                          <div className="flex gap-4 pt-4">
+                            <button
+                              type="button"
+                              onClick={() => setAfiSubView('programs')}
+                              className="w-1/3 text-center px-4 py-3 bg-transparent hover:bg-zinc-900 border border-gray-850 text-white font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                            >
+                              Volver
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={isSubmittingPostulation}
+                              className="w-2/3 flex items-center justify-center gap-2 bg-[#0099ff]/10 hover:bg-[#0099ff]/20 text-[#0099ff] border border-[#0099ff]/30 py-3 font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                            >
+                              {isSubmittingPostulation ? (
+                                <span className="flex items-center gap-1.5">
+                                  <span className="h-3 w-3 rounded-full border border-cyan-500/20 border-t-cyan-500 animate-spin"></span>
+                                  Procesando...
+                                </span>
+                              ) : (
+                                <>
+                                  <Send className="h-3.5 w-3.5" />
+                                  <span>Enviar Postulación Becaria</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+                  )}
+
+                  {afiSubView === 'enroll' && (
+                    <div className="bg-[#050506] border border-gray-900 p-6 md:p-8 space-y-6">
+                      <div className="flex items-center gap-2.5 border-b border-gray-900 pb-4 text-left">
+                        <PlusCircle className="h-5 w-5 text-cyan-400" />
+                        <div>
+                          <h3 className="text-sm font-extrabold text-white uppercase font-sans">
+                            Formulario de Inscripción Regular
+                          </h3>
+                          <p className="text-[10px] font-mono text-gray-500 uppercase">PROGRAMA SELECCIONADO: {selectedAfiProgram}</p>
+                        </div>
+                      </div>
+
+                      {postulantSubmitted ? (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="py-12 px-4 text-center space-y-4 border border-emerald-500/20 bg-emerald-950/15"
+                        >
+                          <div className="h-12 w-12 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto">
+                            <Check className="h-6 w-6 stroke-[3]" />
+                          </div>
+                          <h4 className="text-base font-extrabold text-white uppercase font-sans">
+                            ¡Pre-Inscripción Registrada!
+                          </h4>
+                          <p className="text-xs text-gray-300 leading-relaxed font-sans max-w-md mx-auto">
+                            Hola <b className="text-white">{postulantName}</b>, tu pre-inscripción en <b>{selectedAfiProgram}</b> ha sido recibida con éxito. Te hemos enviado un correo a <span className="text-cyan-400 font-mono">{postulantEmail}</span> con los detalles de pago y accesos temporales a las aulas y licencias de software del IICS.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPostulantSubmitted(false);
+                              setPostulantName('');
+                              setPostulantEmail('');
+                              setPostulantPhone('');
+                              setPostulantUniversity('');
+                              setPostulantMotivation('');
+                              setPostulantFileLink('');
+                              setAfiSubView('programs');
+                            }}
+                            className="mt-6 text-xs text-cyan-400 font-mono uppercase underline hover:text-white cursor-pointer bg-transparent border-none"
+                          >
+                            Volver al Catálogo
+                          </button>
+                        </motion.div>
+                      ) : (
+                        <form onSubmit={handleEnrollmentSubmit} className="space-y-4 text-left font-sans text-xs">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Nombres y Apellidos Completos
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                placeholder="Ej. Juan Pérez Medina"
+                                value={postulantName}
+                                onChange={(e) => setPostulantName(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Correo Electrónico
+                              </label>
+                              <input
+                                type="email"
+                                required
+                                placeholder="Ej. juan.perez@unc.edu.pe"
+                                value={postulantEmail}
+                                onChange={(e) => setPostulantEmail(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Número de Celular / WhatsApp
+                              </label>
+                              <input
+                                type="tel"
+                                required
+                                placeholder="Ej. 987654321"
+                                value={postulantPhone}
+                                onChange={(e) => setPostulantPhone(e.target.value)}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                                Modalidad Tarifaria Aplicable
+                              </label>
+                              <select
+                                value={afiUserRole}
+                                onChange={(e) => setAfiUserRole(e.target.value as 'estudiante' | 'profesional')}
+                                className="w-full bg-black border border-gray-800 p-3 text-xs text-white outline-none focus:border-cyan-500 transition-colors"
+                              >
+                                <option value="estudiante">Tarifa Estudiante (Subsidiada por el IICS)</option>
+                                <option value="profesional">Tarifa Profesional / General</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-gray-900 mt-6 text-[10px] text-gray-550 flex items-center justify-between">
+                            <span>Monto de Arancel a abonar:</span>
+                            <span className="text-base font-black text-[#0099ff] font-mono">
+                              {afiUserRole === 'estudiante' 
+                                ? (selectedAfiProgram.includes('Taller') ? (selectedAfiProgram.includes('Zotero') ? 'S/. 15 total' : 'S/. 25 total') : 'S/. 6 al mes')
+                                : (selectedAfiProgram.includes('Taller') ? (selectedAfiProgram.includes('Zotero') ? 'S/. 50 total' : 'S/. 120 total') : 'S/. 99 al mes')
+                              }
+                            </span>
+                          </div>
+
+                          <div className="flex gap-4 pt-4">
+                            <button
+                              type="button"
+                              onClick={() => setAfiSubView('programs')}
+                              className="w-1/3 text-center px-4 py-3 bg-transparent hover:bg-zinc-900 border border-gray-850 text-white font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                            >
+                              Volver
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={isSubmittingPostulation}
+                              className="w-2/3 flex items-center justify-center gap-2 bg-[#0099ff] hover:bg-[#0088ee] text-black py-3 font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                            >
+                              {isSubmittingPostulation ? (
+                                <span className="flex items-center gap-1.5">
+                                  <span className="h-3 w-3 rounded-full border border-black/20 border-t-black animate-spin"></span>
+                                  Procesando...
+                                </span>
+                              ) : (
+                                <>
+                                  <Check className="h-3.5 w-3.5" />
+                                  <span>Confirmar Pre-Inscripción</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </form>
+                      )}
+                    </div>
+                  )}
+
                 </div>
 
                 {/* Right Column: AFI Benefits and Info */}
-                <div className="lg:col-span-5 bg-black border border-gray-900 p-6 space-y-6">
+                <div className="lg:col-span-4 bg-[#050506] border border-gray-900 p-6 space-y-6">
                   <div className="flex items-center gap-2 text-left">
                     <FileText className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
                     <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
@@ -819,14 +1159,14 @@ export default function ModalPortal({
                       </div>
 
                       <div className="pt-3">
-                        <span className="block text-gray-505 font-mono font-bold uppercase text-[9px]">Soporte Instrumental Avanzado:</span>
+                        <span className="block text-gray-550 font-mono font-bold uppercase text-[9px]">Soporte Instrumental Avanzado:</span>
                         <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
                           Acceso a licencias y servidores compartidos para análisis cualitativo en **Atlas.ti** y clústeres de computación para procesamiento de lenguaje natural (NLP).
                         </span>
                       </div>
 
                       <div className="pt-3">
-                        <span className="block text-gray-505 font-mono font-bold uppercase text-[9px]">Financiamiento Editorial:</span>
+                        <span className="block text-gray-550 font-mono font-bold uppercase text-[9px]">Financiamiento Editorial:</span>
                         <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
                           Apoyo financiero para cubrir los costos de procesamiento de artículos (APC) en revistas indexadas en las bases **Scopus** y **SciELO**.
                         </span>
@@ -835,7 +1175,7 @@ export default function ModalPortal({
                   </div>
 
                   <div className="pt-6 border-t border-gray-900 bg-[#050506] p-4 text-[10px] text-gray-500 flex items-start gap-2 leading-relaxed text-left">
-                    <AlertTriangle className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                    <AlertTriangle className="h-4.5 w-4.5 text-[#0099ff] shrink-0 mt-0.5" />
                     <span>Las becas de apoyo económico se asignan semestralmente bajo estricto orden de mérito y consistencia en los informes de investigación de campo.</span>
                   </div>
                 </div>
