@@ -63,6 +63,33 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
             >
               {children}
             </motion.div>
+
+            {/* Institutional Value Statement Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+              <motion.div 
+                variants={itemVariants}
+                className="bg-white/[0.01] border border-white/5 p-4 text-left rounded-none shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] hover:border-cyan-500/20 transition-all duration-300"
+              >
+                <span className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 block mb-2 uppercase">
+                  SOCIOLOGÍA DE PRECISIÓN
+                </span>
+                <p className="text-xs text-gray-300 leading-relaxed font-sans">
+                  Aplicamos <span className="text-white font-extrabold">SOCIOLOGÍA</span> de precisión para producir <span className="text-cyan-400 font-extrabold">CONOCIMIENTO</span> útil en el <span className="text-white font-semibold">INSTITUTO DE INVESTIGACIÓN CIENTÍFICA SOCIAL</span>.
+                </p>
+              </motion.div>
+
+              <motion.div 
+                variants={itemVariants}
+                className="bg-white/[0.01] border border-white/5 p-4 text-left rounded-none shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] hover:border-cyan-500/20 transition-all duration-300"
+              >
+                <span className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 block mb-2 uppercase">
+                  INNOVACIÓN METODOLÓGICA
+                </span>
+                <p className="text-xs text-gray-300 leading-relaxed font-sans">
+                  Innovamos en el análisis social con múltiples ciencias y tecnología aplicada desde el <span className="text-cyan-400 font-extrabold uppercase">NORTE-CAJAMARCA, PERÚ</span>.
+                </p>
+              </motion.div>
+            </div>
           </div>
 
           {/* Right Column: Text Block (displays on right on desktop, top on mobile) */}
