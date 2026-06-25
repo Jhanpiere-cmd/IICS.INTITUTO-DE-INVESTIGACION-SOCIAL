@@ -54,17 +54,17 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
               </div>
             </div>
             
-            <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
+            <p className="text-sm text-gray-250 max-w-xs leading-relaxed">
               Instituto de Investigación Científica Social (IICS). Centro de investigación privado, independiente y tecnológico de sociología de precisión en el norte peruano.
             </p>
-            <p className="text-[10px] text-gray-500 font-mono">
+            <p className="text-[11px] text-gray-400 font-mono">
               CORPORACIÓN PRIVADA DE INVESTIGACIÓN | CAJAMARCA, PERÚ
             </p>
           </div>
 
           {/* Enlaces Column */}
           <div className="md:col-span-2 flex flex-col gap-3">
-            <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest font-mono">
+            <h4 className="text-sm font-black text-white uppercase tracking-widest font-sans">
               Enlaces
             </h4>
             <ul className="space-y-2">
@@ -73,7 +73,7 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
                   <a
                     href={link.path}
                     onClick={(e) => handleSmoothScroll(e, link.path)}
-                    className="text-xs md:text-sm text-gray-400 hover:text-cyan-400 transition-colors"
+                    className="text-sm text-gray-250 hover:text-cyan-400 transition-colors font-medium"
                   >
                     {link.label}
                   </a>
@@ -84,7 +84,7 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
 
           {/* Recursos Column */}
           <div className="md:col-span-2 flex flex-col gap-3">
-            <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest font-mono">
+            <h4 className="text-sm font-black text-white uppercase tracking-widest font-sans">
               Recursos
             </h4>
             <ul className="space-y-2">
@@ -92,7 +92,7 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
                 <li key={link.label}>
                   <a
                     href={link.path}
-                    className="text-xs md:text-sm text-gray-400 hover:text-cyan-400 transition-colors"
+                    className="text-sm text-gray-250 hover:text-cyan-400 transition-colors font-medium"
                   >
                     {link.label}
                   </a>
@@ -103,20 +103,20 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
 
           {/* Contacto Column */}
           <div className="md:col-span-4 flex flex-col gap-4">
-            <h4 className="text-xs font-bold text-gray-300 uppercase tracking-widest font-mono">
+            <h4 className="text-sm font-black text-white uppercase tracking-widest font-sans">
               Contacto
             </h4>
             
             <ul className="space-y-3 font-sans">
-              <li className="flex items-start gap-2.5 text-xs md:text-sm text-gray-400">
+              <li className="flex items-start gap-2.5 text-sm text-gray-250">
                 <MapPin className="h-4.5 w-4.5 text-cyan-400 shrink-0 mt-0.5" />
                 <span>Av. Atahualpa 1050, Cajamarca, Perú</span>
               </li>
-              <li className="flex items-center gap-2.5 text-xs md:text-sm text-[#0099ff] font-medium">
+              <li className="flex items-center gap-2.5 text-sm text-cyan-300 font-semibold">
                 <Mail className="h-4.5 w-4.5 text-[#0099ff] shrink-0" />
                 <a href="mailto:contacto@iics.org" className="hover:underline">contacto@iics.org</a>
               </li>
-              <li className="flex items-center gap-2.5 text-xs md:text-sm text-gray-400">
+              <li className="flex items-center gap-2.5 text-sm text-gray-250">
                 <Phone className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
                 <span>+51 76 365000</span>
               </li>
@@ -124,16 +124,16 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
 
             {/* Social handles circle containers */}
             <div className="flex items-center gap-3 pt-2 select-none">
-              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-400 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
+              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-300 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-400 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
+              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-300 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
                 <Twitter className="h-4 w-4" />
               </a>
-              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-400 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
+              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-300 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
                 <Linkedin className="h-4 w-4" />
               </a>
-              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-400 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
+              <a href="#" className="flex h-9 w-9 items-center justify-center rounded-none bg-gray-950 border border-gray-800 text-gray-300 hover:text-cyan-400 hover:border-cyan-500/25 transition-all">
                 <Youtube className="h-4 w-4" />
               </a>
             </div>
@@ -142,12 +142,12 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
         </div>
 
         {/* Lower Banner Copyright */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-[11px] text-gray-500 font-mono">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-xs text-gray-400 font-mono">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-left">
             <span>
               © 2026 IICS - Corporación Privada e Independiente. Todos los derechos reservados.
             </span>
-            <span className="hidden sm:inline text-gray-800">|</span>
+            <span className="hidden sm:inline text-gray-700">|</span>
             <span className="flex items-center gap-1.5 mt-1 sm:mt-0">
               Desarrollado y mantenido por{" "}
               <a 

@@ -148,7 +148,7 @@ export default function PublicationsSection() {
           <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl font-sans lg:max-w-3xl leading-[1.1]">
             Publicaciones y Producción Científica Social
           </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-gray-400 font-sans">
+          <p className="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-gray-200 font-sans font-medium">
             Explore el repositorio de artículos indexados en <span className="text-cyan-400 font-semibold font-mono">Scopus</span>, <span className="text-cyan-400 font-semibold font-mono">SciELO</span> y <span className="text-cyan-400 font-semibold font-mono">Dialnet</span> del IICS. Promovemos una sociología de precisión mediante datos transparentes de descarga abierta para investigadores locales.
           </p>
         </div>
@@ -246,8 +246,8 @@ export default function PublicationsSection() {
                   
                   {/* Header metadata */}
                   <div>
-                    <div className="flex items-center justify-between gap-3 mb-4 font-mono text-[9px] font-bold">
-                      <span className={`inline-flex px-1.5 py-0.5 rounded-none uppercase border ${
+                    <div className="flex items-center justify-between gap-3 mb-4 font-mono text-[10px] font-bold">
+                      <span className={`inline-flex px-2 py-0.5 rounded-none uppercase border ${
                         pub.type === 'paper' 
                           ? 'bg-cyan-950/20 text-cyan-400 border-cyan-800/30' 
                           : pub.type === 'bulletin'
@@ -256,35 +256,35 @@ export default function PublicationsSection() {
                       }`}>
                         {pub.typeName}
                       </span>
-                      <span className="text-gray-500">{pub.date}</span>
+                      <span className="text-gray-400">{pub.date}</span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-sm font-bold tracking-normal text-white group-hover:text-cyan-400 transition-colors line-clamp-2 leading-relaxed">
+                    <h3 className="text-base font-extrabold tracking-normal text-white group-hover:text-cyan-400 transition-colors line-clamp-2 leading-relaxed uppercase">
                       {pub.title}
                     </h3>
 
                     {/* Authors and Badge row */}
-                    <div className="flex items-center gap-2 mt-3 font-mono text-[10.5px]">
-                      <Users className="h-3.5 w-3.5 text-gray-500 shrink-0" />
-                      <span className="text-gray-400 truncate">{pub.authors}</span>
+                    <div className="flex items-center gap-2 mt-3 font-mono text-xs">
+                      <Users className="h-4 w-4 text-gray-400 shrink-0" />
+                      <span className="text-gray-300 truncate">{pub.authors}</span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5 mt-4">
                       {/* Database validation index */}
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-zinc-950 text-gray-400 border border-zinc-900 font-mono text-[9px] rounded-none">
-                        <Award className="h-2.5 w-2.5 text-[#0099ff]" />
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-zinc-950 text-gray-300 border border-zinc-900 font-mono text-[10px] rounded-none">
+                        <Award className="h-3 w-3 text-[#0099ff]" />
                         <span>{pub.index}</span>
                       </span>
 
                       {/* Line of investigation tag */}
-                      <span className="text-[10px] text-gray-500 italic max-w-[150px] truncate">
+                      <span className="text-xs text-gray-400 italic max-w-[150px] truncate">
                         {pub.line}
                       </span>
                     </div>
 
                     {/* Synopsis abstract text */}
-                    <p className={`text-[11.5px] text-gray-400 leading-relaxed font-sans border-t border-gray-900/60 pt-3.5 mt-4 ${
+                    <p className={`text-xs sm:text-sm text-gray-300 leading-relaxed font-sans border-t border-gray-900/60 pt-3.5 mt-4 ${
                       isExpanded ? '' : 'line-clamp-3'
                     }`}>
                       {pub.abstract}
