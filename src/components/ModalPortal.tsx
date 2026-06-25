@@ -1,5 +1,5 @@
-import { useState, FormEvent } from 'react';
-import { X, Search, FileDown, PlusCircle, Check, Send, Sparkles, Filter, ChevronRight, Calendar, AlertOctagon, Lock, Unlock, User, Sparkle, Database, GraduationCap, AlertTriangle, FileText, BookOpen, Clock, UploadCloud, Copy } from 'lucide-react';
+import { useState, FormEvent, useEffect } from 'react';
+import { X, Search, FileDown, PlusCircle, Check, Send, Sparkles, Filter, ChevronRight, Calendar, AlertOctagon, Lock, Unlock, User, Sparkle, Database, GraduationCap, AlertTriangle, FileText, BookOpen, Clock, UploadCloud, Copy, Play, Film, Tv, Video } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ProvinceData, Alert, ResearchLine } from '../types';
 import { SmokeyBackground, LoginForm } from './ui/login-form';
@@ -10,13 +10,14 @@ import PublicationsSection from './PublicationsSection';
 interface ModalPortalProps {
   provinces: ProvinceData[];
   alerts: Alert[];
-  activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | null;
+  activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | null;
   onClose: () => void;
   selectedResearchLine: ResearchLine | null;
   onSubmitSimulatedAlert: (newAlert: Alert) => void;
   isLoggedIn: boolean;
   onLogin: (status: boolean) => void;
   onOpenPortal?: () => void;
+  initialPortalTab?: 'datasets' | 'afi' | 'alerts';
 }
 
 export default function ModalPortal({
@@ -28,7 +29,8 @@ export default function ModalPortal({
   onSubmitSimulatedAlert,
   isLoggedIn,
   onLogin,
-  onOpenPortal
+  onOpenPortal,
+  initialPortalTab
 }: ModalPortalProps) {
   
   // Login States
@@ -46,11 +48,21 @@ export default function ModalPortal({
   
   // Custom inside-portal tabs: 'datasets' (open data for citizens), 'afi' (young scholars/students), 'alerts' (high-tech indicators)
   const [portalTab, setPortalTab] = useState<'datasets' | 'afi' | 'alerts'>('datasets');
+
+  useEffect(() => {
+    if (activeModal === 'portal' && initialPortalTab) {
+      setPortalTab(initialPortalTab);
+    }
+  }, [activeModal, initialPortalTab]);
   
   // Simulated downloading states
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [downloadSuccessNotice, setDownloadSuccessNotice] = useState<string | null>(null);
+
+  // Documentary video playback states
+  const [playingDoc, setPlayingDoc] = useState<any | null>(null);
+  const [loadingVideo, setLoadingVideo] = useState(false);
 
   // Semillero AFI draft uploader states
   const [draftTitle, setDraftTitle] = useState('');
@@ -326,6 +338,234 @@ export default function ModalPortal({
               </p>
               <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
                 Repositorio Abierto e Indexado de la Región Norte
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
+  if (activeModal === 'documentales') {
+    const documentaries = [
+      {
+        id: 'doc-agua',
+        title: 'Hualgayoc: El Latido del Agua',
+        duration: '18:45',
+        year: '2026',
+        tags: ['Socioambiental', 'Recursos Hídricos'],
+        desc: 'Exploración etnográfica y monitoreo digital en las microcuencas de Hualgayoc. Un registro sonoro y visual sobre la convivencia comunitaria, la minería y la conservación del recurso hídrico.',
+        thumbnail: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80',
+        authors: 'Hery Díaz Bueno & Edwar Jahnpiere'
+      },
+      {
+        id: 'doc-rondas',
+        title: 'Justicia de la Tierra: Rondas Campesinas',
+        duration: '22:10',
+        year: '2025',
+        tags: ['Justicia Comunal', 'Cultura Rural'],
+        desc: 'Un retrato cinematográfico sobre el funcionamiento de las Rondas Campesinas en Chota. Hermenéutica de la tierra, resolución colectiva de disputas y el rol integrador de las mujeres ronderas.',
+        thumbnail: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80',
+        authors: 'Dr. Jaime Abanto Padilla & Equipo IICS'
+      },
+      {
+        id: 'doc-michiquillay',
+        title: 'Michiquillay: Las Voces de la Faja',
+        duration: '15:30',
+        year: '2026',
+        tags: ['Gobernabilidad', 'Opinión Pública'],
+        desc: 'Análisis cualitativo audiovisual basado en minería de opinión local y entrevistas comunitarias directas antes de la consolidación de la mesa de diálogo del proyecto de cobre.',
+        thumbnail: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80',
+        authors: 'M. Cs. Julio Cesar Alcalde Giove'
+      },
+      {
+        id: 'doc-observatorio',
+        title: 'Sociología de Precisión: Datos para la Vida',
+        duration: '12:15',
+        year: '2026',
+        tags: ['Tecnología', 'Desarrollo Territorial'],
+        desc: 'Un cortometraje explicativo sobre el funcionamiento del clúster de NLP y los sistemas georreferenciados del IICS que permiten anticipar tensiones territoriales en el norte del Perú.',
+        thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
+        authors: 'Comité Promotor IICS'
+      }
+    ];
+
+    const handlePlayDoc = (doc: any) => {
+      setLoadingVideo(true);
+      setPlayingDoc(doc);
+      setTimeout(() => {
+        setLoadingVideo(false);
+      }, 1500);
+    };
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+        >
+          {/* Header Back Button */}
+          <button
+            onClick={() => {
+              setPlayingDoc(null);
+              onClose();
+            }}
+            className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+          >
+            <X className="h-4 w-4" />
+            <span>Regresar al Inicio</span>
+          </button>
+
+          <div className="flex-1 w-full bg-black py-16 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl relative">
+              {/* Section Header */}
+              <div className="text-left mb-16 relative">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="h-px w-8 bg-cyan-500"></span>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-[#0099ff]">
+                    Ecosistema Transmedia Audiovisual
+                  </span>
+                </div>
+                <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl font-sans lg:max-w-3xl leading-[1.1]">
+                  Documentales y Reportajes de Campo
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-gray-200 font-sans font-medium">
+                  Traducimos hallazgos analíticos y evidencia sociológica en producciones audiovisuales directas. Explore los registros documentales del IICS sobre tensiones territoriales, recursos hídricos y cultura andina.
+                </p>
+              </div>
+
+              {/* Cinematic Video Player Overlay */}
+              {playingDoc && (
+                <div className="mb-12 bg-[#050506] border border-gray-900 p-4 md:p-6 rounded-none relative">
+                  <button
+                    onClick={() => setPlayingDoc(null)}
+                    className="absolute top-4 right-4 z-55 p-1.5 bg-black border border-gray-800 text-gray-400 hover:text-white hover:border-gray-650 transition-colors cursor-pointer"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+
+                  <div className="relative aspect-video w-full max-w-4xl mx-auto bg-black border border-zinc-900 flex flex-col justify-center items-center overflow-hidden">
+                    {loadingVideo ? (
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="h-8 w-8 rounded-full border-2 border-cyan-500/20 border-t-cyan-500 animate-spin"></div>
+                        <span className="text-xs font-mono text-cyan-400 tracking-widest uppercase">Cargando flujo de video IICS...</span>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Immersive Scanning Graphic / Audio visualizer simulation */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-cyan-950/20 via-transparent to-transparent pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,153,255,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+                        <div className="absolute top-4 left-4 font-mono text-[9px] text-cyan-500/60 uppercase select-none space-y-1">
+                          <div>SOURCE ID: {playingDoc.id}</div>
+                          <div>STATUS: STREAMING STREAM_OK</div>
+                          <div>FRAME_RATE: 24.00 FPS</div>
+                        </div>
+
+                        {/* Staged Visual Graphics */}
+                        <Video className="h-16 w-16 text-cyan-500/30 animate-pulse" />
+                        <span className="text-sm font-mono text-gray-450 font-bold uppercase tracking-wider mt-4 text-center px-4">
+                          {playingDoc.title}
+                        </span>
+                        <span className="text-xs text-gray-550 font-mono mt-1">
+                          [Reproducción Simulada • Contenido Transmedia del IICS]
+                        </span>
+
+                        {/* Player Telemetry Controls */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/90 border-t border-zinc-900 flex items-center justify-between gap-4 font-mono text-[10px]">
+                          <div className="flex items-center gap-3">
+                            <Play className="h-4.5 w-4.5 text-cyan-400 fill-cyan-400/20" />
+                            <span className="text-gray-405">03:45 / {playingDoc.duration}</span>
+                          </div>
+                          <div className="flex-1 max-w-md h-1 bg-zinc-950 overflow-hidden border border-zinc-900 rounded-full mx-4">
+                            <div className="bg-cyan-500 h-full w-[20%]" />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="px-1.5 py-0.5 bg-cyan-950/40 text-cyan-400 border border-cyan-900/20">HD 1080P</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Documentary Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {documentaries.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="group bg-[#050506] border border-gray-900 hover:border-gray-800 transition-all p-6 flex flex-col justify-between rounded-none text-left relative"
+                  >
+                    <div>
+                      {/* Image Thumbnail with play overlay */}
+                      <div className="relative aspect-video w-full bg-zinc-900 mb-6 overflow-hidden border border-gray-950 group-hover:border-zinc-800 transition-colors">
+                        <img
+                          src={doc.thumbnail}
+                          alt={doc.title}
+                          className="h-full w-full object-cover opacity-60 group-hover:opacity-75 transition-opacity duration-500"
+                        />
+                        <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
+                          <button
+                            onClick={() => handlePlayDoc(doc)}
+                            className="h-12 w-12 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center transition-all scale-95 group-hover:scale-100 shadow-[0_0_15px_rgba(0,153,255,0.4)] cursor-pointer"
+                          >
+                            <Play className="h-5 w-5 fill-slate-950 ml-0.5" />
+                          </button>
+                        </div>
+                        <span className="absolute bottom-3 right-3 bg-black/80 px-2 py-0.5 text-[10px] font-mono font-bold text-cyan-400 border border-zinc-900">
+                          {doc.duration}
+                        </span>
+                      </div>
+
+                      {/* Header tags */}
+                      <div className="flex items-center justify-between gap-3 mb-3 font-mono text-[9px] font-bold">
+                        <div className="flex gap-2">
+                          {doc.tags.map((t, idx) => (
+                            <span key={idx} className="px-1.5 py-0.5 bg-cyan-950/20 text-[#0099ff] border border-cyan-800/10 uppercase">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-gray-500">{doc.year}</span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-base font-extrabold text-white uppercase group-hover:text-cyan-400 transition-colors tracking-tight leading-snug">
+                        {doc.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="mt-3.5 text-xs text-gray-400 leading-relaxed font-sans">
+                        {doc.desc}
+                      </p>
+                    </div>
+
+                    {/* Footer / Author metadata */}
+                    <div className="mt-6 pt-4 border-t border-gray-900/60 flex items-center justify-between font-mono text-[10px] text-gray-500">
+                      <span>{doc.authors}</span>
+                      <button
+                        onClick={() => handlePlayDoc(doc)}
+                        className="text-cyan-400 hover:text-white transition-colors uppercase font-bold text-[9.5px] cursor-pointer"
+                      >
+                        Reproducir Video &rarr;
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Institutional Console footer watermark */}
+          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+              <p className="text-[9px] text-[#52525b] font-mono tracking-wider uppercase leading-relaxed font-semibold">
+                Consola Central de Inteligencia Territorial • Cajamarca 2026 • Acceso Autónomo Protegido
+              </p>
+              <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
+                Estrategia Transmedia y Divulgación Ciudadana
               </p>
             </div>
           </div>

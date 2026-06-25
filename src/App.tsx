@@ -23,8 +23,9 @@ export default function App() {
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>('cajamarca');
 
   // Modal Control States
-  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | null>(null);
+  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | null>(null);
   const [selectedResearchLine, setSelectedResearchLine] = useState<ResearchLine | null>(null);
+  const [initialPortalTab, setInitialPortalTab] = useState<'datasets' | 'afi' | 'alerts' | undefined>(undefined);
 
   // Active Navigation Header Track
   const [activeTab, setActiveTab] = useState<string>('inicio');
@@ -155,6 +156,11 @@ export default function App() {
         <Hero 
           onExploreClick={() => setActiveModal('portal')}
           onWorkClick={() => setActiveModal('publicaciones')}
+          onDocumentalesClick={() => setActiveModal('documentales')}
+          onAfiClick={() => {
+            setInitialPortalTab('afi');
+            setActiveModal('portal');
+          }}
         >
           <img 
             src="/computador-iics.png" 
@@ -204,9 +210,11 @@ export default function App() {
         onClose={() => {
           setActiveModal(null);
           setSelectedResearchLine(null);
+          setInitialPortalTab(undefined);
         }}
         onSubmitSimulatedAlert={handleAddProposedAlert}
         onOpenPortal={() => setActiveModal('portal')}
+        initialPortalTab={initialPortalTab}
       />
 
     </div>

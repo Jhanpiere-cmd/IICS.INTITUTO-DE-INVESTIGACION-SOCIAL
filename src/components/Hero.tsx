@@ -1,14 +1,16 @@
 import { ReactNode } from 'react';
-import { Target, ArrowRight, BarChart2, Star, Clock, LineChart, ShieldAlert, Award } from 'lucide-react';
+import { Target, ArrowRight, BarChart2, Star, Clock, LineChart, ShieldAlert, Award, Film, GraduationCap } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface HeroProps {
   onExploreClick: () => void;
   onWorkClick: () => void;
+  onDocumentalesClick: () => void;
+  onAfiClick: () => void;
   children: ReactNode;
 }
 
-export default function Hero({ onExploreClick, onWorkClick, children }: HeroProps) {
+export default function Hero({ onExploreClick, onWorkClick, onDocumentalesClick, onAfiClick, children }: HeroProps) {
   // Animation Variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -143,6 +145,30 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               >
                 <BarChart2 className="h-4 w-4 text-cyan-600 group-hover:scale-110 transition-transform" />
                 Explorar Observatorio
+              </button>
+            </motion.div>
+
+            {/* Secondary CTAs */}
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-1"
+            >
+              <button
+                id="btn-documentales"
+                onClick={onDocumentalesClick}
+                className="group flex items-center justify-center gap-2 rounded-none bg-transparent hover:bg-gray-990 border border-gray-800 hover:border-gray-650 text-gray-300 hover:text-white px-5 lg:px-6 py-2 py-2.5 text-xs font-bold tracking-wide transition-all cursor-pointer font-sans uppercase"
+              >
+                <Film className="h-4 w-4 text-cyan-400 group-hover:rotate-6 transition-transform" />
+                Documentales y Reportajes
+              </button>
+
+              <button
+                id="btn-academia-afi"
+                onClick={onAfiClick}
+                className="group flex items-center justify-center gap-2 rounded-none bg-transparent hover:bg-gray-990 border border-gray-800 hover:border-gray-650 text-gray-300 hover:text-white px-5 lg:px-6 py-2 py-2.5 text-xs font-bold tracking-wide transition-all cursor-pointer font-sans uppercase"
+              >
+                <GraduationCap className="h-4 w-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                Academia AFI (Postulación)
               </button>
             </motion.div>
 
