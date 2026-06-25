@@ -65,22 +65,22 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
             </motion.div>
 
             {/* Capability cards placed below the computer, stretching horizontally on large screens */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               
               {/* Item 1: Monitoreo en tiempo real */}
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
+                className="flex items-start gap-3 glow-card-electric rounded-none p-4.5 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
-                  <Clock className="h-4.5 w-4.5 animate-pulse" />
+                  <Clock className="h-5 w-5 animate-pulse" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
-                    Monitoreo en tiempo real
+                  <h4 className="text-xs sm:text-sm lg:text-base font-extrabold text-cyan-400 tracking-wider uppercase font-mono leading-none">
+                    MONITOREO EN TIEMPO REAL
                   </h4>
-                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
+                  <p className="text-xs sm:text-sm lg:text-[15px] text-gray-200 mt-2.5 leading-relaxed font-sans">
                     Detectamos señales tempranas de tensión social
                   </p>
                 </div>
@@ -90,16 +90,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
+                className="flex items-start gap-3 glow-card-electric rounded-none p-4.5 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
-                  <LineChart className="h-4.5 w-4.5" />
+                  <LineChart className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
-                    Análisis avanzado
+                  <h4 className="text-xs sm:text-sm lg:text-base font-extrabold text-cyan-400 tracking-wider uppercase font-mono leading-none">
+                    ANÁLISIS AVANZADO
                   </h4>
-                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
+                  <p className="text-xs sm:text-sm lg:text-[15px] text-gray-200 mt-2.5 leading-relaxed font-sans">
                     Ciencia de datos aplicada a la sociología
                   </p>
                 </div>
@@ -109,16 +109,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
+                className="flex items-start gap-3 glow-card-electric rounded-none p-4.5 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
-                  <ShieldAlert className="h-4.5 w-4.5" />
+                  <ShieldAlert className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
-                    Información para decidir
+                  <h4 className="text-xs sm:text-sm lg:text-base font-extrabold text-cyan-400 tracking-wider uppercase font-mono leading-none">
+                    INFORMACIÓN PARA DECIDIR
                   </h4>
-                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
+                  <p className="text-xs sm:text-sm lg:text-[15px] text-gray-200 mt-2.5 leading-relaxed font-sans">
                     Reportes claros para tomadores de decisiones
                   </p>
                 </div>
@@ -128,16 +128,16 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <motion.div 
                 variants={itemVariants}
                 whileHover={{ y: -2 }}
-                className="flex items-start gap-2.5 glow-card-electric rounded-none p-3 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
+                className="flex items-start gap-3 glow-card-electric rounded-none p-4.5 border border-white/10 hover:border-cyan-400 transition-all duration-300 cursor-pointer text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden"
               >
                 <div className="flex-shrink-0 text-cyan-400 mt-0.5">
-                  <Award className="h-4.5 w-4.5" />
+                  <Award className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-[9.5px] font-bold text-cyan-400 tracking-wide uppercase font-mono leading-none">
-                    Formación de talento
+                  <h4 className="text-xs sm:text-sm lg:text-base font-extrabold text-cyan-400 tracking-wider uppercase font-mono leading-none">
+                    FORMACIÓN DE TALENTO
                   </h4>
-                  <p className="text-[9.5px] text-gray-300 mt-1.5 leading-snug">
+                  <p className="text-xs sm:text-sm lg:text-[15px] text-gray-200 mt-2.5 leading-relaxed font-sans">
                     Capacitamos investigadores para el desarrollo
                   </p>
                 </div>

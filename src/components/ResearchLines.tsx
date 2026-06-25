@@ -63,12 +63,12 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
                   <div className="shrink-0 transition-transform group-hover:scale-110 duration-200">
                     {getIcon(line.icon)}
                   </div>
-                  <h3 className="text-base font-bold text-white tracking-wide group-hover:text-cyan-300 transition-colors leading-snug">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-extrabold text-white tracking-wider group-hover:text-cyan-300 transition-colors leading-snug uppercase">
                     {line.title}
                   </h3>
                 </div>
 
-                <p className="text-sm text-gray-200 leading-relaxed line-clamp-4">
+                <p className="text-xs sm:text-sm lg:text-[15px] text-gray-200 leading-relaxed line-clamp-4 mt-2">
                   {line.description}
                 </p>
               </div>

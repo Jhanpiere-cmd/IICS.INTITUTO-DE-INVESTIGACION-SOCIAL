@@ -115,8 +115,8 @@ export default function App() {
       {/* Absolute high-tech space atmospheric visuals */}
       <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent z-50"></div>
       
-      {/* Falling Data Patterns Background Shader Layer */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
+      {/* Falling Data Patterns Background Shader Layer (Disabled on mobile to prevent lag, active only on lg viewports) */}
+      <div className="hidden lg:block fixed inset-0 pointer-events-none z-0 opacity-40">
         <FallingPattern 
           color="rgba(0, 153, 255, 0.2)" 
           backgroundColor="transparent"
@@ -128,9 +128,9 @@ export default function App() {
       </div>
 
       {/* Dynamic atmospheric glow blobs */}
-      <div className="fixed top-[-10%] left-[-10%] h-[600px] w-[600px] rounded-full bg-cyan-500/5 blur-[130px] pointer-events-none -z-10 animate-float-slow"></div>
-      <div className="fixed bottom-[10%] right-[-10%] h-[700px] w-[700px] rounded-full bg-indigo-550/5 blur-[150px] pointer-events-none -z-10 animate-float-slower"></div>
-      <div className="fixed top-[45%] left-[35%] h-[500px] w-[500px] rounded-full bg-cyan-500/3 blur-[140px] pointer-events-none -z-10 animate-pulse"></div>
+      <div className="hidden lg:block fixed top-[-10%] left-[-10%] h-[600px] w-[600px] rounded-full bg-cyan-500/5 blur-[130px] pointer-events-none -z-10 animate-float-slow"></div>
+      <div className="hidden lg:block fixed bottom-[10%] right-[-10%] h-[700px] w-[700px] rounded-full bg-indigo-550/5 blur-[150px] pointer-events-none -z-10 animate-float-slower"></div>
+      <div className="hidden lg:block fixed top-[45%] left-[35%] h-[500px] w-[500px] rounded-full bg-cyan-500/3 blur-[140px] pointer-events-none -z-10 animate-pulse"></div>
 
       <Header 
         onOpenPortal={() => setActiveModal('portal')} 

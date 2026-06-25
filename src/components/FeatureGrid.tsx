@@ -460,15 +460,15 @@ export default function FeatureGrid() {
                     </span>
                   </div>
 
-                  <h4 className="text-lg sm:text-xl font-extrabold text-white tracking-tight font-sans mb-3">
+                  <h4 className="text-xl sm:text-2xl font-black text-white tracking-wider font-sans mb-3 uppercase">
                     {item.title}
                   </h4>
 
-                  <p className="text-sm sm:text-base font-semibold text-cyan-300 leading-snug mb-3">
+                  <p className="text-base sm:text-lg font-bold text-cyan-300 leading-snug mb-3">
                     {item.desc}
                   </p>
 
-                  <p className="text-sm text-gray-200 leading-relaxed font-sans mb-6">
+                  <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-sans mb-6">
                     {item.longDesc}
                   </p>
 
