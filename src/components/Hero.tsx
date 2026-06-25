@@ -130,7 +130,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <button
                 id="btn-conoce-trabajo"
                 onClick={onWorkClick}
-                className="group flex items-center justify-center gap-2 rounded-none bg-white hover:bg-zinc-200 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-[1.02] cursor-pointer"
+                className="group flex items-center justify-center gap-2 rounded-none bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,153,255,0.25)] hover:scale-[1.02] cursor-pointer"
               >
                 Explorar publicaciones
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -139,9 +139,9 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
               <button
                 id="btn-explorar-dashboard"
                 onClick={onExploreClick}
-                className="group flex items-center justify-center gap-2 rounded-none bg-transparent hover:bg-gray-990 border border-gray-700/80 hover:border-gray-500 text-white px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all cursor-pointer"
+                className="group flex items-center justify-center gap-2 rounded-none bg-white hover:bg-zinc-200 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-[1.02] cursor-pointer"
               >
-                <BarChart2 className="h-4 w-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                <BarChart2 className="h-4 w-4 text-cyan-600 group-hover:scale-110 transition-transform" />
                 Explorar Observatorio
               </button>
             </motion.div>
