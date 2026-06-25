@@ -10,7 +10,7 @@ import PublicationsSection from './PublicationsSection';
 interface ModalPortalProps {
   provinces: ProvinceData[];
   alerts: Alert[];
-  activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | null;
+  activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | 'academia' | null;
   onClose: () => void;
   selectedResearchLine: ResearchLine | null;
   onSubmitSimulatedAlert: (newAlert: Alert) => void;
@@ -63,6 +63,16 @@ export default function ModalPortal({
   // Documentary video playback states
   const [playingDoc, setPlayingDoc] = useState<any | null>(null);
   const [loadingVideo, setLoadingVideo] = useState(false);
+
+  // Academia AFI Open postulation form states
+  const [postulantName, setPostulantName] = useState('');
+  const [postulantEmail, setPostulantEmail] = useState('');
+  const [postulantPhone, setPostulantPhone] = useState('');
+  const [postulantUniversity, setPostulantUniversity] = useState('');
+  const [postulantMotivation, setPostulantMotivation] = useState('');
+  const [postulantFileLink, setPostulantFileLink] = useState('');
+  const [postulantSubmitted, setPostulantSubmitted] = useState(false);
+  const [isSubmittingPostulation, setIsSubmittingPostulation] = useState(false);
 
   // Semillero AFI draft uploader states
   const [draftTitle, setDraftTitle] = useState('');
@@ -566,6 +576,281 @@ export default function ModalPortal({
               </p>
               <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
                 Estrategia Transmedia y Divulgación Ciudadana
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
+  if (activeModal === 'academia') {
+    const handlePostulationSubmit = (e: FormEvent) => {
+      e.preventDefault();
+      setIsSubmittingPostulation(true);
+      setTimeout(() => {
+        setIsSubmittingPostulation(false);
+        setPostulantSubmitted(true);
+      }, 1500);
+    };
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+        >
+          {/* Header Back Button */}
+          <button
+            onClick={() => {
+              setPostulantSubmitted(false);
+              setPostulantName('');
+              setPostulantEmail('');
+              setPostulantPhone('');
+              setPostulantUniversity('');
+              setPostulantMotivation('');
+              setPostulantFileLink('');
+              onClose();
+            }}
+            className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+          >
+            <X className="h-4 w-4" />
+            <span>Regresar al Inicio</span>
+          </button>
+
+          <div className="flex-1 w-full bg-black py-16 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl relative">
+              {/* Section Header */}
+              <div className="text-left mb-16 relative">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="h-px w-8 bg-cyan-500"></span>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-[#0099ff]">
+                    Semilleros y Capacidades Locales
+                  </span>
+                </div>
+                <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl font-sans lg:max-w-3xl leading-[1.1]">
+                  Academia de Formación de Investigadores (AFI)
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-gray-200 font-sans font-medium">
+                  El Programa AFI del IICS impulsa y capacita a estudiantes universitarios y jóvenes profesionales de Cajamarca en metodologías empíricas y herramientas de ciencia de datos aplicadas a la sociología regional.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                {/* Left Column: Postulation Form */}
+                <div className="lg:col-span-7 bg-[#050506] border border-gray-900 p-6 md:p-8 space-y-6">
+                  <div className="flex items-center gap-2.5 border-b border-gray-900 pb-4 text-left">
+                    <GraduationCap className="h-5 w-5 text-cyan-400" />
+                    <div>
+                      <h3 className="text-sm font-extrabold text-white uppercase font-sans">
+                        Ficha de Postulación Abierta
+                      </h3>
+                      <p className="text-[10px] font-mono text-gray-500">CONVOCATORIA ANUAL DE BECARIOS AFI 2026</p>
+                    </div>
+                  </div>
+
+                  {postulantSubmitted ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="py-12 px-4 text-center space-y-4 border border-emerald-500/20 bg-emerald-950/15"
+                    >
+                      <div className="h-12 w-12 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center mx-auto">
+                        <Check className="h-6 w-6 stroke-[3]" />
+                      </div>
+                      <h4 className="text-base font-extrabold text-white uppercase font-sans">
+                        ¡Postulación Registrada con Éxito!
+                      </h4>
+                      <p className="text-xs text-gray-300 leading-relaxed font-sans max-w-md mx-auto">
+                        Hola <b className="text-white">{postulantName}</b>, hemos guardado tus datos en el buzón central AFI. El comité académico evaluará tu postulación y se comunicará contigo vía WhatsApp o correo electrónico (<span className="text-cyan-400 font-mono">{postulantEmail}</span>) a la brevedad.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setPostulantSubmitted(false);
+                          setPostulantName('');
+                          setPostulantEmail('');
+                          setPostulantPhone('');
+                          setPostulantUniversity('');
+                          setPostulantMotivation('');
+                          setPostulantFileLink('');
+                        }}
+                        className="mt-6 text-xs text-cyan-400 font-mono uppercase underline hover:text-white cursor-pointer bg-transparent border-none"
+                      >
+                        Enviar otra postulación
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <form onSubmit={handlePostulationSubmit} className="space-y-4 text-left font-sans text-xs">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                            Nombres y Apellidos Completos
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Ej. Juan Pérez Medina"
+                            value={postulantName}
+                            onChange={(e) => setPostulantName(e.target.value)}
+                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                            Correo Electrónico
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            placeholder="Ej. juan.perez@unc.edu.pe"
+                            value={postulantEmail}
+                            onChange={(e) => setPostulantEmail(e.target.value)}
+                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                            Número de Celular / WhatsApp
+                          </label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="Ej. 987654321"
+                            value={postulantPhone}
+                            onChange={(e) => setPostulantPhone(e.target.value)}
+                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                            Universidad y Carrera / Especialidad
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Ej. UNC - Sociología / 8vo ciclo"
+                            value={postulantUniversity}
+                            onChange={(e) => setPostulantUniversity(e.target.value)}
+                            className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                          Carta de Motivación / Interés en Investigación Social
+                        </label>
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder="Describe brevemente tu interés en la sociología empírica, qué temas territoriales te apasionan de Cajamarca y por qué deseas ser parte de AFI..."
+                          value={postulantMotivation}
+                          onChange={(e) => setPostulantMotivation(e.target.value)}
+                          className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none resize-none focus:border-cyan-500 transition-colors"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[9.5px] font-mono font-bold text-gray-500 uppercase block">
+                          Enlace a Borrador o CV (Opcional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Ej. Enlace a Google Drive o LinkedIn..."
+                          value={postulantFileLink}
+                          onChange={(e) => setPostulantFileLink(e.target.value)}
+                          className="w-full bg-black border border-gray-800 p-3 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500 transition-colors"
+                        />
+                      </div>
+
+                      <div className="pt-3 border-t border-gray-900 mt-6 text-[10px] text-gray-550 flex items-start gap-1.5 leading-normal">
+                        <AlertOctagon className="h-4 w-4 text-[#0099ff] shrink-0 mt-0.5" />
+                        <span>Declaro que soy estudiante o egresado residente de la región Cajamarca y los datos consignados son verdaderos.</span>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmittingPostulation}
+                        className="w-full flex items-center justify-center gap-2 bg-[#0099ff]/10 hover:bg-[#0099ff]/20 text-[#0099ff] border border-[#0099ff]/30 py-3.5 font-mono text-[11px] uppercase font-bold transition-all cursor-pointer shadow-[0_0_12px_rgba(0,153,255,0.05)]"
+                      >
+                        {isSubmittingPostulation ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="h-3 w-3 rounded-full border border-cyan-500/20 border-t-cyan-500 animate-spin"></span>
+                            Procesando Postulación...
+                          </span>
+                        ) : (
+                          <>
+                            <Send className="h-3.5 w-3.5" />
+                            <span>Enviar Postulación Científica</span>
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  )}
+                </div>
+
+                {/* Right Column: AFI Benefits and Info */}
+                <div className="lg:col-span-5 bg-black border border-gray-900 p-6 space-y-6">
+                  <div className="flex items-center gap-2 text-left">
+                    <FileText className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                      Beneficios de la Beca AFI 2026
+                    </h4>
+                  </div>
+
+                  <div className="space-y-4 font-sans text-xs text-gray-400 text-left">
+                    <p className="leading-relaxed text-[11.5px]">
+                      El programa AFI brinda un soporte integral para forjar la próxima generación de investigadores sociales independientes en el norte peruano.
+                    </p>
+
+                    <div className="divide-y divide-zinc-900 space-y-3 pt-2 text-left">
+                      <div className="pt-2">
+                        <span className="block text-gray-500 font-mono font-bold uppercase text-[9px]">Mentoría de Rigor:</span>
+                        <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
+                          Tutoría y acompañamiento directo por parte del **Dr. Jaime Abanto Padilla** (Director del Instituto e investigador RENACYT - CONCYTEC).
+                        </span>
+                      </div>
+
+                      <div className="pt-3">
+                        <span className="block text-gray-505 font-mono font-bold uppercase text-[9px]">Soporte Instrumental Avanzado:</span>
+                        <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
+                          Acceso a licencias y servidores compartidos para análisis cualitativo en **Atlas.ti** y clústeres de computación para procesamiento de lenguaje natural (NLP).
+                        </span>
+                      </div>
+
+                      <div className="pt-3">
+                        <span className="block text-gray-505 font-mono font-bold uppercase text-[9px]">Financiamiento Editorial:</span>
+                        <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
+                          Apoyo financiero para cubrir los costos de procesamiento de artículos (APC) en revistas indexadas en las bases **Scopus** y **SciELO**.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-gray-900 bg-[#050506] p-4 text-[10px] text-gray-500 flex items-start gap-2 leading-relaxed text-left">
+                    <AlertTriangle className="h-4.5 w-4.5 text-amber-500 shrink-0 mt-0.5" />
+                    <span>Las becas de apoyo económico se asignan semestralmente bajo estricto orden de mérito y consistencia en los informes de investigación de campo.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Institutional Console footer watermark */}
+          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+              <p className="text-[9px] text-[#52525b] font-mono tracking-wider uppercase leading-relaxed font-semibold">
+                Consola Central de Inteligencia Territorial • Cajamarca 2026 • Acceso Autónomo Protegido
+              </p>
+              <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
+                Semillero de Talentos IICS - UNC
               </p>
             </div>
           </div>

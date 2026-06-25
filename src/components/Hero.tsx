@@ -156,7 +156,7 @@ export default function Hero({ onExploreClick, onWorkClick, onDocumentalesClick,
               <button
                 id="btn-documentales"
                 onClick={onDocumentalesClick}
-                className="group flex items-center justify-center gap-2 rounded-none bg-white hover:bg-zinc-200 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-[1.02] cursor-pointer font-sans uppercase"
+                className="group flex items-center justify-center gap-2 rounded-none bg-white hover:bg-zinc-200 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-[1.02] cursor-pointer font-sans"
               >
                 <Film className="h-4 w-4 text-cyan-600 group-hover:rotate-6 transition-transform" />
                 Documentales y Reportajes
@@ -165,7 +165,7 @@ export default function Hero({ onExploreClick, onWorkClick, onDocumentalesClick,
               <button
                 id="btn-academia-afi"
                 onClick={onAfiClick}
-                className="group flex items-center justify-center gap-2 rounded-none bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,153,255,0.25)] hover:scale-[1.02] cursor-pointer font-sans uppercase"
+                className="group flex items-center justify-center gap-2 rounded-none bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,153,255,0.25)] hover:scale-[1.02] cursor-pointer font-sans"
               >
                 <GraduationCap className="h-4 w-4 text-slate-950 group-hover:scale-110 transition-transform" />
                 Academia AFI (Postulación)

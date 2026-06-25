@@ -23,7 +23,7 @@ export default function App() {
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>('cajamarca');
 
   // Modal Control States
-  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | null>(null);
+  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | 'academia' | null>(null);
   const [selectedResearchLine, setSelectedResearchLine] = useState<ResearchLine | null>(null);
   const [initialPortalTab, setInitialPortalTab] = useState<'datasets' | 'afi' | 'alerts' | undefined>(undefined);
 
@@ -157,10 +157,7 @@ export default function App() {
           onExploreClick={() => setActiveModal('portal')}
           onWorkClick={() => setActiveModal('publicaciones')}
           onDocumentalesClick={() => setActiveModal('documentales')}
-          onAfiClick={() => {
-            setInitialPortalTab('afi');
-            setActiveModal('portal');
-          }}
+          onAfiClick={() => setActiveModal('academia')}
         >
           <img 
             src="/computador-iics.png" 
