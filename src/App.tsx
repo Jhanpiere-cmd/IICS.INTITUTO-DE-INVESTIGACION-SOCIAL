@@ -116,11 +116,11 @@ export default function App() {
       <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent z-50"></div>
       
       {/* Falling Data Patterns Background Shader Layer */}
-      <div className="fixed inset-0 pointer-events-none -z-10 opacity-55">
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
         <FallingPattern 
-          color="rgba(0, 153, 255, 0.16)" 
+          color="rgba(0, 153, 255, 0.2)" 
           backgroundColor="transparent"
-          duration={150}
+          duration={180}
           blurIntensity="0px"
           density={0.7}
           className="h-full w-full"
@@ -147,7 +147,7 @@ export default function App() {
         onLogout={() => setIsLoggedIn(false)}
       />
 
-      <main className="relative flex flex-col pt-16 sm:pt-20">
+      <main className="relative z-10 flex flex-col pt-16 sm:pt-20">
         
         {/* HERO BLOCK WITH COMPLEX MOCKUP FOR OBSERVATORIO */}
         <Hero 
