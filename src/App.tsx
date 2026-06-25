@@ -116,14 +116,14 @@ export default function App() {
       <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent z-50"></div>
       
       {/* Falling Data Patterns Background Shader Layer */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
+      <div className="fixed inset-0 pointer-events-none -z-20 opacity-30">
         <FallingPattern 
-          color="rgba(0, 153, 255, 0.12)" 
+          color="rgba(0, 153, 255, 0.08)" 
           backgroundColor="transparent"
-          duration={180}
+          duration={160}
           blurIntensity="0px"
-          density={0.7}
-          className="h-full w-full [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_85%)]"
+          density={0.75}
+          className="h-full w-full"
         />
       </div>
 
