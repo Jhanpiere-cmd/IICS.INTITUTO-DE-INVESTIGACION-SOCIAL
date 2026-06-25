@@ -40,7 +40,7 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
             Nuestras Líneas de Investigación
           </h2>
           <div className="mt-4 h-1 w-16 bg-cyan-400 rounded-none"></div>
-          <p className="mt-4 max-w-xl text-sm md:text-base text-gray-400">
+          <p className="mt-4 max-w-xl text-sm sm:text-base text-gray-250 leading-relaxed">
             Aportando rigurosidad metodológica y monitoreo tecnológico para estudiar de manera profunda la realidad estructural de Cajamarca.
           </p>
         </div>
@@ -63,12 +63,12 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
                   <div className="shrink-0 transition-transform group-hover:scale-110 duration-200">
                     {getIcon(line.icon)}
                   </div>
-                  <h3 className="text-sm font-bold text-white tracking-wide group-hover:text-cyan-300 transition-colors leading-snug">
+                  <h3 className="text-base font-bold text-white tracking-wide group-hover:text-cyan-300 transition-colors leading-snug">
                     {line.title}
                   </h3>
                 </div>
 
-                <p className="text-xs text-gray-400 leading-normal line-clamp-4">
+                <p className="text-sm text-gray-200 leading-relaxed line-clamp-4">
                   {line.description}
                 </p>
               </div>

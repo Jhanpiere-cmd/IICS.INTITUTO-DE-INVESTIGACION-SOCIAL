@@ -58,7 +58,7 @@ export default function InteractiveMapSection({
               
               <div className="mt-4 h-1 w-16 bg-cyan-400 rounded-none"></div>
 
-              <p className="mt-6 text-sm md:text-base leading-relaxed text-gray-400">
+              <p className="mt-6 text-sm sm:text-base leading-relaxed text-gray-200">
                 Plataforma de monitoreo y análisis continuo que integra datos de medios, redes sociales, encuestas y fuentes oficiales para anticipar dinámicas sociales.
               </p>
 

@@ -464,20 +464,20 @@ export default function FeatureGrid() {
                     {item.title}
                   </h4>
 
-                  <p className="text-xs sm:text-sm font-semibold text-cyan-300/90 leading-snug mb-3">
+                  <p className="text-sm sm:text-base font-semibold text-cyan-300 leading-snug mb-3">
                     {item.desc}
                   </p>
 
-                  <p className="text-xs text-gray-400 leading-relaxed font-sans mb-6">
+                  <p className="text-sm text-gray-200 leading-relaxed font-sans mb-6">
                     {item.longDesc}
                   </p>
 
                   {/* High quality mini stats list */}
-                  <div className="grid grid-cols-3 gap-3 border-t border-white/[0.06] pt-4">
+                  <div className="grid grid-cols-3 gap-3 border-t border-white/[0.08] pt-4">
                     {item.stats.map((stat, statIdx) => (
                       <div key={statIdx} className="text-left">
-                        <span className="text-[9px] text-gray-400 block font-mono font-bold uppercase tracking-wider">{stat.label}</span>
-                        <span className="text-[11px] text-white font-semibold block mt-0.5 leading-none">{stat.value}</span>
+                        <span className="text-[10px] text-gray-400 block font-mono font-bold uppercase tracking-wider">{stat.label}</span>
+                        <span className="text-[12px] text-white font-semibold block mt-0.5 leading-none">{stat.value}</span>
                       </div>
                     ))}
                   </div>
