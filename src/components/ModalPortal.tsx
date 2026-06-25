@@ -707,7 +707,7 @@ export default function ModalPortal({
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 {/* Left Column: Dynamic Content based on afiSubView */}
-                <div className="lg:col-span-8 space-y-6">
+                <div className={`${afiSubView === 'programs' ? 'lg:col-span-12' : 'lg:col-span-8'} space-y-6`}>
                   
                   {afiSubView === 'programs' && (
                     <div className="space-y-6">
@@ -747,64 +747,65 @@ export default function ModalPortal({
                         </div>
                       </div>
 
-                      {/* Programs Cards Grid */}
-                      <div className="grid grid-cols-1 gap-6">
+                      {/* Programs Cards Grid - 3 Column Layout */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {programsList.map((prog) => {
-                          const ProgIcon = prog.icon;
                           const currentPrice = afiUserRole === 'estudiante' ? prog.studentPrice : prog.professionalPrice;
                           return (
                             <div 
                               key={prog.id}
-                              className="bg-[#050506] border border-gray-900 hover:border-gray-800 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300"
+                              className="bg-[#050506] border border-gray-900 hover:border-gray-800 p-5 flex flex-col justify-between gap-5 transition-all duration-300 h-full text-left"
                             >
-                              <div className="flex items-start gap-4 text-left">
-                                <div className="h-16 w-16 bg-zinc-950 border border-zinc-800 shrink-0 mt-0.5 overflow-hidden">
+                              <div className="space-y-4">
+                                {/* Top Image */}
+                                <div className="h-40 w-full bg-zinc-950 border border-zinc-800 overflow-hidden">
                                   <img 
                                     src={prog.image} 
                                     alt={prog.title} 
                                     className="w-full h-full object-cover" 
                                   />
                                 </div>
-                                <div className="space-y-1 max-w-lg">
+
+                                <div className="space-y-2">
                                   <div className="flex items-center gap-2">
                                     <span className="text-[9px] font-mono text-cyan-500 font-bold border border-cyan-500/20 px-1.5 py-0.5 uppercase">
                                       {prog.duration}
                                     </span>
-                                    <span className="text-[9px] font-mono text-gray-500 font-bold uppercase">
-                                      Capacidades 2026
-                                    </span>
                                   </div>
-                                  <h3 className="text-base font-black text-white font-sans mt-1">
+                                  <h3 className="text-sm font-black text-white font-sans leading-snug">
                                     {prog.title}
                                   </h3>
-                                  <p className="text-xs text-gray-400 font-sans leading-relaxed">
+                                  <p className="text-[11px] text-gray-400 font-sans leading-relaxed">
                                     {prog.description}
                                   </p>
-                                  <div className="flex flex-wrap gap-1.5 pt-2">
-                                    {prog.tools.map((t, idx) => (
-                                      <span key={idx} className="text-[9px] font-mono bg-zinc-950 text-gray-400 border border-zinc-900 px-2 py-0.5">
-                                        {t}
-                                      </span>
-                                    ))}
-                                  </div>
                                 </div>
                               </div>
 
-                              <div className="flex flex-col items-start md:items-end justify-between gap-4 min-w-[200px] border-t md:border-t-0 border-zinc-900 pt-4 md:pt-0">
-                                <div className="text-left md:text-right">
-                                  <span className="text-[9px] font-mono text-gray-500 uppercase block">Costo de Inversión</span>
-                                  <span className="text-2xl font-black text-[#0099ff] font-mono">{currentPrice}</span>
+                              <div className="space-y-4 border-t border-zinc-900 pt-4 mt-auto">
+                                {/* Tools badges */}
+                                <div className="flex flex-wrap gap-1">
+                                  {prog.tools.map((t, idx) => (
+                                    <span key={idx} className="text-[8.5px] font-mono bg-zinc-950 text-gray-400 border border-zinc-900 px-1.5 py-0.5">
+                                      {t}
+                                    </span>
+                                  ))}
                                 </div>
-                                <div className="flex flex-col w-full gap-2">
+
+                                <div className="space-y-1">
+                                  <span className="text-[8px] font-mono text-gray-500 uppercase block">Costo de Inversión</span>
+                                  <span className="text-lg font-black text-[#0099ff] font-mono">{currentPrice}</span>
+                                </div>
+
+                                <div className="flex flex-col gap-2">
                                   <button
                                     type="button"
                                     onClick={() => {
                                       setSelectedAfiProgram(prog.title);
                                       setAfiSubView('enroll');
                                     }}
-                                    className="w-full text-center px-4 py-2.5 bg-[#0099ff] hover:bg-[#0088ee] text-black font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                                    className="w-full text-center px-3 py-2.5 bg-[#0099ff] hover:bg-[#0088ee] text-black font-mono text-[9.5px] uppercase font-bold transition-all cursor-pointer"
                                   >
-                                    Inscribirse en el Curso
+                                    Inscribirse
                                   </button>
                                   <button
                                     type="button"
@@ -812,7 +813,7 @@ export default function ModalPortal({
                                       setSelectedAfiProgram(prog.title);
                                       setAfiSubView('postulate');
                                     }}
-                                    className="w-full text-center px-4 py-2.5 bg-white hover:bg-gray-100 text-[#0099ff] border border-[#0099ff] font-mono text-[10px] uppercase font-bold transition-all cursor-pointer"
+                                    className="w-full text-center px-3 py-2.5 bg-white hover:bg-gray-100 text-[#0099ff] border border-[#0099ff] font-mono text-[9.5px] uppercase font-bold transition-all cursor-pointer"
                                   >
                                     Postula a nuestras Becas AFI
                                   </button>
@@ -1140,52 +1141,53 @@ export default function ModalPortal({
                       )}
                     </div>
                   )}
-
                 </div>
 
                 {/* Right Column: AFI Benefits and Info */}
-                <div className="lg:col-span-4 bg-[#050506] border border-gray-900 p-6 space-y-6">
-                  <div className="flex items-center gap-2 text-left">
-                    <FileText className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                      Beneficios de la Beca AFI 2026
-                    </h4>
-                  </div>
+                {afiSubView !== 'programs' && (
+                  <div className="lg:col-span-4 bg-[#050506] border border-gray-900 p-6 space-y-6">
+                    <div className="flex items-center gap-2 text-left">
+                      <FileText className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                        Beneficios de la Beca AFI 2026
+                      </h4>
+                    </div>
 
-                  <div className="space-y-4 font-sans text-xs text-gray-400 text-left">
-                    <p className="leading-relaxed text-[11.5px]">
-                      El programa AFI brinda un soporte integral para forjar la próxima generación de investigadores sociales independientes en el norte peruano.
-                    </p>
+                    <div className="space-y-4 font-sans text-xs text-gray-400 text-left">
+                      <p className="leading-relaxed text-[11.5px]">
+                        El programa AFI brinda un soporte integral para forjar la próxima generación de investigadores sociales independientes en el norte peruano.
+                      </p>
 
-                    <div className="divide-y divide-zinc-900 space-y-3 pt-2 text-left">
-                      <div className="pt-2">
-                        <span className="block text-gray-500 font-mono font-bold uppercase text-[9px]">Mentoría de Rigor:</span>
-                        <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
-                          Tutoría y acompañamiento directo por parte del **Dr. Jaime Abanto Padilla** (Director del Instituto e investigador RENACYT - CONCYTEC).
-                        </span>
-                      </div>
+                      <div className="divide-y divide-zinc-900 space-y-3 pt-2 text-left">
+                        <div className="pt-2">
+                          <span className="block text-gray-500 font-mono font-bold uppercase text-[9px]">Mentoría de Rigor:</span>
+                          <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
+                            Tutoría y acompañamiento directo por parte del **Dr. Jaime Abanto Padilla** (Director del Instituto e investigador RENACYT - CONCYTEC).
+                          </span>
+                        </div>
 
-                      <div className="pt-3">
-                        <span className="block text-gray-550 font-mono font-bold uppercase text-[9px]">Soporte Instrumental Avanzado:</span>
-                        <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
-                          Acceso a licencias y servidores compartidos para análisis cualitativo en **Atlas.ti** y clústeres de computación para procesamiento de lenguaje natural (NLP).
-                        </span>
-                      </div>
+                        <div className="pt-3">
+                          <span className="block text-gray-550 font-mono font-bold uppercase text-[9px]">Soporte Instrumental Avanzado:</span>
+                          <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
+                            Acceso a licencias y servidores compartidos para análisis cualitativo en **Atlas.ti** y clústeres de computación para procesamiento de lenguaje natural (NLP).
+                          </span>
+                        </div>
 
-                      <div className="pt-3">
-                        <span className="block text-gray-550 font-mono font-bold uppercase text-[9px]">Financiamiento Editorial:</span>
-                        <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
-                          Apoyo financiero para cubrir los costos de procesamiento de artículos (APC) en revistas indexadas en las bases **Scopus** y **SciELO**.
-                        </span>
+                        <div className="pt-3">
+                          <span className="block text-gray-550 font-mono font-bold uppercase text-[9px]">Financiamiento Editorial:</span>
+                          <span className="text-white text-[11.5px] mt-0.5 block leading-relaxed">
+                            Apoyo financiero para cubrir los costos de procesamiento de artículos (APC) en revistas indexadas en las bases **Scopus** y **SciELO**.
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="pt-6 border-t border-gray-900 bg-[#050506] p-4 text-[10px] text-gray-500 flex items-start gap-2 leading-relaxed text-left">
-                    <AlertTriangle className="h-4.5 w-4.5 text-[#0099ff] shrink-0 mt-0.5" />
-                    <span>Las becas de apoyo económico se asignan semestralmente bajo estricto orden de mérito y consistencia en los informes de investigación de campo.</span>
+                    <div className="pt-6 border-t border-gray-900 bg-[#050506] p-4 text-[10px] text-gray-500 flex items-start gap-2 leading-relaxed text-left">
+                      <AlertTriangle className="h-4.5 w-4.5 text-[#0099ff] shrink-0 mt-0.5" />
+                      <span>Las becas de apoyo económico se asignan semestralmente bajo estricto orden de mérito y consistencia en los informes de investigación de campo.</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
