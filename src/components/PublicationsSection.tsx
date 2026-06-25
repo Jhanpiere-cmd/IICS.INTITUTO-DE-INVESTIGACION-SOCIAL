@@ -130,7 +130,7 @@ export default function PublicationsSection() {
   return (
     <section 
       id="publicaciones"
-      className="relative z-10 w-full min-h-screen bg-black py-24 px-4 sm:px-6 lg:px-8 border-t border-gray-900 overflow-hidden"
+      className="relative z-10 w-full min-h-screen bg-transparent py-24 px-4 sm:px-6 lg:px-8 border-t border-gray-900 overflow-hidden"
     >
       {/* Structural background highlights mimicking the app's DNA */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none"></div>

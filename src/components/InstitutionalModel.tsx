@@ -117,7 +117,7 @@ export default function InstitutionalModel() {
   ];
 
   return (
-    <section id="modelo-institucional" className="py-20 bg-black border-t border-gray-900 relative overflow-hidden">
+    <section id="modelo-institucional" className="py-20 bg-transparent border-t border-gray-900 relative overflow-hidden">
       {/* Dynamic Background Gradients */}
       <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-cyan-950/10 rounded-full blur-[140px] pointer-events-none -z-10" />
       <div className="absolute bottom-1/4 left-0 w-[450px] h-[450px] bg-purple-950/10 rounded-full blur-[140px] pointer-events-none -z-10" />

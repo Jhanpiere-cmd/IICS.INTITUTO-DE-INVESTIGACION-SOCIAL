@@ -31,7 +31,7 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
   };
 
   return (
-    <section id="lineas-investigacion" className="py-20 bg-black relative">
+    <section id="lineas-investigacion" className="py-20 bg-transparent relative">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Section Title */}

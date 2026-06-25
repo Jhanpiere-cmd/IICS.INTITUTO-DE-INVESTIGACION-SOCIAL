@@ -403,7 +403,7 @@ export default function FeatureGrid() {
   };
 
   return (
-    <div id="ecosistema" className="bg-black pt-4 pb-24 relative overflow-hidden">
+    <div id="ecosistema" className="bg-transparent pt-4 pb-24 relative overflow-hidden">
       {/* Background radial details */}
       <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-cyan-950/10 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-950/5 rounded-full blur-[100px] pointer-events-none -z-10" />

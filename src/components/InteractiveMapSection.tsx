@@ -34,7 +34,7 @@ export default function InteractiveMapSection({
   };
 
   return (
-    <section id="observatorio" className="py-24 border-t border-gray-950 bg-black relative overflow-hidden">
+    <section id="observatorio" className="py-24 border-t border-gray-950 bg-transparent relative overflow-hidden">
       
       {/* Visual glowing meshes background */}
       <div className="absolute top-1/2 left-3/4 -translate-y-1/2 h-96 w-96 rounded-full bg-cyan-500/5 blur-[120px] -z-10"></div>

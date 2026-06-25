@@ -40,7 +40,7 @@ export default function Footer({ onOpenNosotros }: FooterProps) {
   };
 
   return (
-    <footer id="footer" className="bg-black border-t border-gray-900 pt-16 pb-8">
+    <footer id="footer" className="bg-transparent border-t border-gray-900 pt-16 pb-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-left">
         
         {/* Main Columns Grid */}
