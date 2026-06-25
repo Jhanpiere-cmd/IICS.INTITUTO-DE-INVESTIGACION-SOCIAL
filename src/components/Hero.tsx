@@ -132,7 +132,7 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
                 onClick={onWorkClick}
                 className="group flex items-center justify-center gap-2 rounded-none bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-5 lg:px-6 py-2.5 lg:py-3 text-xs lg:text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(0,153,255,0.25)] hover:scale-[1.02] cursor-pointer"
               >
-                Conoce nuestro trabajo
+                Explorar publicaciones
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </button>
 

@@ -154,7 +154,7 @@ export default function App() {
         {/* HERO BLOCK WITH COMPLEX MOCKUP FOR OBSERVATORIO */}
         <Hero 
           onExploreClick={() => setActiveModal('portal')}
-          onWorkClick={() => setActiveModal('portal')}
+          onWorkClick={() => setActiveModal('publicaciones')}
         >
           <img 
             src="/computador-iics.png" 
