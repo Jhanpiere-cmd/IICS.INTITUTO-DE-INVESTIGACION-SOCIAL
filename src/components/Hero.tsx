@@ -116,14 +116,14 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
 
             <motion.h2 
               variants={itemVariants}
-              className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider uppercase font-mono leading-relaxed glow-text-cyan/70"
+              className="text-xs sm:text-sm font-bold text-cyan-300 tracking-wider uppercase font-mono leading-relaxed glow-text-cyan/70"
             >
               Centro Privado de Investigación Científica, Sociología y Análisis Social
             </motion.h2>
 
             <motion.p 
               variants={itemVariants}
-              className="max-w-xl text-xs lg:text-sm leading-relaxed text-gray-400 tracking-wide font-sans"
+              className="max-w-xl text-sm sm:text-base leading-relaxed text-gray-250 tracking-wide font-sans"
             >
               Generamos estudios, monitoreo territorial, análisis de opinión pública y evidencia científica para instituciones, empresas y tomadores de decisión.
             </motion.p>
@@ -155,12 +155,12 @@ export default function Hero({ onExploreClick, onWorkClick, children }: HeroProp
             {/* Secondary targets */}
             <motion.div 
               variants={itemVariants}
-              className="flex items-center gap-2 mt-2 xl:mt-3 text-gray-400"
+              className="flex items-center gap-3 mt-3 text-gray-300"
             >
-              <div className="flex h-7 w-7 shrink-0 items-center justify-start">
-                <Target className="h-4 w-4 text-cyan-400" />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-start">
+                <Target className="h-5 w-5 text-cyan-400" />
               </div>
-              <span className="text-xs text-gray-300 tracking-wide font-sans">
+              <span className="text-sm sm:text-base text-gray-200 tracking-wide font-sans">
                 Generamos conocimiento útil para la sociedad y la gestión pública.
               </span>
             </motion.div>
