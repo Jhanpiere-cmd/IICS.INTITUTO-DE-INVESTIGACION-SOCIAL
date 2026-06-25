@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import ModalPortal from './components/ModalPortal';
 import PortalWorkspace from './components/PortalWorkspace';
 import AboutValues from './components/AboutValues';
+import { FallingPattern } from './components/ui/falling-pattern';
 
 import { provincesData, alertsData, emergentThemesData, researchLinesData } from './data';
 import { ProvinceData, Alert, ResearchLine } from './types';
@@ -114,6 +115,18 @@ export default function App() {
       {/* Absolute high-tech space atmospheric visuals */}
       <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent z-50"></div>
       
+      {/* Falling Data Patterns Background Shader Layer */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
+        <FallingPattern 
+          color="rgba(0, 153, 255, 0.12)" 
+          backgroundColor="transparent"
+          duration={180}
+          blurIntensity="0px"
+          density={0.7}
+          className="h-full w-full [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_85%)]"
+        />
+      </div>
+
       {/* Dynamic atmospheric glow blobs */}
       <div className="fixed top-[-10%] left-[-10%] h-[600px] w-[600px] rounded-full bg-cyan-500/5 blur-[130px] pointer-events-none -z-10 animate-float-slow"></div>
       <div className="fixed bottom-[10%] right-[-10%] h-[700px] w-[700px] rounded-full bg-indigo-550/5 blur-[150px] pointer-events-none -z-10 animate-float-slower"></div>
