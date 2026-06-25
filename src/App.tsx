@@ -23,7 +23,7 @@ export default function App() {
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>('cajamarca');
 
   // Modal Control States
-  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | null>(null);
+  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | null>(null);
   const [selectedResearchLine, setSelectedResearchLine] = useState<ResearchLine | null>(null);
 
   // Active Navigation Header Track
@@ -138,6 +138,8 @@ export default function App() {
           setActiveTab(sectId);
           if (sectId === 'nosotros') {
             setActiveModal('nosotros');
+          } else if (sectId === 'publicaciones') {
+            setActiveModal('publicaciones');
           } else {
             setActiveModal(null);
           }
@@ -182,7 +184,7 @@ export default function App() {
         <InstitutionalModel />
 
         {/* REPOSITORIO DE PUBLICACIONES INDEXADAS */}
-        <PublicationsSection />
+        <PublicationsSection isSubPage={false} onViewAll={() => setActiveModal('publicaciones')} />
 
       </main>
 

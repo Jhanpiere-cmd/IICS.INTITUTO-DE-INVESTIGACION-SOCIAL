@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, FileText, ExternalLink, Download, BookOpen, Filter, Calendar, Users, Award, Database, Share2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, FileText, ExternalLink, Download, BookOpen, Filter, Calendar, Users, Award, Database, Share2, ChevronDown, ChevronUp, X } from 'lucide-react';
 
 interface Publication {
   id: string;
@@ -17,7 +17,17 @@ interface Publication {
   doi?: string;
 }
 
-export default function PublicationsSection() {
+interface PublicationsSectionProps {
+  isSubPage?: boolean;
+  onViewAll?: () => void;
+  onCloseSubPage?: () => void;
+}
+
+export default function PublicationsSection({
+  isSubPage = false,
+  onViewAll,
+  onCloseSubPage
+}: PublicationsSectionProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'paper' | 'bulletin' | 'report'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -128,13 +138,23 @@ export default function PublicationsSection() {
     return matchesSearch && matchesFilter;
   });
 
-  const displayedPublications = showAll ? filteredPublications : filteredPublications.slice(0, 3);
+  const displayedPublications = isSubPage || showAll ? filteredPublications : filteredPublications.slice(0, 3);
 
   return (
     <section 
       id="publicaciones"
       className="relative z-10 w-full min-h-screen bg-transparent py-24 px-4 sm:px-6 lg:px-8 border-t border-gray-900 overflow-hidden"
     >
+      {isSubPage && (
+        <button
+          onClick={onCloseSubPage}
+          className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+        >
+          <X className="h-4 w-4" />
+          <span>Regresar al Inicio</span>
+        </button>
+      )}
+
       {/* Structural background highlights mimicking the app's DNA */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-cyan-500/5 blur-[120px] pointer-events-none"></div>
 
@@ -354,15 +374,15 @@ export default function PublicationsSection() {
         </motion.div>
 
         {/* Toggle show all publications */}
-        {filteredPublications.length > 3 && (
+        {!isSubPage && filteredPublications.length > 3 && (
           <div className="flex justify-center mt-12">
             <button
               id="btn-toggle-all-publications"
-              onClick={() => setShowAll(!showAll)}
+              onClick={onViewAll}
               className="inline-flex items-center gap-2 px-6 py-3 font-mono text-xs font-bold border border-cyan-500/20 bg-cyan-950/5 hover:bg-cyan-950/20 hover:border-cyan-500/40 text-cyan-400 hover:text-white uppercase transition-all duration-300 cursor-pointer rounded-none tracking-widest shadow-[0_0_15px_rgba(0,153,255,0.05)] hover:shadow-[0_0_25px_rgba(0,153,255,0.15)]"
             >
-              <span>{showAll ? 'Mostrar Menos' : 'Ver Todas las Publicaciones'}</span>
-              {showAll ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              <span>Ver Más en el Repositorio Completo</span>
+              <ChevronDown className="h-4 w-4" />
             </button>
           </div>
         )}

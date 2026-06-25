@@ -5,11 +5,12 @@ import { ProvinceData, Alert, ResearchLine } from '../types';
 import { SmokeyBackground, LoginForm } from './ui/login-form';
 import { CharacterPanel } from './CharacterPanel';
 import AboutValues from './AboutValues';
+import PublicationsSection from './PublicationsSection';
 
 interface ModalPortalProps {
   provinces: ProvinceData[];
   alerts: Alert[];
-  activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | null;
+  activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | null;
   onClose: () => void;
   selectedResearchLine: ResearchLine | null;
   onSubmitSimulatedAlert: (newAlert: Alert) => void;
@@ -295,6 +296,36 @@ export default function ModalPortal({
               </p>
               <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
                 ENFOQUE DE VALOR PREVIO A LA RECOMPENSA MONETARIA
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
+  if (activeModal === 'publicaciones') {
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+        >
+          {/* Full content representing PublicationsSection inside the Sub-Page */}
+          <div className="flex-1 w-full bg-black">
+            <PublicationsSection isSubPage={true} onCloseSubPage={onClose} />
+          </div>
+
+          {/* Institutional Console footer watermark */}
+          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+              <p className="text-[9px] text-[#52525b] font-mono tracking-wider uppercase leading-relaxed font-semibold">
+                Consola Central de Inteligencia Territorial • Cajamarca 2026 • Acceso Autónomo Protegido
+              </p>
+              <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
+                Repositorio Abierto e Indexado de la Región Norte
               </p>
             </div>
           </div>
