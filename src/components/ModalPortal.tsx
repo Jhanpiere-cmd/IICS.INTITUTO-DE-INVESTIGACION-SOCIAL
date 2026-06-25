@@ -615,8 +615,8 @@ export default function ModalPortal({
         duration: '3 Meses (Semanal)',
         description: 'Capacitación teórico-práctica en metodología científica, formulación de proyectos, redacción de papers indexados y gestión del desarrollo territorial.',
         tools: ['SPSS', 'Zotero', 'Atlas.ti', 'Redacción de Papers'],
-        studentPrice: 'S/. 6 al mes',
-        professionalPrice: 'S/. 99 al mes',
+        studentPrice: 'S/. 300 total (S/. 100/mes)',
+        professionalPrice: 'S/. 600 total (S/. 200/mes)',
         icon: GraduationCap
       },
       {
@@ -1097,8 +1097,8 @@ export default function ModalPortal({
                             <span>Monto de Arancel a abonar:</span>
                             <span className="text-base font-black text-[#0099ff] font-mono">
                               {afiUserRole === 'estudiante' 
-                                ? (selectedAfiProgram.includes('Taller') ? (selectedAfiProgram.includes('Zotero') ? 'S/. 15 total' : 'S/. 25 total') : 'S/. 6 al mes')
-                                : (selectedAfiProgram.includes('Taller') ? (selectedAfiProgram.includes('Zotero') ? 'S/. 50 total' : 'S/. 120 total') : 'S/. 99 al mes')
+                                ? (selectedAfiProgram.includes('Taller') ? (selectedAfiProgram.includes('Zotero') ? 'S/. 15 total' : 'S/. 25 total') : 'S/. 300 total')
+                                : (selectedAfiProgram.includes('Taller') ? (selectedAfiProgram.includes('Zotero') ? 'S/. 50 total' : 'S/. 120 total') : 'S/. 600 total')
                               }
                             </span>
                           </div>
