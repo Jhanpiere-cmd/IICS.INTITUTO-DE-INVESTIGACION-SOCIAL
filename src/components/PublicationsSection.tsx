@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, FileText, ExternalLink, Download, BookOpen, Filter, Calendar, Users, Award, Database, Share2 } from 'lucide-react';
+import { Search, FileText, ExternalLink, Download, BookOpen, Filter, Calendar, Users, Award, Database, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Publication {
   id: string;
@@ -21,6 +21,7 @@ export default function PublicationsSection() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'paper' | 'bulletin' | 'report'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   const publications: Publication[] = [
     {
@@ -127,6 +128,8 @@ export default function PublicationsSection() {
     return matchesSearch && matchesFilter;
   });
 
+  const displayedPublications = showAll ? filteredPublications : filteredPublications.slice(0, 3);
+
   return (
     <section 
       id="publicaciones"
@@ -227,7 +230,7 @@ export default function PublicationsSection() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <AnimatePresence mode="popLayout">
-            {filteredPublications.map((pub) => {
+            {displayedPublications.map((pub) => {
               const isExpanded = expandedId === pub.id;
               
               return (
@@ -349,6 +352,20 @@ export default function PublicationsSection() {
             </div>
           )}
         </motion.div>
+
+        {/* Toggle show all publications */}
+        {filteredPublications.length > 3 && (
+          <div className="flex justify-center mt-12">
+            <button
+              id="btn-toggle-all-publications"
+              onClick={() => setShowAll(!showAll)}
+              className="inline-flex items-center gap-2 px-6 py-3 font-mono text-xs font-bold border border-cyan-500/20 bg-cyan-950/5 hover:bg-cyan-950/20 hover:border-cyan-500/40 text-cyan-400 hover:text-white uppercase transition-all duration-300 cursor-pointer rounded-none tracking-widest shadow-[0_0_15px_rgba(0,153,255,0.05)] hover:shadow-[0_0_25px_rgba(0,153,255,0.15)]"
+            >
+              <span>{showAll ? 'Mostrar Menos' : 'Ver Todas las Publicaciones'}</span>
+              {showAll ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+          </div>
+        )}
 
         {/* Bottom Banner reminding readers about the data platform integration */}
         <div className="mt-16 bg-[#050506]/40 border border-gray-900 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative select-none rounded-none text-left">
