@@ -679,7 +679,7 @@ export default function ModalPortal({
                   </span>
                 </div>
                 <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl font-sans lg:max-w-3xl leading-[1.1]">
-                  Academia de Formación de Investigadores (AFI)
+                  Academia de Formación de Investigadores (AFI) • Cajamarca
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-gray-200 font-sans font-medium">
                   El Programa AFI del IICS impulsa y capacita a estudiantes universitarios y jóvenes profesionales de Cajamarca en metodologías empíricas y herramientas de ciencia de datos aplicadas a la sociología regional.
