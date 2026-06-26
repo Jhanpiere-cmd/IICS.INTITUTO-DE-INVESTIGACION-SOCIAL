@@ -301,6 +301,18 @@ export default function ModalPortal({
       <div
         style={{ position: 'fixed', inset: 0, zIndex: 999, background: '#000', width: '100vw', height: '100vh', overflowY: 'auto', color: 'white', display: 'flex', flexDirection: 'column' }}
       >
+        {/* Falling Data Patterns Background Shader Layer */}
+        <div className="hidden lg:block fixed inset-0 pointer-events-none z-0 opacity-25">
+          <FallingPattern 
+            color="rgba(0, 153, 255, 0.15)" 
+            backgroundColor="transparent"
+            duration={180}
+            blurIntensity="0px"
+            density={0.7}
+            className="h-full w-full"
+          />
+        </div>
+
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -311,7 +323,7 @@ export default function ModalPortal({
         </button>
 
         {/* Content */}
-        <div style={{ flex: 1, width: '100%', paddingTop: '150px' }}>
+        <div style={{ flex: 1, width: '100%', paddingTop: '150px', position: 'relative', zIndex: 10 }}>
           <AboutValues isSubPage={true} onLearnMoreClick={() => {
             onClose();
             if (onOpenPortal) {
@@ -321,7 +333,7 @@ export default function ModalPortal({
         </div>
 
         {/* Footer */}
-        <div style={{ borderTop: '1px solid #18181b', background: '#040405', padding: '24px 16px' }}>
+        <div style={{ borderTop: '1px solid #18181b', background: '#040405', padding: '24px 16px', position: 'relative', zIndex: 10 }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '8px' }}>
             <p style={{ fontSize: '9px', color: '#52525b', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Consola Central de Inteligencia Territorial • Cajamarca 2026
@@ -653,6 +665,17 @@ export default function ModalPortal({
       <div
         style={{ position: 'fixed', inset: 0, zIndex: 999, background: '#000', width: '100vw', height: '100vh', paddingTop: '150px', overflowY: 'auto', color: 'white', display: 'flex', flexDirection: 'column' }}
       >
+        {/* Falling Data Patterns Background Shader Layer */}
+        <div className="hidden lg:block fixed inset-0 pointer-events-none z-0 opacity-25">
+          <FallingPattern 
+            color="rgba(0, 153, 255, 0.15)" 
+            backgroundColor="transparent"
+            duration={180}
+            blurIntensity="0px"
+            density={0.7}
+            className="h-full w-full"
+          />
+        </div>
 
           {/* Header Back Button */}
           <button
@@ -1195,7 +1218,7 @@ export default function ModalPortal({
           </div>
 
           {/* Institutional Console footer watermark */}
-          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4">
+          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4 relative z-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
               <p className="text-[9px] text-[#52525b] font-mono tracking-wider uppercase leading-relaxed font-semibold">
                 Consola Central de Inteligencia Territorial • Cajamarca 2026 • Acceso Autónomo Protegido
