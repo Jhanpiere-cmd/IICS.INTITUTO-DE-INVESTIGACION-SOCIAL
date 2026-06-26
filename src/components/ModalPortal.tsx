@@ -6,6 +6,7 @@ import { SmokeyBackground, LoginForm } from './ui/login-form';
 import { CharacterPanel } from './CharacterPanel';
 import AboutValues from './AboutValues';
 import PublicationsSection from './PublicationsSection';
+import { FallingPattern } from './ui/falling-pattern';
 
 interface ModalPortalProps {
   provinces: ProvinceData[];
@@ -300,10 +301,22 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
         >
+          {/* Falling Data Patterns Background Layer */}
+          <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
+            <FallingPattern 
+              color="rgba(0, 153, 255, 0.2)" 
+              backgroundColor="transparent"
+              duration={180}
+              blurIntensity="0px"
+              density={0.7}
+              className="h-full w-full"
+            />
+          </div>
+
           {/* Full content representing AboutValues inside the Sub-Page */}
-          <div className="flex-1 w-full bg-black">
+          <div className="flex-1 w-full bg-transparent relative z-10">
             <AboutValues isSubPage={true} onLearnMoreClick={() => {
               onClose();
               if (onOpenPortal) {
@@ -316,7 +329,7 @@ export default function ModalPortal({
           </div>
 
           {/* Institutional Console footer watermark */}
-          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4">
+          <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4 relative z-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
               <p className="text-[9px] text-[#52525b] font-mono tracking-wider uppercase leading-relaxed font-semibold">
                 Consola Central de Inteligencia Territorial • Cajamarca 2026 • Acceso Autónomo Protegido
@@ -650,8 +663,19 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
         >
+          {/* Falling Data Patterns Background Layer */}
+          <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
+            <FallingPattern 
+              color="rgba(0, 153, 255, 0.2)" 
+              backgroundColor="transparent"
+              duration={180}
+              blurIntensity="0px"
+              density={0.7}
+              className="h-full w-full"
+            />
+          </div>
           {/* Header Back Button */}
           <button
             onClick={() => {
@@ -671,7 +695,7 @@ export default function ModalPortal({
             <span>Regresar al Inicio</span>
           </button>
 
-          <div className="flex-1 w-full bg-black py-16 px-4 sm:px-6 lg:px-8">
+          <div className="flex-1 w-full bg-transparent py-16 px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="mx-auto max-w-7xl relative">
               {/* Section Header */}
               <div className="text-left mb-16 relative">

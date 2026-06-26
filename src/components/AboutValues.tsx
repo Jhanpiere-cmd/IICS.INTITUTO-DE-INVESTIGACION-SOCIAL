@@ -157,7 +157,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
   });
 
   return (
-    <section id="sobre-el-iics" className={`${isSubPage ? 'pt-2 sm:pt-4 pb-20' : 'py-24'} bg-black border-t border-zinc-950 relative overflow-hidden`}>
+    <section id="sobre-el-iics" className={`${isSubPage ? 'pt-2 sm:pt-4 pb-20 bg-transparent' : 'py-24 bg-black'} border-t border-zinc-950 relative overflow-hidden`}>
       
       {/* Absolute Ambient Background Visuals */}
       <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-cyan-950/5 blur-[120px] pointer-events-none" />
