@@ -634,7 +634,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               </p>
 
               {/* Grid of values */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {values.map((v, idx) => {
                   const IconComponent = v.icon;
                   return (
@@ -642,17 +642,21 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                       key={v.id} 
                       onMouseEnter={() => setHoveredPillar(idx)}
                       onMouseLeave={() => setHoveredPillar(null)}
-                      className={`border p-4 bg-gradient-to-b ${v.color} hover:bg-black/60 transition-all duration-300 ${v.accent} rounded-none`}
+                      className="border border-zinc-900 bg-gradient-to-b from-[#07070a] to-black hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(0,153,255,0.08)] hover:-translate-y-1 transition-all duration-300 p-6 rounded-none flex flex-col justify-between h-full group"
                     >
-                      <div className="flex items-center gap-2.5 mb-2">
-                        <IconComponent className="h-4.5 w-4.5 text-cyan-400" />
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                          {v.title}
-                        </h4>
+                      <div>
+                        <div className="flex items-center gap-3 mb-3 border-b border-zinc-900/60 pb-2.5">
+                          <div className="p-2 bg-cyan-950/30 border border-cyan-500/25 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-all duration-300">
+                            <IconComponent className="h-4.5 w-4.5" />
+                          </div>
+                          <h4 className="text-xs font-mono font-extrabold text-white uppercase tracking-[0.15em]">
+                            {v.title}
+                          </h4>
+                        </div>
+                        <p className="text-[12px] sm:text-xs text-zinc-400 font-sans font-medium leading-relaxed">
+                          {v.desc}
+                        </p>
                       </div>
-                      <p className="text-xs text-zinc-400 font-sans leading-relaxed">
-                        {v.desc}
-                      </p>
                     </div>
                   );
                 })}
