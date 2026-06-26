@@ -648,11 +648,11 @@ export default function ModalPortal({
       }
     ];
 
+    console.log('MODAL ACADEMIA RENDERING NOW');
     return (
       <div
-        className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
+        style={{ position: 'fixed', inset: 0, zIndex: 999, background: '#000', width: '100vw', height: '100vh', paddingTop: '80px', overflowY: 'auto', color: 'white', display: 'flex', flexDirection: 'column' }}
       >
-          {/* Falling Data Patterns Background Layer - removed to prevent crash */}
 
           {/* Header Back Button */}
           <button
