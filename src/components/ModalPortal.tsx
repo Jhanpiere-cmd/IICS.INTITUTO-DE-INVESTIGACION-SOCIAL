@@ -33,6 +33,7 @@ export default function ModalPortal({
   onOpenPortal,
   initialPortalTab
 }: ModalPortalProps) {
+  console.log('ModalPortal rendering with activeModal:', activeModal);
   
   // Login States
   const [usernameInput, setUsernameInput] = useState('');

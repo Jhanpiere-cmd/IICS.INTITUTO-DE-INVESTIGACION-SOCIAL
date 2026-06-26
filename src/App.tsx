@@ -134,8 +134,9 @@ export default function App() {
       <div className="hidden lg:block fixed top-[45%] left-[35%] h-[500px] w-[500px] rounded-full bg-cyan-500/3 blur-[140px] pointer-events-none -z-10 animate-pulse"></div>
 
       <Header 
-        onOpenPortal={() => setActiveModal('portal')} 
+        onOpenPortal={() => { console.log('App: onOpenPortal'); setActiveModal('portal'); }} 
         onNavigate={(sectId) => {
+          console.log('App: onNavigate triggered with:', sectId);
           setActiveTab(sectId);
           if (sectId === 'nosotros') {
             setActiveModal('nosotros');
@@ -154,10 +155,10 @@ export default function App() {
         
         {/* HERO BLOCK WITH COMPLEX MOCKUP FOR OBSERVATORIO */}
         <Hero 
-          onExploreClick={() => setActiveModal('portal')}
-          onWorkClick={() => setActiveModal('publicaciones')}
-          onDocumentalesClick={() => setActiveModal('documentales')}
-          onAfiClick={() => setActiveModal('academia')}
+          onExploreClick={() => { console.log('Hero: onExploreClick (portal)'); setActiveModal('portal'); }}
+          onWorkClick={() => { console.log('Hero: onWorkClick (publicaciones)'); setActiveModal('publicaciones'); }}
+          onDocumentalesClick={() => { console.log('Hero: onDocumentalesClick'); setActiveModal('documentales'); }}
+          onAfiClick={() => { console.log('Hero: onAfiClick (academia)'); setActiveModal('academia'); }}
         >
           <img 
             src="/computador-iics.png" 
