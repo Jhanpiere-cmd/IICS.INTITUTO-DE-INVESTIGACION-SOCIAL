@@ -303,6 +303,15 @@ export default function ModalPortal({
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
         >
+          {/* Header Back Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+          >
+            <X className="h-4 w-4" />
+            <span>Regresar al Inicio</span>
+          </button>
+
           {/* Falling Data Patterns Background Layer */}
           <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
             <FallingPattern 
