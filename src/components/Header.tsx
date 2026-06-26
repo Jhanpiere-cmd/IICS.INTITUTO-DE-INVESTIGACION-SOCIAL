@@ -8,9 +8,10 @@ interface HeaderProps {
   activeSection: string;
   isLoggedIn: boolean;
   onLogout: () => void;
+  activeModal?: string | null;
 }
 
-export default function Header({ onOpenPortal, onNavigate, activeSection, isLoggedIn, onLogout }: HeaderProps) {
+export default function Header({ onOpenPortal, onNavigate, activeSection, isLoggedIn, onLogout, activeModal }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -35,7 +36,10 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-gray-800/60 bg-black/95 backdrop-blur-xl transition-all duration-300">
+    <header 
+      className="fixed top-0 left-0 right-0 w-full border-b border-gray-800/60 bg-black/95 backdrop-blur-xl transition-all duration-300"
+      style={{ zIndex: activeModal === 'portal' ? 40 : 1000 }}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1 sm:py-1.5 sm:px-6 lg:px-8">
         
         {/* Logo and Brand */}

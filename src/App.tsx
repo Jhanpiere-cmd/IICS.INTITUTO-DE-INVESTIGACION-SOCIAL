@@ -149,6 +149,7 @@ export default function App() {
         activeSection={activeTab}
         isLoggedIn={isLoggedIn}
         onLogout={() => setIsLoggedIn(false)}
+        activeModal={activeModal}
       />
 
       <main className="relative z-10 flex flex-col pt-16 sm:pt-20">

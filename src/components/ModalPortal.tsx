@@ -304,14 +304,14 @@ export default function ModalPortal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#121214', border: '1px solid #3f3f46', color: '#d4d4d8', fontSize: '11px', fontFamily: 'monospace', textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.1em' }}
+          style={{ position: 'absolute', top: '96px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#121214', border: '1px solid #3f3f46', color: '#d4d4d8', fontSize: '11px', fontFamily: 'monospace', textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.1em' }}
         >
           <X style={{ width: '16px', height: '16px' }} />
           <span>Regresar al Inicio</span>
         </button>
 
         {/* Content */}
-        <div style={{ flex: 1, width: '100%', paddingTop: '80px' }}>
+        <div style={{ flex: 1, width: '100%', paddingTop: '150px' }}>
           <AboutValues isSubPage={true} onLearnMoreClick={() => {
             onClose();
             if (onOpenPortal) {
@@ -423,7 +423,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-[60] bg-black w-full h-screen pt-28 sm:pt-32 overflow-y-auto text-white flex flex-col justify-between"
         >
           {/* Header Back Button */}
           <button
@@ -431,7 +431,7 @@ export default function ModalPortal({
               setPlayingDoc(null);
               onClose();
             }}
-            className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+            className="absolute top-28 right-6 sm:top-32 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
           >
             <X className="h-4 w-4" />
             <span>Regresar al Inicio</span>
@@ -651,7 +651,7 @@ export default function ModalPortal({
     console.log('MODAL ACADEMIA RENDERING NOW');
     return (
       <div
-        style={{ position: 'fixed', inset: 0, zIndex: 999, background: '#000', width: '100vw', height: '100vh', paddingTop: '80px', overflowY: 'auto', color: 'white', display: 'flex', flexDirection: 'column' }}
+        style={{ position: 'fixed', inset: 0, zIndex: 999, background: '#000', width: '100vw', height: '100vh', paddingTop: '150px', overflowY: 'auto', color: 'white', display: 'flex', flexDirection: 'column' }}
       >
 
           {/* Header Back Button */}
@@ -667,7 +667,7 @@ export default function ModalPortal({
               setAfiSubView('programs');
               onClose();
             }}
-            className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+            className="absolute top-28 right-6 sm:top-32 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
           >
             <X className="h-4 w-4" />
             <span>Regresar al Inicio</span>
