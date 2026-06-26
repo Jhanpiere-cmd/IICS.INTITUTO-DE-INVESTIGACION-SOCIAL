@@ -220,7 +220,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
             </div>
 
             {/* VISUAL SIDE: COMPARATIVE PATHS CHART */}
-            <div className="lg:col-span-6 flex flex-col justify-between relative p-6 sm:p-8 bg-zinc-950/40 border border-zinc-900/80 rounded-none overflow-hidden group min-h-[380px]">
+            <div className="lg:col-span-6 flex flex-col justify-between relative p-6 sm:p-8 glass-card rounded-xl overflow-hidden group min-h-[380px]">
               <div className="absolute inset-0 bg-[#040406] bg-[radial-gradient(#1e1e24_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
               
               <div className="text-left">
@@ -230,39 +230,39 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* TRADITIONAL COLUMN */}
-                  <div className="border border-zinc-900 bg-black/60 p-4 space-y-4 rounded-none">
+                  <div className="border border-white/[0.05] bg-black/40 p-4 space-y-4 rounded-lg">
                     <span className="text-[9px] font-mono font-extrabold text-zinc-505 tracking-wider block uppercase">Ruta Institucional Clásica</span>
                     
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-none">
+                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-md">
                         <span className="font-mono text-[8px] block text-zinc-600 font-bold">FASE 01 / Traba Burocrática</span>
                         Filtros de aprobación en comisiones políticas. Demora de 6 a 12 meses.
                       </div>
-                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-none">
+                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-md">
                         <span className="font-mono text-[8px] block text-zinc-600 font-bold">FASE 02 / Estancamiento</span>
                         Estructuras metodológicas rígidas basadas en cuotas burocráticas fatigadas.
                       </div>
-                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-zinc-650 font-bold">FASE 03 / Nulo Impacto</span>
+                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-md">
+                        <span className="font-mono text-[8px] block text-zinc-655 font-bold">FASE 03 / Nulo Impacto</span>
                         Publicaciones archivadas sin retorno real a la comunidad.
                       </div>
                     </div>
                   </div>
-
+ 
                   {/* IICS COLUMN */}
-                  <div className="border border-cyan-950/40 bg-cyan-950/5 p-4 space-y-4 rounded-none">
+                  <div className="border border-cyan-500/20 bg-cyan-500/[0.02] p-4 space-y-4 rounded-lg">
                     <span className="text-[9px] font-mono font-extrabold text-cyan-400 tracking-wider block uppercase">Ruta Autónoma IICS</span>
                     
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-350 text-left rounded-none">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-350 text-left rounded-md">
                         <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 01 / Acción Inmediata</span>
                         Fundulación ágil para desplegar encuestas y mapas de inmediato.
                       </div>
-                      <div className="p-2.5 bg-[#0099ff]/5 border border-[#0099ff]/20 text-[10.5px] text-zinc-300 text-left rounded-none">
+                      <div className="p-2.5 bg-[#0099ff]/5 border border-[#0099ff]/20 text-[10.5px] text-zinc-300 text-left rounded-md">
                         <span className="font-mono text-[8px] block text-[#0099ff] font-bold">FASE 02 / Rigor Epistémico</span>
                         Validación y arbitraje metodológico inmediato por doctores RENACYT directos.
                       </div>
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-350 text-left rounded-none">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-350 text-left rounded-md">
                         <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 03 / Retorno de Valor</span>
                         Consolas de datos libres en tiempo récord para la sociedad civil.
                       </div>
@@ -310,7 +310,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                     }}
                     className={`px-3 py-1.5 text-[9.5px] font-mono font-bold tracking-wider uppercase transition-all duration-300 rounded-none cursor-pointer ${
                       filterCategory === tab.id
-                        ? 'bg-[#0099ff] text-black shadow-lg font-black'
+                        ? 'bg-cyan-500 text-slate-950 shadow-lg font-black'
                         : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
                     }`}
                   >
@@ -327,14 +327,14 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 return (
                   <div 
                     key={member.id} 
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-zinc-900 bg-[#050508]/40 hover:border-zinc-805 transition-all duration-300 rounded-none items-stretch overflow-hidden"
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 glass-card rounded-xl border border-white/[0.06] hover:border-cyan-500/25 transition-all duration-300 items-stretch overflow-hidden shadow-lg"
                   >
-                    {/* INFO COLUMN: DETAILED INFO (7 grid slots) - NO ROUNDED CORNERS */}
-                    <div className={`lg:col-span-7 bg-[#050508]/60 p-4 md:p-6 flex flex-col justify-between relative overflow-hidden group ${isEven ? 'lg:order-1' : 'lg:order-2 border-t lg:border-t-0 lg:border-l border-zinc-900'}`}>
+                    {/* INFO COLUMN: DETAILED INFO (7 grid slots) */}
+                    <div className={`lg:col-span-7 bg-transparent p-4 md:p-6 flex flex-col justify-between relative overflow-hidden group ${isEven ? 'lg:order-1' : 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]'}`}>
                       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.015] to-transparent pointer-events-none" />
                       
                       {/* HUD Header */}
-                      <div className="flex items-center justify-between border-b border-zinc-900/60 pb-2.5 mb-4">
+                      <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5 mb-4">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 bg-cyan-400" />
                           <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-black">
@@ -343,11 +343,11 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                         </div>
                         <span className="text-[8px] font-mono text-zinc-655">ID: IICS_{member.id.toUpperCase()}</span>
                       </div>
-
+ 
                       {/* Main Biography content */}
                       <div className="space-y-4 flex-1 text-left">
                         <div>
-                          <span className="text-[8px] font-mono font-bold uppercase py-0.5 px-2.5 bg-cyan-950/40 text-[#0099ff] border border-cyan-500/20 inline-block mb-3 rounded-none">
+                          <span className="text-[8px] font-mono font-bold uppercase py-0.5 px-2.5 bg-cyan-950/40 text-[#0099ff] border border-cyan-500/20 inline-block mb-3 rounded-md">
                             {member.academicTitle}
                           </span>
                           <h4 className="text-xl md:text-2xl font-black text-white tracking-tight leading-tight font-sans">
@@ -357,15 +357,15 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                             {member.role}
                           </p>
                         </div>
-
-                        <div className="p-4 bg-zinc-950/60 border border-zinc-900/40 rounded-none leading-relaxed text-zinc-300 text-xs md:text-sm">
+ 
+                        <div className="p-4 bg-black/40 border border-white/[0.06] rounded-lg leading-relaxed text-zinc-300 text-xs md:text-sm">
                           {member.desc}
                         </div>
-
+ 
                         {/* Core contribution segment - NO vertical line, elegant light check frame */}
-                        <div className="p-4 bg-gradient-to-r from-zinc-950/80 to-transparent border-l-2 border-[#0099ff] rounded-none">
+                        <div className="p-4 bg-gradient-to-r from-black/40 to-transparent border-l-2 border-[#0099ff] rounded-r-lg">
                           <div className="flex items-start gap-3 justify-start text-left">
-                            <div className="h-5 w-5 bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 flex items-center justify-center flex-shrink-0 rounded-none mt-0.5">
+                            <div className="h-5 w-5 bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 flex items-center justify-center flex-shrink-0 rounded-md mt-0.5">
                               <Check className="h-3 w-3" />
                             </div>
                             <div>
@@ -377,57 +377,57 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                           </div>
                         </div>
                       </div>
-
+ 
                       {/* Info footer metadata */}
-                      <div className="mt-4 border-t border-zinc-900/60 pt-3 flex items-center justify-between font-mono text-[8px] text-zinc-500 uppercase">
+                      <div className="mt-4 border-t border-white/[0.06] pt-3 flex items-center justify-between font-mono text-[8px] text-zinc-500 uppercase">
                         <div>Especialidad: <span className="text-zinc-450 font-bold">{member.tag}</span></div>
                         <div className="text-cyan-500/85">IICS_NATIVE</div>
                       </div>
                     </div>
-
-                    {/* PHOTO COLUMN: LARGE PORTRAIT (5 grid slots) - NO ROUNDED CORNERS */}
-                    <div className={`lg:col-span-5 flex flex-col justify-center relative overflow-hidden group ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-zinc-900' : 'lg:order-1'}`}>
-                      <div className="bg-[#050508]/85 p-4 flex flex-col justify-between h-full relative rounded-none min-h-[290px]">
+ 
+                    {/* PHOTO COLUMN: LARGE PORTRAIT (5 grid slots) */}
+                    <div className={`lg:col-span-5 flex flex-col justify-center relative overflow-hidden group ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1'}`}>
+                      <div className="bg-transparent p-4 flex flex-col justify-between h-full relative rounded-none min-h-[290px]">
                         
                         {/* Grid background on image panel */}
                         <div className="absolute inset-0 bg-[#040406] bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
-
+ 
                         {/* Category Academic Indicator */}
-                        <div className="absolute top-4 left-4 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/85 px-2.5 py-1 border border-zinc-900 leading-none z-20 rounded-none uppercase font-bold">
+                        <div className="absolute top-4 left-4 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/85 px-2.5 py-1 border border-white/[0.06] leading-none z-20 rounded-md uppercase font-bold">
                           <span>{member.category === 'promotor' ? 'FUNDACIÓN / DIRECTIVO' : 'CONSEJO ACADÉMICO'}</span>
                         </div>
-
+ 
                         <div className="absolute top-4 right-4 text-right font-mono text-[7px] text-zinc-500 leading-tight select-none z-20">
                           <span>IICS DOC v_ {index + 1}</span>
                         </div>
-
+ 
                         {/* PORTRAIT CONTAINER WITH ABSOLUTE CORNERS and animation */}
-                        <div className="relative w-full aspect-square max-w-[260px] sm:max-w-[300px] md:max-w-[320px] mx-auto bg-zinc-950 border border-zinc-850/80 relative overflow-hidden flex-1 flex items-center justify-center my-4 group/img shadow-2xl rounded-none">
+                        <div className="relative w-full aspect-square max-w-[260px] sm:max-w-[300px] md:max-w-[320px] mx-auto bg-zinc-950 border border-white/[0.08] relative overflow-hidden flex-1 flex items-center justify-center my-4 group/img shadow-2xl rounded-lg">
                           <img
                              src={member.avatar}
                              alt={member.name}
                              referrerPolicy="no-referrer"
                              className="w-full h-full object-cover saturate-110 brightness-105 hover:scale-105 transition-all duration-500"
                           />
-
+ 
                           {/* Dark gradient mapping vignette */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none" />
-
+ 
                           {/* Visual sci-fi brackets */}
                           <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-cyan-400/60 pointer-events-none" />
                           <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-cyan-400/60 pointer-events-none" />
                           <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-cyan-400/60 pointer-events-none" />
                           <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-cyan-400/60 pointer-events-none" />
                         </div>
-
+ 
                         {/* Visual tag below picture */}
-                        <div className="text-center font-mono text-[8px] text-zinc-500 tracking-wider uppercase border-t border-zinc-900/60 pt-3">
+                        <div className="text-center font-mono text-[8px] text-zinc-500 tracking-wider uppercase border-t border-white/[0.06] pt-3">
                           REPRESENTACIÓN INSTITUCIONAL • {member.name.toUpperCase()}
                         </div>
-
+ 
                       </div>
                     </div>
-
+ 
                   </div>
                 );
               })}
@@ -450,13 +450,13 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   El IICS no funciona de forma lineal. Configuramos un sistema en red de aportaciones donde estudiantes, directores y científicos RENACYT establecen loops de validación mutua.
                 </p>
                 
-                <div className="p-4 bg-zinc-950/40 border border-zinc-900 text-[11px] text-zinc-400 rounded-xl leading-relaxed">
+                <div className="p-4 border border-white/[0.06] bg-black/40 text-[11px] text-zinc-400 rounded-xl leading-relaxed">
                   <strong>Soporte Operativo UNC:</strong> El engranaje material cuenta además con el apoyo de bachilleres y alumnos voluntarios encargados de recopilar información de campo, digitalizar mapas andinos y validar el flujo de la Consola.
                 </div>
               </div>
 
               {/* Network graph visual right container (reutilized original SVG but beautifully wrapped) */}
-              <div className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] bg-[#050508]/10 border border-zinc-900 rounded-none overflow-hidden select-none">
+              <div className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] glass-card rounded-xl overflow-hidden select-none">
                 
                 {/* Grid background */}
                 <div className="absolute inset-0 bg-[#050508] bg-[radial-gradient(#15151a_1.2px,transparent_1.2px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
@@ -582,7 +582,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center border-b border-zinc-900/40 pb-12 last:border-0 last:pb-0">
             
             {/* VISUAL PANEL IN ALTERNATIVE LAYOUT ON LARGE */}
-            <div className="lg:col-span-6 lg:order-1 flex flex-col justify-between relative p-6 sm:p-8 bg-zinc-950/20 border border-zinc-900 rounded-none overflow-hidden group min-h-[385px]">
+            <div className="lg:col-span-6 lg:order-1 flex flex-col justify-between relative p-6 sm:p-8 glass-card rounded-xl overflow-hidden group min-h-[385px]">
               <div className="absolute inset-0 bg-[#040405] bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
 
               <div className="text-left">
@@ -599,7 +599,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   ].map((item) => (
                     <div 
                       key={item.id}
-                      className="p-4 bg-black border border-zinc-900 rounded-none text-left cursor-pointer transition-all hover:bg-zinc-900/10 hover:border-cyan-500/25 duration-300"
+                      className="p-4 bg-black/40 border border-white/[0.06] rounded-lg text-left cursor-pointer transition-all hover:bg-white/[0.02] hover:border-cyan-500/25 duration-300"
                     >
                       <h5 className="text-[11px] font-mono font-extrabold uppercase tracking-wider mb-1 text-cyan-400">
                         {item.title}
@@ -642,18 +642,18 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                       key={v.id} 
                       onMouseEnter={() => setHoveredPillar(idx)}
                       onMouseLeave={() => setHoveredPillar(null)}
-                      className="border border-zinc-900 bg-gradient-to-b from-[#07070a] to-black hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(0,153,255,0.08)] hover:-translate-y-1 transition-all duration-300 p-6 rounded-none flex flex-col justify-between h-full group"
+                      className="glass-card glass-card-hover rounded-xl p-6 flex flex-col justify-between h-full group"
                     >
                       <div>
-                        <div className="flex items-center gap-3 mb-3 border-b border-zinc-900/60 pb-2.5">
-                          <div className="p-2 bg-cyan-950/30 border border-cyan-500/25 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-all duration-300">
+                        <div className="flex items-center gap-3 mb-3 border-b border-white/[0.06] pb-2.5">
+                          <div className="p-2 bg-cyan-950/30 border border-cyan-500/25 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-all duration-300 rounded-lg">
                             <IconComponent className="h-4.5 w-4.5" />
                           </div>
-                          <h4 className="text-xs font-mono font-extrabold text-white uppercase tracking-[0.15em]">
+                          <h4 className="text-sm sm:text-base lg:text-lg font-extrabold text-white uppercase tracking-wider font-sans group-hover:text-cyan-300 transition-colors leading-snug">
                             {v.title}
                           </h4>
                         </div>
-                        <p className="text-[12px] sm:text-xs text-zinc-400 font-sans font-medium leading-relaxed">
+                        <p className="text-xs sm:text-sm lg:text-[15px] text-gray-200 font-sans leading-relaxed">
                           {v.desc}
                         </p>
                       </div>
@@ -666,10 +666,10 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               <div className="pt-4 flex items-center justify-start">
                 <button
                   onClick={onLearnMoreClick}
-                  className="group flex items-center justify-center gap-2 px-5 py-3.5 bg-cyan-950/20 hover:bg-[#0099ff] border border-[#0099ff]/30 text-[#0099ff] hover:text-black text-xs font-bold font-mono tracking-wider uppercase cursor-pointer rounded-none transition-all duration-300"
+                  className="group flex items-center justify-center gap-2 px-5 py-3 bg-white hover:bg-zinc-200 text-slate-950 text-xs font-bold font-sans tracking-wide uppercase cursor-pointer rounded-none transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-[1.02]"
                 >
                   <span>Ingresar a la Consola de Datos Central</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 text-cyan-600 group-hover:scale-110" />
                 </button>
               </div>
             </div>
