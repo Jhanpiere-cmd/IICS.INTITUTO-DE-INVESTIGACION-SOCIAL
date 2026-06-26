@@ -296,51 +296,37 @@ export default function ModalPortal({
   }
 
   if (activeModal === 'nosotros') {
+    console.log('MODAL NOSOTROS RENDERING NOW');
     return (
       <div
-        className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
+        style={{ position: 'fixed', inset: 0, zIndex: 999, background: '#000', width: '100vw', height: '100vh', overflowY: 'auto', color: 'white', display: 'flex', flexDirection: 'column' }}
       >
-        {/* Header Back Button */}
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 sm:top-10 sm:right-10 z-50 flex items-center gap-2 px-4 py-2 bg-[#121214] hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 text-gray-300 hover:text-white text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer rounded-none"
+          style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#121214', border: '1px solid #3f3f46', color: '#d4d4d8', fontSize: '11px', fontFamily: 'monospace', textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.1em' }}
         >
-          <X className="h-4 w-4" />
+          <X style={{ width: '16px', height: '16px' }} />
           <span>Regresar al Inicio</span>
         </button>
 
-        {/* Falling Data Patterns Background Layer */}
-        <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
-          <FallingPattern 
-            color="rgba(0, 153, 255, 0.2)" 
-            backgroundColor="transparent"
-            duration={180}
-            blurIntensity="0px"
-            density={0.7}
-            className="h-full w-full"
-          />
-        </div>
-
-        {/* Full content representing AboutValues inside the Sub-Page */}
-        <div className="flex-1 w-full bg-transparent relative z-10">
+        {/* Content */}
+        <div style={{ flex: 1, width: '100%', paddingTop: '80px' }}>
           <AboutValues isSubPage={true} onLearnMoreClick={() => {
             onClose();
             if (onOpenPortal) {
-              // Instantly swap into portal view
-              setTimeout(() => {
-                onOpenPortal();
-              }, 100);
+              setTimeout(() => { onOpenPortal(); }, 100);
             }
           }} />
         </div>
 
-        {/* Institutional Console footer watermark */}
-        <div className="border-t border-zinc-900 bg-[#040405] py-6 px-4 relative z-10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <p className="text-[9px] text-[#52525b] font-mono tracking-wider uppercase leading-relaxed font-semibold">
-              Consola Central de Inteligencia Territorial • Cajamarca 2026 • Acceso Autónomo Protegido
+        {/* Footer */}
+        <div style={{ borderTop: '1px solid #18181b', background: '#040405', padding: '24px 16px' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '8px' }}>
+            <p style={{ fontSize: '9px', color: '#52525b', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              Consola Central de Inteligencia Territorial • Cajamarca 2026
             </p>
-            <p className="text-[9px] text-[#71717a] font-mono font-semibold uppercase">
+            <p style={{ fontSize: '9px', color: '#71717a', fontFamily: 'monospace', textTransform: 'uppercase' }}>
               ENFOQUE DE VALOR PREVIO A LA RECOMPENSA MONETARIA
             </p>
           </div>
@@ -666,17 +652,8 @@ export default function ModalPortal({
       <div
         className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
       >
-          {/* Falling Data Patterns Background Layer */}
-          <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
-            <FallingPattern 
-              color="rgba(0, 153, 255, 0.2)" 
-              backgroundColor="transparent"
-              duration={180}
-              blurIntensity="0px"
-              density={0.7}
-              className="h-full w-full"
-            />
-          </div>
+          {/* Falling Data Patterns Background Layer - removed to prevent crash */}
+
           {/* Header Back Button */}
           <button
             onClick={() => {
