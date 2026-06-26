@@ -301,7 +301,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
+          className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
         >
           {/* Header Back Button */}
           <button
@@ -360,7 +360,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
         >
           {/* Full content representing PublicationsSection inside the Sub-Page */}
           <div className="flex-1 w-full bg-black">
@@ -441,7 +441,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
         >
           {/* Header Back Button */}
           <button
@@ -672,7 +672,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
+          className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
         >
           {/* Falling Data Patterns Background Layer */}
           <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
