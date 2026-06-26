@@ -194,7 +194,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-[#09090b] w-full h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden text-white"
+          className="fixed inset-0 z-[60] bg-[#09090b] w-full h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden text-white"
         >
           {/* Left panel: Cute characters standing on soft gray gradient background */}
           <div className="relative hidden lg:flex flex-col justify-between h-full bg-gradient-to-b from-gray-100 via-gray-150 to-gray-300 text-zinc-900 p-12 overflow-hidden select-none border-r border-gray-300/40">
@@ -298,7 +298,7 @@ export default function ModalPortal({
   if (activeModal === 'nosotros') {
     return (
       <div
-        className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
+        className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
       >
         {/* Header Back Button */}
         <button
@@ -356,7 +356,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
         >
           {/* Full content representing PublicationsSection inside the Sub-Page */}
           <div className="flex-1 w-full bg-black">
@@ -437,7 +437,7 @@ export default function ModalPortal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
+          className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between"
         >
           {/* Header Back Button */}
           <button
@@ -664,7 +664,7 @@ export default function ModalPortal({
 
     return (
       <div
-        className="fixed inset-0 z-50 bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
+        className="fixed inset-0 z-[60] bg-black w-full h-screen pt-16 sm:pt-20 overflow-y-auto text-white flex flex-col justify-between relative"
       >
           {/* Falling Data Patterns Background Layer */}
           <div className="hidden lg:block absolute inset-0 pointer-events-none z-0 opacity-40">
@@ -1233,7 +1233,7 @@ export default function ModalPortal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       {/* Black backdrop overlay */}
       <motion.div
         initial={{ opacity: 0 }}

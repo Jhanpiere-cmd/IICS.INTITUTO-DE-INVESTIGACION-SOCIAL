@@ -26,7 +26,7 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
   const handleNavClick = (id: string, path: string) => {
     onNavigate(id);
     setMobileMenuOpen(false);
-    if (id !== 'nosotros' && path.startsWith('#')) {
+    if (id !== 'nosotros' && id !== 'publicaciones' && id !== 'academia' && path.startsWith('#')) {
       const element = document.querySelector(path);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
