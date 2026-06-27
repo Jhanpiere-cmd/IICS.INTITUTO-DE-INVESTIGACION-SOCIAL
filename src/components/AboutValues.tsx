@@ -230,39 +230,39 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* TRADITIONAL COLUMN */}
-                  <div className="border border-white/[0.05] bg-black/40 p-4 space-y-4 rounded-lg">
-                    <span className="text-[9px] font-mono font-extrabold text-zinc-505 tracking-wider block uppercase">Ruta Institucional Clásica</span>
+                  <div className="glass-card border border-white/[0.06] p-4 space-y-4 rounded-xl">
+                    <span className="text-[9px] font-mono font-extrabold text-zinc-500 tracking-wider block uppercase">Ruta Institucional Clásica</span>
                     
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-md">
-                        <span className="font-mono text-[8px] block text-zinc-600 font-bold">FASE 01 / Traba Burocrática</span>
+                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-lg">
+                        <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 01 / Traba Burocrática</span>
                         Filtros de aprobación en comisiones políticas. Demora de 6 a 12 meses.
                       </div>
-                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-md">
-                        <span className="font-mono text-[8px] block text-zinc-600 font-bold">FASE 02 / Estancamiento</span>
+                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-lg">
+                        <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 02 / Estancamiento</span>
                         Estructuras metodológicas rígidas basadas en cuotas burocráticas fatigadas.
                       </div>
-                      <div className="p-2.5 bg-zinc-900/40 border border-zinc-905 text-[10.5px] text-zinc-500 text-left rounded-md">
-                        <span className="font-mono text-[8px] block text-zinc-655 font-bold">FASE 03 / Nulo Impacto</span>
+                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-lg">
+                        <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 03 / Nulo Impacto</span>
                         Publicaciones archivadas sin retorno real a la comunidad.
                       </div>
                     </div>
                   </div>
  
                   {/* IICS COLUMN */}
-                  <div className="border border-cyan-500/20 bg-cyan-500/[0.02] p-4 space-y-4 rounded-lg">
+                  <div className="glass-card border border-cyan-500/20 bg-cyan-950/[0.02] p-4 space-y-4 rounded-xl">
                     <span className="text-[9px] font-mono font-extrabold text-cyan-400 tracking-wider block uppercase">Ruta Autónoma IICS</span>
                     
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-350 text-left rounded-md">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-lg">
                         <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 01 / Acción Inmediata</span>
                         Fundulación ágil para desplegar encuestas y mapas de inmediato.
                       </div>
-                      <div className="p-2.5 bg-[#0099ff]/5 border border-[#0099ff]/20 text-[10.5px] text-zinc-300 text-left rounded-md">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/20 text-[10.5px] text-zinc-300 text-left rounded-lg">
                         <span className="font-mono text-[8px] block text-[#0099ff] font-bold">FASE 02 / Rigor Epistémico</span>
                         Validación y arbitraje metodológico inmediato por doctores RENACYT directos.
                       </div>
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-350 text-left rounded-md">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-lg">
                         <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 03 / Retorno de Valor</span>
                         Consolas de datos libres en tiempo récord para la sociedad civil.
                       </div>
@@ -358,19 +358,19 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                           </p>
                         </div>
  
-                        <div className="p-4 bg-black/40 border border-white/[0.06] rounded-lg leading-relaxed text-zinc-300 text-xs md:text-sm">
+                        <div className="p-4 glass-card border border-white/[0.04] rounded-xl leading-relaxed text-zinc-300 text-xs md:text-sm">
                           {member.desc}
                         </div>
  
                         {/* Core contribution segment - NO vertical line, elegant light check frame */}
-                        <div className="p-4 bg-gradient-to-r from-black/40 to-transparent border-l-2 border-[#0099ff] rounded-r-lg">
+                        <div className="p-4 bg-gradient-to-r from-cyan-950/[0.03] to-transparent border-l-2 border-[#0099ff] rounded-r-xl">
                           <div className="flex items-start gap-3 justify-start text-left">
-                            <div className="h-5 w-5 bg-cyan-950/50 border border-cyan-500/30 text-cyan-400 flex items-center justify-center flex-shrink-0 rounded-md mt-0.5">
+                            <div className="h-5 w-5 bg-cyan-950/20 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 rounded-lg mt-0.5">
                               <Check className="h-3 w-3" />
                             </div>
                             <div>
                               <span className="text-[8px] font-mono font-black text-cyan-400 uppercase tracking-wider block">FOCO DE IMPACTO</span>
-                              <p className="text-xs text-zinc-350 leading-relaxed font-sans font-medium mt-0.5">
+                              <p className="text-xs text-zinc-300 leading-relaxed font-sans font-medium mt-0.5">
                                 <strong>{member.highlight}:</strong> {member.focus}
                               </p>
                             </div>
@@ -450,7 +450,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   El IICS no funciona de forma lineal. Configuramos un sistema en red de aportaciones donde estudiantes, directores y científicos RENACYT establecen loops de validación mutua.
                 </p>
                 
-                <div className="p-4 border border-white/[0.06] bg-black/40 text-[11px] text-zinc-400 rounded-xl leading-relaxed">
+                <div className="p-4 glass-card border border-white/[0.04] text-[11px] text-zinc-400 rounded-xl leading-relaxed">
                   <strong>Soporte Operativo UNC:</strong> El engranaje material cuenta además con el apoyo de bachilleres y alumnos voluntarios encargados de recopilar información de campo, digitalizar mapas andinos y validar el flujo de la Consola.
                 </div>
               </div>
@@ -599,7 +599,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   ].map((item) => (
                     <div 
                       key={item.id}
-                      className="p-4 bg-black/40 border border-white/[0.06] rounded-lg text-left cursor-pointer transition-all hover:bg-white/[0.02] hover:border-cyan-500/25 duration-300"
+                      className="p-4 glass-card border border-white/[0.06] rounded-xl text-left cursor-pointer transition-all hover:bg-white/[0.02] hover:border-cyan-500/25 duration-300"
                     >
                       <h5 className="text-[11px] font-mono font-extrabold uppercase tracking-wider mb-1 text-cyan-400">
                         {item.title}
