@@ -79,6 +79,18 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         />
       </div>
 
+      {/* Massive watermark logo in background */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+        <motion.img 
+          initial={{ scale: 1.15, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.05 }}
+          transition={{ duration: 3, ease: 'easeOut' }}
+          src="/logo-iics.png" 
+          alt="Watermark" 
+          className="h-[55vh] w-[55vh] object-contain filter blur-[3px]"
+        />
+      </div>
+
       {/* Top Header high-tech metadata */}
       <div className="relative z-10 flex items-center justify-between text-[8px] font-mono text-zinc-500 uppercase tracking-widest border-b border-zinc-900 pb-3">
         <div className="flex items-center gap-2">
@@ -93,21 +105,43 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
       {/* Center Logo & Title Display */}
       <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center max-w-lg mx-auto space-y-6">
-        {/* Pulsing neon logo */}
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.03, 1],
-            filter: [
-              'drop-shadow(0 0 10px rgba(0, 153, 255, 0.1))',
-              'drop-shadow(0 0 25px rgba(0, 153, 255, 0.35))',
-              'drop-shadow(0 0 10px rgba(0, 153, 255, 0.1))'
-            ]
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-24 w-24 flex items-center justify-center"
-        >
-          <img src="/logo-iics.png" alt="IICS Logo" className="h-20 w-20 object-contain" />
-        </motion.div>
+        {/* Pulsing neon logo with animated tech frame */}
+        <div className="relative p-5">
+          {/* Outer Cyberpunk Corners (Brackets) */}
+          <div className="absolute inset-0 border border-zinc-900/50">
+            {/* Top-Left */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/80" />
+            {/* Top-Right */}
+            <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-cyan-500/80" />
+            {/* Bottom-Left */}
+            <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-cyan-500/80" />
+            {/* Bottom-Right */}
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/80" />
+          </div>
+
+          {/* Inner Rotating Tech Scanner Ring */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-1.5 border border-dashed border-cyan-500/20 rounded-full"
+          />
+
+          {/* Central Logo */}
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.03, 1],
+              filter: [
+                'drop-shadow(0 0 10px rgba(0, 153, 255, 0.1))',
+                'drop-shadow(0 0 25px rgba(0, 153, 255, 0.35))',
+                'drop-shadow(0 0 10px rgba(0, 153, 255, 0.1))'
+              ]
+            }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="h-20 w-20 flex items-center justify-center relative z-10 animate-pulse"
+          >
+            <img src="/logo-iics.png" alt="IICS Logo" className="h-16 w-16 object-contain" />
+          </motion.div>
+        </div>
 
         {/* Brand Name Text animations */}
         <div className="space-y-3">
