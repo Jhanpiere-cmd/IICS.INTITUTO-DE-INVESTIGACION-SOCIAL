@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'motion/react';
 import Header from './components/Header';
+import Preloader from './components/ui/Preloader';
 import Hero from './components/Hero';
 import DashboardMockup from './components/DashboardMockup';
 import FeatureGrid from './components/FeatureGrid';
@@ -32,6 +34,9 @@ export default function App() {
 
   // User Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // Initial Preloader State
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   // Handlers for Citizen submission in portal
   const handleAddProposedAlert = (newAlert: Alert) => {
@@ -112,6 +117,11 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-black font-sans antialiased overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950">
+      <AnimatePresence>
+        {isInitialLoading && (
+          <Preloader onComplete={() => setIsInitialLoading(false)} />
+        )}
+      </AnimatePresence>
       
       {/* Absolute high-tech space atmospheric visuals */}
       <div className="fixed top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent z-50"></div>
