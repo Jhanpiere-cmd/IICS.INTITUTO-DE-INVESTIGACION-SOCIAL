@@ -313,17 +313,8 @@ export default function ModalPortal({
           />
         </div>
 
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          style={{ position: 'absolute', top: '76px', right: '24px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: '#121214', border: '1px solid #3f3f46', color: '#d4d4d8', fontSize: '11px', fontFamily: 'monospace', textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.1em' }}
-        >
-          <X style={{ width: '16px', height: '16px' }} />
-          <span>Regresar al Inicio</span>
-        </button>
-
         {/* Content */}
-        <div style={{ flex: 1, width: '100%', paddingTop: '100px', position: 'relative', zIndex: 10 }}>
+        <div style={{ flex: 1, width: '100%', paddingTop: '75px', position: 'relative', zIndex: 10 }}>
           <AboutValues isSubPage={true} onLearnMoreClick={() => {
             onClose();
             if (onOpenPortal) {
