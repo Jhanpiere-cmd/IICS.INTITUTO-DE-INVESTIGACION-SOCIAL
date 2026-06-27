@@ -192,10 +192,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
           {/* Central Logo */}
           <motion.div 
-            initial={{ scale: 3.5, y: 0, opacity: 0, filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))' }}
+            initial={{ scale: 12, y: 0, opacity: 0, filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))' }}
             animate={
               phase === 'intro'
-                ? { scale: 1.6, opacity: 1, filter: 'drop-shadow(0 0 15px rgba(0, 153, 255, 0.2))' }
+                ? { scale: 5, opacity: 1, filter: 'drop-shadow(0 0 35px rgba(0, 153, 255, 0.35))' }
                 : phase === 'loading'
                 ? { 
                     scale: 1, 
@@ -207,16 +207,16 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                     ] 
                   }
                 : { 
-                    scale: 4.5, 
+                    scale: 16, 
                     opacity: 0, 
-                    filter: 'drop-shadow(0 0 40px rgba(0, 153, 255, 0.6))',
+                    filter: 'drop-shadow(0 0 60px rgba(0, 153, 255, 0.95))',
                     transition: { duration: 0.8, ease: 'easeIn' } 
                   }
             }
             transition={
               phase === 'loading'
                 ? { filter: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }, scale: { duration: 0.8, ease: 'easeInOut' } }
-                : { duration: 1.0, ease: 'easeOut' }
+                : { duration: 1.1, ease: 'easeOut' }
             }
             className="h-20 w-20 flex items-center justify-center relative z-10"
           >
