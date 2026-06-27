@@ -110,7 +110,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         </motion.div>
 
         {/* Brand Name Text animations */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <h1 className="text-4xl sm:text-5xl font-black text-white tracking-widest font-sans uppercase">
             IICS
           </h1>
@@ -118,9 +118,29 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             initial={{ letterSpacing: '0.05em', opacity: 0.7 }}
             animate={{ letterSpacing: '0.15em', opacity: 1 }}
             transition={{ duration: 2.5, ease: 'easeOut' }}
-            className="text-[9.5px] sm:text-[11px] font-bold text-cyan-400 uppercase font-sans tracking-[0.15em]"
+            className="text-[9.5px] sm:text-[11px] font-bold text-cyan-400 uppercase font-sans tracking-[0.15em] mb-1"
           >
             Instituto de Investigación Científica Social
+          </motion.p>
+
+          <div className="h-px w-16 bg-[#0099ff]/30 mx-auto my-2" />
+
+          {/* Premium welcoming hook */}
+          <motion.h2 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-sm sm:text-base lg:text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-cyan-400 font-sans tracking-wide uppercase max-w-md mx-auto leading-relaxed shadow-sm drop-shadow-[0_0_10px_rgba(0,153,255,0.15)]"
+          >
+            Bienvenidos al Futuro de la Investigación Social
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
+            className="text-[9px] sm:text-[10px] text-zinc-400 font-sans tracking-wide max-w-sm mx-auto leading-relaxed"
+          >
+            Evidencia Científica y Sociología de Precisión para el Desarrollo Regional
           </motion.p>
         </div>
 
