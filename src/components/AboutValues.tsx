@@ -324,36 +324,38 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               </div>
             </div>
 
-            {/* MAIN PRESENTATION SECTION - HORIZONTAL CARDS STREAM LIST (SHARP BLACK/CYAN THEME) */}
             <div className="space-y-8 mt-6">
               {filteredMembers.map((member, index) => {
                 const isEven = index % 2 === 0;
                 return (
                   <motion.div 
                     key={member.id} 
-                    whileHover={{ y: -4 }}
-                    transition={{ duration: 0.3 }}
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 glass-card rounded-none border border-white/[0.06] hover:border-cyan-500/25 transition-all duration-300 items-stretch overflow-hidden shadow-lg"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.08 }}
+                    whileHover={{ y: -6 }}
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 glass-card rounded-none border border-white/[0.06] hover:border-cyan-500/25 transition-all duration-300 items-stretch overflow-hidden shadow-2xl relative"
                   >
                     {/* INFO COLUMN: DETAILED INFO (7 grid slots) */}
-                    <div className={`lg:col-span-7 bg-transparent p-4 md:p-6 flex flex-col justify-between relative overflow-hidden group ${isEven ? 'lg:order-1' : 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]'}`}>
+                    <div className={`lg:col-span-7 bg-transparent p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group ${isEven ? 'lg:order-1' : 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]'}`}>
                       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.015] to-transparent pointer-events-none" />
                       
                       {/* HUD Header */}
-                      <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5 mb-4">
+                      <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 mb-5">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 bg-cyan-400" />
                           <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-black">
                             {member.category === 'promotor' ? 'FUNDADOR / DIRECTIVO' : 'CUERPO ACADÉMICO'}
                           </span>
                         </div>
-                        <span className="text-[8px] font-mono text-zinc-655">ID: IICS_{member.id.toUpperCase()}</span>
+                        <span className="text-[8px] font-mono text-zinc-500">ID: IICS_{member.id.toUpperCase()}</span>
                       </div>
  
                       {/* Main Biography content */}
-                      <div className="space-y-4 flex-1 text-left">
+                      <div className="space-y-5 flex-1 text-left">
                         <div>
-                          <span className="text-[8px] font-mono font-bold uppercase py-0.5 px-2.5 bg-cyan-950/40 text-[#0099ff] border border-cyan-500/20 inline-block mb-3 rounded-md">
+                          <span className="text-[8px] font-mono font-bold uppercase py-0.5 px-2.5 bg-cyan-950/20 text-[#0099ff] border border-cyan-500/20 inline-block mb-3 rounded-none">
                             {member.academicTitle}
                           </span>
                           <h4 className="text-xl md:text-2xl font-black text-white tracking-tight leading-tight font-sans">
@@ -364,14 +366,14 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                           </p>
                         </div>
  
-                        <div className="p-4 glass-card border border-white/[0.04] rounded-xl leading-relaxed text-zinc-300 text-xs md:text-sm">
+                        <div className="p-4 bg-white/[0.015] border border-white/[0.04] rounded-none leading-relaxed text-zinc-200 text-xs md:text-sm shadow-inner">
                           {member.desc}
                         </div>
  
                         {/* Core contribution segment - NO vertical line, elegant light check frame */}
-                        <div className="p-4 bg-gradient-to-r from-cyan-950/[0.03] to-transparent border-l-2 border-[#0099ff] rounded-r-xl">
+                        <div className="p-4 bg-cyan-950/[0.03] border border-cyan-500/10 rounded-none">
                           <div className="flex items-start gap-3 justify-start text-left">
-                            <div className="h-5 w-5 bg-cyan-950/20 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 rounded-lg mt-0.5">
+                            <div className="h-5 w-5 bg-cyan-950/20 border border-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 rounded-none mt-0.5">
                               <Check className="h-3 w-3" />
                             </div>
                             <div>
@@ -385,58 +387,40 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                       </div>
  
                       {/* Info footer metadata */}
-                      <div className="mt-4 border-t border-white/[0.06] pt-3 flex items-center justify-between font-mono text-[8px] text-zinc-500 uppercase">
-                        <div>Especialidad: <span className="text-zinc-450 font-bold">{member.tag}</span></div>
-                        <div className="text-cyan-500/85">IICS_NATIVE</div>
+                      <div className="mt-5 border-t border-white/[0.06] pt-3 flex items-center justify-between font-mono text-[8px] text-zinc-500 uppercase">
+                        <div>Especialidad: <span className="text-zinc-400 font-bold">{member.tag}</span></div>
+                        <div className="text-cyan-500/80">IICS_NATIVE</div>
                       </div>
                     </div>
  
                     {/* PHOTO COLUMN: LARGE PORTRAIT (5 grid slots) */}
-                    <motion.div 
-                      whileHover={{ scale: 1.01 }}
-                      className={`lg:col-span-5 flex flex-col justify-center relative overflow-hidden group ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1'}`}
-                    >
-                      <div className="bg-transparent p-4 flex flex-col justify-between h-full relative rounded-none min-h-[290px]">
-                        
-                        {/* Grid background on image panel */}
-                        <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
+                    <div className={`lg:col-span-5 relative overflow-hidden min-h-[320px] lg:min-h-full group/img ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1 border-b lg:border-b-0 lg:border-r border-white/[0.06]'}`}>
+                      <img 
+                        src={member.avatar} 
+                        alt={member.name} 
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 w-full h-full object-cover saturate-0 hover:saturate-100 contrast-[1.05] brightness-90 hover:brightness-100 transition-all duration-700 ease-out group-hover/img:scale-105"
+                      />
+                      {/* Ambient gradient vignette */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none" />
  
-                        {/* Category Academic Indicator */}
-                        <div className="absolute top-4 left-4 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/85 px-2.5 py-1 border border-white/[0.06] leading-none z-20 uppercase font-bold">
-                          <span>{member.category === 'promotor' ? 'FUNDACIÓN / DIRECTIVO' : 'CONSEJO ACADÉMICO'}</span>
-                        </div>
+                      {/* Visual sci-fi brackets */}
+                      <div className="absolute top-4 left-4 w-4 h-4 border-l border-t border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
+                      <div className="absolute top-4 right-4 w-4 h-4 border-r border-t border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
+                      <div className="absolute bottom-4 left-4 w-4 h-4 border-l border-b border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
+                      <div className="absolute bottom-4 right-4 w-4 h-4 border-r border-b border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
  
-                        <div className="absolute top-4 right-4 text-right font-mono text-[7px] text-zinc-500 leading-tight select-none z-20">
-                          <span>SECTOR: 0{index + 1}</span>
-                          <span className="block text-[#0099ff] font-bold">DISPONIBLE</span>
-                        </div>
- 
-                        {/* PORTRAIT CONTAINER WITH ABSOLUTE CORNERS and animation */}
-                        <div className="relative w-full aspect-square max-w-[260px] sm:max-w-[300px] md:max-w-[320px] mx-auto bg-white/[0.015] border border-white/[0.08] relative overflow-hidden flex-1 flex items-center justify-center my-4 group/img shadow-2xl rounded-none transition-all duration-300">
-                          <img
-                             src={member.avatar}
-                             alt={member.name}
-                             referrerPolicy="no-referrer"
-                             className="w-full h-full object-cover saturate-110 brightness-105 hover:scale-105 transition-all duration-500"
-                          />
- 
-                          {/* Dark gradient mapping vignette */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 pointer-events-none" />
- 
-                          {/* Visual sci-fi brackets */}
-                          <div className="absolute top-3 left-3 w-4 h-4 border-l border-t border-cyan-400/60 pointer-events-none" />
-                          <div className="absolute top-3 right-3 w-4 h-4 border-r border-t border-cyan-400/60 pointer-events-none" />
-                          <div className="absolute bottom-3 left-3 w-4 h-4 border-l border-b border-cyan-400/60 pointer-events-none" />
-                          <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-cyan-400/60 pointer-events-none" />
-                        </div>
- 
-                        {/* Visual tag below picture */}
-                        <div className="text-center font-mono text-[8px] text-zinc-500 tracking-wider uppercase border-t border-white/[0.06] pt-3">
-                          REPRESENTACIÓN INSTITUCIONAL • {member.name.toUpperCase()}
-                        </div>
- 
+                      {/* Floating category tag */}
+                      <div className="absolute top-4 left-4 ml-6 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/80 px-2.5 py-1 border border-white/[0.06] leading-none z-20 uppercase font-bold">
+                        <span>{member.category === 'promotor' ? 'FUNDACIÓN / DIRECTIVO' : 'CONSEJO ACADÉMICO'}</span>
                       </div>
-                    </motion.div>
+ 
+                      {/* HUD tag at the bottom of the photo */}
+                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between font-mono text-[8px] text-zinc-400 uppercase bg-black/75 px-3 py-2 border border-white/[0.06] backdrop-blur-sm z-20">
+                        <span className="truncate">IICS // {member.name.split(' ')[0]}</span>
+                        <span className="text-[#0099ff] font-bold">ACTIVO</span>
+                      </div>
+                    </div>
  
                   </motion.div>
                 );
