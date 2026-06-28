@@ -204,7 +204,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 </p>
 
                 {/* Beautiful quote card focused purely on academic and economic vision */}
-                <div className="text-xs text-zinc-300 p-5 bg-[#09090b]/80 border border-zinc-900/50 rounded-none relative overflow-hidden backdrop-blur-sm shadow-inner group">
+                <div className="text-xs text-zinc-300 p-5 bg-white/[0.015] border border-white/[0.06] rounded-none relative overflow-hidden backdrop-blur-sm shadow-inner group hover:border-cyan-500/20 transition-all duration-300">
                   <div className="relative z-10 flex gap-3 text-left">
                     <Quote className="h-5 w-5 text-cyan-450 flex-shrink-0 opacity-40" />
                     <p className="italic font-medium leading-relaxed text-zinc-300">
@@ -220,8 +220,12 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
             </div>
 
             {/* VISUAL SIDE: COMPARATIVE PATHS CHART */}
-            <div className="lg:col-span-6 flex flex-col justify-between relative p-6 sm:p-8 glass-card rounded-xl overflow-hidden group min-h-[380px]">
-              <div className="absolute inset-0 bg-[#040406] bg-[radial-gradient(#1e1e24_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
+            <motion.div 
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="lg:col-span-6 flex flex-col justify-between relative p-6 sm:p-8 glass-card rounded-none overflow-hidden group min-h-[380px] hover:border-cyan-500/25 transition-all duration-300"
+            >
+              <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#1e1e24_1px,transparent_1px)] [background-size:20px_20px] opacity-15 pointer-events-none" />
               
               <div className="text-left">
                 <h4 className="text-xs font-mono font-bold text-zinc-400 tracking-wider uppercase mb-5">
@@ -230,19 +234,19 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* TRADITIONAL COLUMN */}
-                  <div className="glass-card border border-white/[0.06] p-4 space-y-4 rounded-xl">
+                  <div className="glass-card border border-white/[0.06] p-4 space-y-4 rounded-none hover:border-zinc-700 transition-all duration-300">
                     <span className="text-[9px] font-mono font-extrabold text-zinc-500 tracking-wider block uppercase">Ruta Institucional Clásica</span>
                     
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-lg">
+                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-none">
                         <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 01 / Traba Burocrática</span>
                         Filtros de aprobación en comisiones políticas. Demora de 6 a 12 meses.
                       </div>
-                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-lg">
+                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-none">
                         <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 02 / Estancamiento</span>
                         Estructuras metodológicas rígidas basadas en cuotas burocráticas fatigadas.
                       </div>
-                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-lg">
+                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-none">
                         <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 03 / Nulo Impacto</span>
                         Publicaciones archivadas sin retorno real a la comunidad.
                       </div>
@@ -250,19 +254,19 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   </div>
  
                   {/* IICS COLUMN */}
-                  <div className="glass-card border border-cyan-500/20 bg-cyan-950/[0.02] p-4 space-y-4 rounded-xl">
+                  <div className="glass-card border border-cyan-500/20 bg-cyan-950/[0.02] p-4 space-y-4 rounded-none hover:border-cyan-500/40 transition-all duration-300">
                     <span className="text-[9px] font-mono font-extrabold text-cyan-400 tracking-wider block uppercase">Ruta Autónoma IICS</span>
                     
                     <div className="space-y-2">
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-lg">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-none">
                         <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 01 / Acción Inmediata</span>
                         Fundulación ágil para desplegar encuestas y mapas de inmediato.
                       </div>
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/20 text-[10.5px] text-zinc-300 text-left rounded-lg">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/20 text-[10.5px] text-zinc-300 text-left rounded-none">
                         <span className="font-mono text-[8px] block text-[#0099ff] font-bold">FASE 02 / Rigor Epistémico</span>
                         Validación y arbitraje metodológico inmediato por doctores RENACYT directos.
                       </div>
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-lg">
+                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-none">
                         <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 03 / Retorno de Valor</span>
                         Consolas de datos libres en tiempo récord para la sociedad civil.
                       </div>
@@ -270,13 +274,13 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   </div>
                 </div>
               </div>
-
+ 
               <div className="mt-6 pt-4 border-t border-zinc-900/60 text-center w-full">
                 <p className="text-[9px] font-mono tracking-wide text-zinc-500 uppercase">
                   Esquema de transición de la investigación social andina
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* DYNAMIC COMBINED TEAM SECTION - GRID & CAROUSEL DECK WITH PHOTOGRAPHS */}
@@ -297,7 +301,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               </div>
 
               {/* Filter Tabs - NO VERTICAL LINES - CLEAN GLOWING LAYOUT */}
-              <div className="flex bg-[#070709] border border-zinc-800 p-1.5 rounded-none self-start md:self-auto">
+              <div className="flex bg-white/[0.015] backdrop-blur-md border border-white/[0.06] p-1.5 rounded-none self-start md:self-auto shadow-lg">
                 {[
                   { id: 'all', label: 'Todos' },
                   { id: 'promotor', label: 'Fundadores / Directivos' },
@@ -325,9 +329,11 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               {filteredMembers.map((member, index) => {
                 const isEven = index % 2 === 0;
                 return (
-                  <div 
+                  <motion.div 
                     key={member.id} 
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 glass-card rounded-xl border border-white/[0.06] hover:border-cyan-500/25 transition-all duration-300 items-stretch overflow-hidden shadow-lg"
+                    whileHover={{ y: -4 }}
+                    transition={{ duration: 0.3 }}
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 glass-card rounded-none border border-white/[0.06] hover:border-cyan-500/25 transition-all duration-300 items-stretch overflow-hidden shadow-lg"
                   >
                     {/* INFO COLUMN: DETAILED INFO (7 grid slots) */}
                     <div className={`lg:col-span-7 bg-transparent p-4 md:p-6 flex flex-col justify-between relative overflow-hidden group ${isEven ? 'lg:order-1' : 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]'}`}>
@@ -386,23 +392,27 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                     </div>
  
                     {/* PHOTO COLUMN: LARGE PORTRAIT (5 grid slots) */}
-                    <div className={`lg:col-span-5 flex flex-col justify-center relative overflow-hidden group ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1'}`}>
+                    <motion.div 
+                      whileHover={{ scale: 1.01 }}
+                      className={`lg:col-span-5 flex flex-col justify-center relative overflow-hidden group ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1'}`}
+                    >
                       <div className="bg-transparent p-4 flex flex-col justify-between h-full relative rounded-none min-h-[290px]">
                         
                         {/* Grid background on image panel */}
-                        <div className="absolute inset-0 bg-[#040406] bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
+                        <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
  
                         {/* Category Academic Indicator */}
-                        <div className="absolute top-4 left-4 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/85 px-2.5 py-1 border border-white/[0.06] leading-none z-20 rounded-md uppercase font-bold">
+                        <div className="absolute top-4 left-4 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/85 px-2.5 py-1 border border-white/[0.06] leading-none z-20 uppercase font-bold">
                           <span>{member.category === 'promotor' ? 'FUNDACIÓN / DIRECTIVO' : 'CONSEJO ACADÉMICO'}</span>
                         </div>
  
                         <div className="absolute top-4 right-4 text-right font-mono text-[7px] text-zinc-500 leading-tight select-none z-20">
-                          <span>IICS DOC v_ {index + 1}</span>
+                          <span>SECTOR: 0{index + 1}</span>
+                          <span className="block text-[#0099ff] font-bold">DISPONIBLE</span>
                         </div>
  
                         {/* PORTRAIT CONTAINER WITH ABSOLUTE CORNERS and animation */}
-                        <div className="relative w-full aspect-square max-w-[260px] sm:max-w-[300px] md:max-w-[320px] mx-auto bg-zinc-950 border border-white/[0.08] relative overflow-hidden flex-1 flex items-center justify-center my-4 group/img shadow-2xl rounded-lg">
+                        <div className="relative w-full aspect-square max-w-[260px] sm:max-w-[300px] md:max-w-[320px] mx-auto bg-white/[0.015] border border-white/[0.08] relative overflow-hidden flex-1 flex items-center justify-center my-4 group/img shadow-2xl rounded-none transition-all duration-300">
                           <img
                              src={member.avatar}
                              alt={member.name}
@@ -426,9 +436,9 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                         </div>
  
                       </div>
-                    </div>
+                    </motion.div>
  
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -456,10 +466,14 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               </div>
 
               {/* Network graph visual right container (reutilized original SVG but beautifully wrapped) */}
-              <div className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] glass-card rounded-xl overflow-hidden select-none">
+              <motion.div 
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.3 }}
+                className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] glass-card rounded-none overflow-hidden select-none hover:border-cyan-500/25 transition-all duration-300"
+              >
                 
                 {/* Grid background */}
-                <div className="absolute inset-0 bg-[#050508] bg-[radial-gradient(#15151a_1.2px,transparent_1.2px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
+                <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#15151a_1.2px,transparent_1.2px)] [background-size:16px_16px] opacity-20 pointer-events-none" />
 
                 <div className="absolute top-4 left-4 flex flex-col font-mono text-[9px] text-zinc-400 tracking-wider text-left leading-none uppercase select-none">
                   <span>Estructura de Coordinación Académica</span>
@@ -572,7 +586,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                     Organigrama y Flujo de Validación Científica
                   </span>
                 </div>
-              </div>
+              </motion.div>
 
             </div>
 
@@ -582,8 +596,12 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center border-b border-zinc-900/40 pb-12 last:border-0 last:pb-0">
             
             {/* VISUAL PANEL IN ALTERNATIVE LAYOUT ON LARGE */}
-            <div className="lg:col-span-6 lg:order-1 flex flex-col justify-between relative p-6 sm:p-8 glass-card rounded-xl overflow-hidden group min-h-[385px]">
-              <div className="absolute inset-0 bg-[#040405] bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
+            <motion.div 
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="lg:col-span-6 lg:order-1 flex flex-col justify-between relative p-6 sm:p-8 glass-card rounded-none overflow-hidden group min-h-[385px] hover:border-cyan-500/25 transition-all duration-300"
+            >
+              <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:20px_20px] opacity-15 pointer-events-none" />
 
               <div className="text-left">
                 <h4 className="text-xs font-mono font-bold text-zinc-400 tracking-wider uppercase mb-6">
@@ -597,9 +615,11 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                     { id: 2, title: '03 / Compromiso', desc: 'Independencia intelectual absoluta y resguardo de la verdad territorial.' },
                     { id: 3, title: '04 / Pertinencia', desc: 'Suministro ágil de datos y hallazgos socialmente útiles para Cajamarca.' }
                   ].map((item) => (
-                    <div 
+                    <motion.div 
                       key={item.id}
-                      className="p-4 glass-card border border-white/[0.06] rounded-xl text-left cursor-pointer transition-all hover:bg-white/[0.02] hover:border-cyan-500/25 duration-300"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      transition={{ duration: 0.2 }}
+                      className="p-4 glass-card border border-white/[0.06] rounded-none text-left cursor-pointer transition-all hover:bg-white/[0.02] hover:border-cyan-500/25 duration-300"
                     >
                       <h5 className="text-[11px] font-mono font-extrabold uppercase tracking-wider mb-1 text-cyan-400">
                         {item.title}
@@ -607,7 +627,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                       <p className="text-[10px] text-zinc-400 leading-normal font-sans">
                         {item.desc}
                       </p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -617,7 +637,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   Modelo de Integración de la Cuádruple Hélice
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* TEXT SIDE - RETRAGUED TO SECTION */}
             <div className="lg:col-span-6 lg:order-2 space-y-4 text-left">
