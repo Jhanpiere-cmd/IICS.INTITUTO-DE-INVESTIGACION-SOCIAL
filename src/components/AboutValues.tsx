@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Shield, 
   Zap, 
@@ -16,13 +16,184 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
+// Canvas-based interactive particle constellation representing a dynamic academic data network
+function InteractiveNetworkCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = canvas.width = canvas.offsetWidth;
+    let height = canvas.height = canvas.offsetHeight;
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    const labels = [
+      'IICS Core', 'Datos UNC', 'Observatorio', 'NLP Model', 'Encuestas',
+      'Cajamarca', 'RENACYT', 'Doctores', 'Sociología', 'Semilleros',
+      'Territorio', 'Conflictos', 'Cuencas', 'Validación'
+    ];
+
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      label?: string;
+      color: string;
+    }
+
+    const particles: Particle[] = [];
+    const particleCount = 35;
+
+    for (let i = 0; i < particleCount; i++) {
+      const isCore = i === 0;
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: isCore ? 8 : Math.random() * 2 + 1.5,
+        label: isCore ? 'IICS AUTÓNOMO' : (i < labels.length + 1 ? labels[i - 1] : undefined),
+        color: isCore ? '#0099ff' : (Math.random() > 0.5 ? '#06b6d4' : '#a855f7')
+      });
+    }
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let isHovering = false;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+
+    const handleMouseEnter = () => { isHovering = true; };
+    const handleMouseLeave = () => { isHovering = false; };
+
+    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener('mouseenter', handleMouseEnter);
+    canvas.addEventListener('mouseleave', handleMouseLeave);
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 90) {
+            const alpha = (1 - dist / 90) * 0.22;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(0, 153, 255, ${alpha})`;
+            ctx.lineWidth = p1.radius > 6 || p2.radius > 6 ? 1.2 : 0.6;
+            ctx.stroke();
+          }
+        }
+
+        if (isHovering) {
+          const dx = p1.x - mouseX;
+          const dy = p1.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            const alpha = (1 - dist / 120) * 0.25;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(mouseX, mouseY);
+            ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        p.x = Math.max(0, Math.min(width, p.x));
+        p.y = Math.max(0, Math.min(height, p.y));
+
+        let currentRadius = p.radius;
+        if (p.radius > 6) {
+          currentRadius = p.radius + Math.sin(Date.now() * 0.003) * 1.5;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, currentRadius + 8, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 153, 255, 0.15)';
+          ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, currentRadius + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = p.radius > 6 ? 'rgba(0, 153, 255, 0.4)' : 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        if (p.label) {
+          ctx.font = p.radius > 6 ? 'bold 9px monospace' : '7px monospace';
+          ctx.fillStyle = p.radius > 6 ? '#ffffff' : '#94a3b8';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.label, p.x, p.y - (currentRadius + 6));
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      if (canvas) {
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseenter', handleMouseEnter);
+        canvas.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="absolute inset-0 w-full h-full block bg-transparent"
+    />
+  );
+}
+
 interface AboutValuesProps {
   onLearnMoreClick: () => void;
   isSubPage?: boolean;
 }
 
 export default function AboutValues({ onLearnMoreClick, isSubPage = false }: AboutValuesProps) {
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [hoveredPillar, setHoveredPillar] = useState<number | null>(null);
   const [filterCategory, setFilterCategory] = useState<'all' | 'promotor' | 'academico'>('all');
 
@@ -61,30 +232,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
     }
   ];
 
-  // Team Coordinates for interactive network visualizer
-  const nodes = [
-    { id: 'iics', label: 'IICS Autónomo', role: 'Núcleo Científico', x: 200, y: 200, size: 26, color: '#0099ff', category: 'core' },
-    { id: 'edwar', label: 'Edwar Saenz', role: 'CEO / Fundador', x: 100, y: 130, size: 21, color: '#c084fc', category: 'fundadores' },
-    { id: 'henry', label: 'Henry Díaz', role: 'Co-Fundador / Directivo', x: 300, y: 130, size: 20, color: '#60a5fa', category: 'fundadores' },
-    { id: 'mendoza', label: 'M. Cs. Juan R. Mendoza', role: 'Investigador RENACYT', x: 100, y: 270, size: 19, color: '#34d399', category: 'cuerpo' },
-    { id: 'tejada', label: 'Luis Tejada', role: 'Docente Investigador', x: 300, y: 270, size: 18, color: '#34d399', category: 'cuerpo' },
-    { id: 'becerra', label: 'Luis Becerra', role: 'Sociología Territorial', x: 200, y: 320, size: 18, color: '#34d399', category: 'cuerpo' },
-    { id: 'estudiantes', label: 'Estudiantes IICS', role: 'Soporte de Inteligencia', x: 200, y: 70, size: 16, color: '#fbbf24', category: 'operativo' }
-  ];
 
-  const connections = [
-    { from: 'iics', to: 'edwar' },
-    { from: 'iics', to: 'henry' },
-    { from: 'iics', to: 'mendoza' },
-    { from: 'iics', to: 'tejada' },
-    { from: 'iics', to: 'becerra' },
-    { from: 'edwar', to: 'henry' },
-    { from: 'edwar', to: 'estudiantes' },
-    { from: 'henry', to: 'estudiantes' },
-    { from: 'mendoza', to: 'tejada' },
-    { from: 'tejada', to: 'becerra' },
-    { from: 'mendoza', to: 'becerra' }
-  ];
 
   // Simulated Team Members List with High Quality Photo URLs and professional summaries
   const teamMembers = [
@@ -206,7 +354,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 {/* Beautiful quote card focused purely on academic and economic vision */}
                 <div className="text-xs text-zinc-300 p-5 bg-white/[0.015] border border-white/[0.06] rounded-none relative overflow-hidden backdrop-blur-sm shadow-inner group hover:border-cyan-500/20 transition-all duration-300">
                   <div className="relative z-10 flex gap-3 text-left">
-                    <Quote className="h-5 w-5 text-cyan-450 flex-shrink-0 opacity-40" />
+                    <Quote className="h-5 w-5 text-cyan-400 flex-shrink-0 opacity-40" />
                     <p className="italic font-medium leading-relaxed text-zinc-300">
                       "El enfoque es simple: la economía se rige por valor, y el valor precede a la recompensa financiera. Al dotar de conocimiento útil, preciso y científico al norte andino antes de pensar en rédito comercial, logramos democratizar la sociología de precisión de manera sostenible."
                     </p>
@@ -228,26 +376,26 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
               <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#1e1e24_1px,transparent_1px)] [background-size:20px_20px] opacity-15 pointer-events-none" />
               
               <div className="text-left">
-                <h4 className="text-xs font-mono font-bold text-zinc-400 tracking-wider uppercase mb-5">
+                <h4 className="text-sm font-mono font-bold text-zinc-200 tracking-wider uppercase mb-5">
                   Análisis Comparativo de Ejecución e Impacto
                 </h4>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* TRADITIONAL COLUMN */}
                   <div className="glass-card border border-white/[0.06] p-4 space-y-4 rounded-none hover:border-zinc-700 transition-all duration-300">
-                    <span className="text-[9px] font-mono font-extrabold text-zinc-500 tracking-wider block uppercase">Ruta Institucional Clásica</span>
+                    <span className="text-xs font-mono font-black text-zinc-400 tracking-wider block uppercase">Ruta Institucional Clásica</span>
                     
-                    <div className="space-y-2">
-                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 01 / Traba Burocrática</span>
+                    <div className="space-y-2.5">
+                      <div className="p-3 bg-white/[0.01] border border-white/[0.04] text-xs text-zinc-300 text-left rounded-none leading-relaxed">
+                        <span className="font-mono text-[10px] block text-zinc-400 font-bold uppercase tracking-wider mb-1">FASE 01 / Traba Burocrática</span>
                         Filtros de aprobación en comisiones políticas. Demora de 6 a 12 meses.
                       </div>
-                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 02 / Estancamiento</span>
+                      <div className="p-3 bg-white/[0.01] border border-white/[0.04] text-xs text-zinc-300 text-left rounded-none leading-relaxed">
+                        <span className="font-mono text-[10px] block text-zinc-400 font-bold uppercase tracking-wider mb-1">FASE 02 / Estancamiento</span>
                         Estructuras metodológicas rígidas basadas en cuotas burocráticas fatigadas.
                       </div>
-                      <div className="p-2.5 bg-white/[0.01] border border-white/[0.04] text-[10.5px] text-zinc-500 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-zinc-500 font-bold">FASE 03 / Nulo Impacto</span>
+                      <div className="p-3 bg-white/[0.01] border border-white/[0.04] text-xs text-zinc-300 text-left rounded-none leading-relaxed">
+                        <span className="font-mono text-[10px] block text-zinc-400 font-bold uppercase tracking-wider mb-1">FASE 03 / Nulo Impacto</span>
                         Publicaciones archivadas sin retorno real a la comunidad.
                       </div>
                     </div>
@@ -255,19 +403,19 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
  
                   {/* IICS COLUMN */}
                   <div className="glass-card border border-cyan-500/20 bg-cyan-950/[0.02] p-4 space-y-4 rounded-none hover:border-cyan-500/40 transition-all duration-300">
-                    <span className="text-[9px] font-mono font-extrabold text-cyan-400 tracking-wider block uppercase">Ruta Autónoma IICS</span>
+                    <span className="text-xs font-mono font-black text-cyan-400 tracking-wider block uppercase">Ruta Autónoma IICS</span>
                     
-                    <div className="space-y-2">
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 01 / Acción Inmediata</span>
-                        Fundulación ágil para desplegar encuestas y mapas de inmediato.
+                    <div className="space-y-2.5">
+                      <div className="p-3 bg-cyan-950/25 border border-cyan-500/25 text-xs text-zinc-100 text-left rounded-none leading-relaxed">
+                        <span className="font-mono text-[10px] block text-cyan-400 font-bold uppercase tracking-wider mb-1">FASE 01 / Acción Inmediata</span>
+                        Formulación ágil para desplegar encuestas y mapas de inmediato.
                       </div>
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/20 text-[10.5px] text-zinc-300 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-[#0099ff] font-bold">FASE 02 / Rigor Epistémico</span>
+                      <div className="p-3 bg-cyan-950/25 border border-cyan-500/25 text-xs text-zinc-100 text-left rounded-none leading-relaxed">
+                        <span className="font-mono text-[10px] block text-[#0099ff] font-bold uppercase tracking-wider mb-1">FASE 02 / Rigor Epistémico</span>
                         Validación y arbitraje metodológico inmediato por doctores RENACYT directos.
                       </div>
-                      <div className="p-2.5 bg-cyan-950/20 border border-cyan-500/15 text-[10.5px] text-zinc-300 text-left rounded-none">
-                        <span className="font-mono text-[8px] block text-cyan-400 font-bold">FASE 03 / Retorno de Valor</span>
+                      <div className="p-3 bg-cyan-950/25 border border-cyan-500/25 text-xs text-zinc-100 text-left rounded-none leading-relaxed">
+                        <span className="font-mono text-[10px] block text-cyan-400 font-bold uppercase tracking-wider mb-1">FASE 03 / Retorno de Valor</span>
                         Consolas de datos libres en tiempo récord para la sociedad civil.
                       </div>
                     </div>
@@ -478,118 +626,17 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] glass-card rounded-none overflow-hidden select-none hover:border-cyan-500/25 transition-all duration-300"
               >
                 
-                {/* Grid background */}
-                <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#15151a_1.2px,transparent_1.2px)] [background-size:16px_16px] opacity-20 pointer-events-none" />
+                {/* Dynamic Canvas Particle Network Constellation */}
+                <InteractiveNetworkCanvas />
 
-                <div className="absolute top-4 left-4 flex flex-col font-mono text-[9px] text-zinc-400 tracking-wider text-left leading-none uppercase select-none">
+                <div className="absolute top-4 left-4 flex flex-col font-mono text-[9px] text-zinc-400 tracking-wider text-left leading-none uppercase select-none z-20">
                   <span>Estructura de Coordinación Académica</span>
-                  {hoveredNode && (
-                    <span className="text-cyan-400 font-bold mt-1">
-                      Nodo Activo: {nodes.find(n => n.id === hoveredNode)?.label}
-                    </span>
-                  )}
+                  <span className="text-cyan-400 font-bold mt-1">Nodos Activos: Red de Transición Científica</span>
                 </div>
 
-                {/* GRAPH */}
-                <div className="relative w-full aspect-square max-w-[315px] max-h-[315px] flex items-center justify-center">
-                  <svg viewBox="0 0 400 400" className="w-full h-full relative z-10 text-zinc-500 overflow-visible">
-                    <defs>
-                      <radialGradient id="ring-glow-core" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#0099ff" stopOpacity="0.2" />
-                        <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-                      </radialGradient>
-                      <radialGradient id="ring-glow-active" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#c084fc" stopOpacity="0.15" />
-                        <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-                      </radialGradient>
-                    </defs>
-
-                    {/* Circles */}
-                    <circle cx="200" cy="200" r="140" stroke="#1c1c20" strokeWidth="0.8" strokeDasharray="3 4" fill="none" opacity="0.35" />
-                    <circle cx="200" cy="200" r="90" stroke="#27272a" strokeWidth="0.8" fill="none" opacity="0.2" />
-
-                    {/* PATHWAYS */}
-                    {connections.map((c, idx) => {
-                      const nodeFrom = nodes.find(n => n.id === c.from)!;
-                      const nodeTo = nodes.find(n => n.id === c.to)!;
-                      const isHighlighted = (hoveredNode === nodeFrom.id || hoveredNode === nodeTo.id || !hoveredNode);
-
-                      return (
-                        <line
-                          key={idx}
-                          x1={nodeFrom.x}
-                          y1={nodeFrom.y}
-                          x2={nodeTo.x}
-                          y2={nodeTo.y}
-                          stroke={isHighlighted ? "#0099ff" : "#1c1c20"}
-                          strokeWidth={isHighlighted ? "1" : "0.5"}
-                          strokeDasharray={isHighlighted ? "none" : "3 3"}
-                          className="transition-all duration-300"
-                          opacity={isHighlighted ? 0.6 : 0.1}
-                        />
-                      );
-                    })}
-
-                    {/* NODES */}
-                    {nodes.map((node) => {
-                      const isHovered = hoveredNode === node.id;
-                      const isDimmed = hoveredNode && hoveredNode !== node.id;
-
-                      return (
-                        <g
-                          key={node.id}
-                          className="cursor-pointer"
-                          onMouseEnter={() => setHoveredNode(node.id)}
-                          onMouseLeave={() => setHoveredNode(null)}
-                        >
-                          {isHovered && (
-                            <circle
-                              cx={node.x}
-                              cy={node.y}
-                              r={node.size + 12}
-                              fill={node.id === 'iics' ? "url(#ring-glow-core)" : "url(#ring-glow-active)"}
-                              pointerEvents="none"
-                              opacity={0.8}
-                            />
-                          )}
-
-                          <circle
-                            cx={node.x}
-                            cy={node.y}
-                            r={isHovered ? node.size + 3 : node.size}
-                            fill="#050508"
-                            stroke={isHovered ? node.color : (isDimmed ? "#101012" : "#2a2a35")}
-                            strokeWidth={isHovered ? "2.5" : "1"}
-                            className="transition-all duration-300"
-                          />
-
-                          <circle
-                            cx={node.x}
-                            cy={node.y}
-                            r={Math.max(3, node.size - 9)}
-                            fill={node.color}
-                            opacity={isDimmed ? 0.2 : 0.9}
-                            className="transition-all duration-300"
-                          />
-
-                          <text
-                            x={node.x}
-                            y={node.y + node.size + 12}
-                            className="text-[8px] font-mono font-bold uppercase transition-colors select-none"
-                            textAnchor="middle"
-                            fill={isHovered ? "#ffffff" : "#4b5563"}
-                          >
-                            {node.label}
-                          </text>
-                        </g>
-                      );
-                    })}
-                  </svg>
-                </div>
-
-                <div className="absolute bottom-3 text-center w-full">
+                <div className="absolute bottom-3 text-center w-full z-20">
                   <span className="text-[9px] font-mono tracking-wider text-zinc-500 uppercase">
-                    Organigrama y Flujo de Validación Científica
+                    Modelado Dinámico de la Red de Sociología de Precisión
                   </span>
                 </div>
               </motion.div>
