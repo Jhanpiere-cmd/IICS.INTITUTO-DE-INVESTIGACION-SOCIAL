@@ -334,8 +334,11 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: index * 0.08 }}
-                    whileHover={{ y: -6 }}
-                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 glass-card rounded-none border border-white/[0.06] hover:border-cyan-500/25 transition-all duration-300 items-stretch overflow-hidden shadow-2xl relative"
+                    variants={{
+                      hover: { y: -6 }
+                    }}
+                    whileHover="hover"
+                    className="grid grid-cols-1 lg:grid-cols-12 gap-0 bg-transparent border border-[#0099ff]/20 hover:border-[#0099ff] hover:shadow-[0_0_30px_rgba(0,153,255,0.15)] transition-all duration-500 items-stretch overflow-hidden relative"
                   >
                     {/* INFO COLUMN: DETAILED INFO (7 grid slots) */}
                     <div className={`lg:col-span-7 bg-transparent p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group ${isEven ? 'lg:order-1' : 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]'}`}>
@@ -394,25 +397,44 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                     </div>
  
                     {/* PHOTO COLUMN: LARGE PORTRAIT (5 grid slots) */}
-                    <div className={`lg:col-span-5 relative overflow-hidden min-h-[320px] lg:min-h-full group/img ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1 border-b lg:border-b-0 lg:border-r border-white/[0.06]'}`}>
-                      <img 
-                        src={member.avatar} 
-                        alt={member.name} 
-                        referrerPolicy="no-referrer"
-                        className="absolute inset-0 w-full h-full object-cover saturate-0 hover:saturate-100 contrast-[1.05] brightness-90 hover:brightness-100 transition-all duration-700 ease-out group-hover/img:scale-105"
-                      />
-                      {/* Ambient gradient vignette */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 pointer-events-none" />
- 
-                      {/* Visual sci-fi brackets */}
-                      <div className="absolute top-4 left-4 w-4 h-4 border-l border-t border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
-                      <div className="absolute top-4 right-4 w-4 h-4 border-r border-t border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
-                      <div className="absolute bottom-4 left-4 w-4 h-4 border-l border-b border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
-                      <div className="absolute bottom-4 right-4 w-4 h-4 border-r border-b border-cyan-500/60 group-hover/img:border-cyan-400 group-hover/img:scale-110 transition-all duration-300 pointer-events-none" />
+                    <div className={`lg:col-span-5 flex items-center justify-center p-6 relative overflow-hidden group/img ${isEven ? 'lg:order-2 border-t lg:border-t-0 lg:border-l border-white/[0.06]' : 'lg:order-1 border-b lg:border-b-0 lg:border-r border-white/[0.06]'}`}>
+                      {/* Grid background on image panel */}
+                      <div className="absolute inset-0 bg-transparent bg-[radial-gradient(#1a1a20_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none" />
  
                       {/* Floating category tag */}
-                      <div className="absolute top-4 left-4 ml-6 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/80 px-2.5 py-1 border border-white/[0.06] leading-none z-20 uppercase font-bold">
+                      <div className="absolute top-4 left-4 flex items-center gap-1.5 font-mono text-[7px] text-cyan-400 select-none bg-black/80 px-2.5 py-1 border border-white/[0.06] leading-none z-20 uppercase font-bold">
                         <span>{member.category === 'promotor' ? 'FUNDACIÓN / DIRECTIVO' : 'CONSEJO ACADÉMICO'}</span>
+                      </div>
+ 
+                      {/* PORTRAIT CONTAINER WITH ABSOLUTE CORNERS and animation */}
+                      <div className="relative w-full aspect-[4/5] max-w-[280px] border border-[#0099ff]/25 bg-white/[0.01] overflow-hidden flex items-center justify-center my-4 shadow-2xl transition-all duration-300 group-hover/img:border-[#0099ff]">
+                        
+                        {/* Scanline animation on hover using framer motion */}
+                        <motion.div 
+                          variants={{
+                            hover: { 
+                              top: ["0%", "100%", "0%"],
+                              opacity: [0, 0.8, 0.8, 0],
+                              transition: { repeat: Infinity, duration: 3, ease: "linear" }
+                            }
+                          }}
+                          className="absolute inset-x-0 h-[2px] bg-cyan-400 shadow-[0_0_10px_#00f0ff] pointer-events-none z-10 opacity-0"
+                        />
+
+                        <img 
+                          src={member.avatar} 
+                          alt={member.name} 
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-contain saturate-100 contrast-[1.03] brightness-100 transition-transform duration-700 ease-out group-hover/img:scale-105"
+                        />
+                        {/* Ambient gradient vignette */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-80 pointer-events-none" />
+ 
+                        {/* Visual sci-fi brackets */}
+                        <div className="absolute top-3 left-3 w-4 h-4 border-l-2 border-t-2 border-cyan-500/60 group-hover/img:border-cyan-400 transition-colors pointer-events-none" />
+                        <div className="absolute top-3 right-3 w-4 h-4 border-r-2 border-t-2 border-cyan-500/60 group-hover/img:border-cyan-400 transition-colors pointer-events-none" />
+                        <div className="absolute bottom-3 left-3 w-4 h-4 border-l-2 border-b-2 border-cyan-500/60 group-hover/img:border-cyan-400 transition-colors pointer-events-none" />
+                        <div className="absolute bottom-3 right-3 w-4 h-4 border-r-2 border-b-2 border-cyan-500/60 group-hover/img:border-cyan-400 transition-colors pointer-events-none" />
                       </div>
  
                       {/* HUD tag at the bottom of the photo */}
