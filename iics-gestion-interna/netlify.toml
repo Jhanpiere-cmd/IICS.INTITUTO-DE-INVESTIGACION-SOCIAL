@@ -1,0 +1,37 @@
+[build]
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NODE_OPTIONS = "--max-old-space-size=4096"
+  
+  # --- Configuración IA ---
+  VITE_MERCURY_API_KEY = ""
+  VITE_GEMINI_API_KEY = ""
+  VITE_OPENROUTER_API_KEY = ""
+  VITE_GROQ_API_KEY = ""
+  VITE_OPENAI_API_KEY = ""
+  VITE_DEEPSEEK_API_KEY = ""
+
+  # --- Meta & WhatsApp ---
+  VITE_META_APP_ID = ""
+  VITE_META_APP_SECRET = ""
+  VITE_META_ACCESS_TOKEN = ""
+  VITE_WHATSAPP_PHONE_NUMBER_ID = "1066603063203908"
+  VITE_WHATSAPP_BUSINESS_ACCOUNT_ID = "1292515239639495"
+  VITE_FACEBOOK_PAGE_ID = "484422738088449"
+  VITE_INSTAGRAM_BUSINESS_ACCOUNT_ID = "17841472397099913"
+
+  # --- Google & YouTube ---
+  VITE_YOUTUBE_CLIENT_ID = "749563878840-hbgk1d5ml09eflpjfg2cfp0e0gkvt7sv.apps.googleusercontent.com"
+  VITE_YOUTUBE_CLIENT_SECRET = ""
+
+  # --- Infraestructura ---
+  VITE_SUPABASE_URL = "https://ififktotbpnseqwqjkyh.supabase.co"
+  VITE_SUPABASE_ANON_KEY = ""
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Database, Menu, X, Lock, Unlock, LogOut } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface HeaderProps {
   onOpenPortal: () => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onOpenPortal, onNavigate, activeSection, isLoggedIn, onLogout, activeModal }: HeaderProps) {
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -44,9 +46,8 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
         
         {/* Logo and Brand */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('inicio', '#inicio')}>
-          <div className="relative flex h-14 w-14 items-center justify-center">
-            <img src="/logo-iics.png" alt="Logo IICS" className="h-13 w-13 object-contain z-10" />
-            <div className="absolute inset-0 rounded-full bg-cyan-400/5 blur-sm"></div>
+          <div className="flex h-14 w-14 items-center justify-center">
+            <img src="/logo-iics-siglas.png" alt="Logo IICS" className="h-14 w-14 object-contain z-10" />
           </div>
 
           <div className="flex flex-col">
@@ -90,8 +91,19 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
           {isLoggedIn && (
             <div className="hidden md:flex items-center gap-2 px-2.5 py-1 border border-emerald-500/20 bg-emerald-950/20 font-mono text-[9px] text-emerald-400 font-bold uppercase tracking-wider select-none">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Analista
+              {user?.role || 'Analista'}
             </div>
+          )}
+
+          {isLoggedIn && user && ['Director', 'Subdirector', 'Docente', 'Secretaria', 'Gestor de Redes', 'Coordinador de Eventos', 'Auxiliar Técnico'].includes(user.role) && (
+            <button
+              onClick={() => window.location.href = '/admin'}
+              className="relative hidden sm:flex items-center gap-1.5 rounded-none bg-purple-650 hover:bg-purple-605 border border-purple-800/35 text-white px-3 py-1.5 text-xs font-bold tracking-wide transition-all cursor-pointer shadow-[0_0_12px_rgba(147,51,234,0.3)] hover:scale-[1.01]"
+              title="Ir al Sistema de Gestión Interna"
+            >
+              <Database className="h-3.5 w-3.5" />
+              <span>Gestión Interna</span>
+            </button>
           )}
 
           <button

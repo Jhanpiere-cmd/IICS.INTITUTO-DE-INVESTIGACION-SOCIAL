@@ -1,0 +1,7 @@
+# Ignorar archivos de Python en Netlify
+requirements.txt
+*.py
+*.pyc
+__pycache__/
+.python-version
+runtime.txt

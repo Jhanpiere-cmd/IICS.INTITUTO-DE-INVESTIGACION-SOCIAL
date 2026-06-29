@@ -1,0 +1,15 @@
+{
+  "updated_at": "2026-06-14T22:49:24.707Z",
+  "articles": [
+    {
+      "title": "El impacto de la inteligencia artificial en la investigación social: Retos éticos y metodológicos",
+      "authors": "Edwar J. Saenz Tello, Elfer G. Miranda V.",
+      "volume": "Volumen 2",
+      "number": "Numero 1",
+      "url": "/revista_acs/volumen_2/numero_1/ejemplo_articulo.txt",
+      "published_date": "2026-06-14",
+      "content_summary": "El impacto de la inteligencia artificial en la investigación social: Retos éticos y metodológicos\nAutor: Edwar J. Saenz Tello, Elfer G. Miranda V.\n\nRESUMEN\nEste artículo explora cómo los modelos generativos de lenguaje y las herramientas de automatización están transformando el campo de las ciencias sociales en el Perú, con especial atención a las universidades del norte peruano. Se discuten los riesgos éticos de la autoría automatizada y el sesgo de datos de entrenamiento en la representación de minorías culturales en Cajamarca.",
+      "length": 535
+    }
+  ]
+}

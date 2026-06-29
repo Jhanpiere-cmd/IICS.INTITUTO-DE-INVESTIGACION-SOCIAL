@@ -144,8 +144,9 @@ export function SmokeyBackground({
     gl.uniform3f(uColorLocation, r, g, b);
 
     const render = () => {
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
+      const scale = 0.5; // Render at 0.5x resolution for 400% performance boost on integrated GPUs
+      const width = Math.floor(canvas.clientWidth * scale);
+      const height = Math.floor(canvas.clientHeight * scale);
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
@@ -156,7 +157,7 @@ export function SmokeyBackground({
 
       gl.uniform2f(iResolutionLocation, width, height);
       gl.uniform1f(iTimeLocation, currentTime);
-      gl.uniform2f(iMouseLocation, isHovering ? mousePosition.x : width / 2, isHovering ? height - mousePosition.y : height / 2);
+      gl.uniform2f(iMouseLocation, isHovering ? mousePosition.x * scale : width / 2, isHovering ? height - mousePosition.y * scale : height / 2);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       requestAnimationFrame(render);
@@ -359,20 +360,16 @@ export function LoginForm({
         </button>
       </div>
 
-      {/* Demo Autofill Accent Option */}
-      <div 
-        onClick={onAutofill}
-        className="border border-zinc-800 hover:border-zinc-700 bg-zinc-950 p-3.5 rounded-none text-left cursor-pointer transition-all select-none space-y-1"
-      >
-        <div className="flex items-center gap-2">
-          <Key className="h-3.5 w-3.5 text-zinc-400" />
-          <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-wider font-mono">
-            Autocompletar Demo
-          </span>
-        </div>
-        <p className="text-[10px] text-zinc-500 leading-tight block">
-          Haz clic aquí para autocompletar rápidamente las credenciales autorizadas.
-        </p>
+      {/* Public / Guest Bypass to view Observatorio */}
+      <div className="mt-4 select-none">
+        <button
+          type="button"
+          onClick={onAutofill}
+          className="w-full flex items-center justify-center gap-2 py-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-850 hover:border-zinc-700 transition-all cursor-pointer rounded-none text-center text-xs font-semibold text-zinc-300 hover:text-white"
+        >
+          <User className="h-4 w-4 text-cyan-400 shrink-0" />
+          <span>Vista de Observatorio (Acceso Público / Invitado)</span>
+        </button>
       </div>
 
       {/* Account Signup Footer Link */}

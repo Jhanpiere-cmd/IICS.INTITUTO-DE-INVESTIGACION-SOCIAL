@@ -17,174 +17,239 @@ import {
 import { motion } from 'motion/react';
 
 // Canvas-based interactive particle constellation representing a dynamic academic data network
-function InteractiveNetworkCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+function AnimatedNetworkVisualizer() {
+  const [pulseOffset, setPulseOffset] = useState(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
     let animationFrameId: number;
-    let width = canvas.width = canvas.offsetWidth;
-    let height = canvas.height = canvas.offsetHeight;
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+    const animate = () => {
+      setPulseOffset((prev) => (prev + 0.02) % (Math.PI * 2));
+      animationFrameId = requestAnimationFrame(animate);
     };
-    window.addEventListener('resize', handleResize);
-
-    const labels = [
-      'IICS Core', 'Datos UNC', 'Observatorio', 'NLP Model', 'Encuestas',
-      'Cajamarca', 'RENACYT', 'Doctores', 'Sociología', 'Semilleros',
-      'Territorio', 'Conflictos', 'Cuencas', 'Validación'
-    ];
-
-    interface Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      label?: string;
-      color: string;
-    }
-
-    const particles: Particle[] = [];
-    const particleCount = 35;
-
-    for (let i = 0; i < particleCount; i++) {
-      const isCore = i === 0;
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: isCore ? 8 : Math.random() * 2 + 1.5,
-        label: isCore ? 'IICS AUTÓNOMO' : (i < labels.length + 1 ? labels[i - 1] : undefined),
-        color: isCore ? '#0099ff' : (Math.random() > 0.5 ? '#06b6d4' : '#a855f7')
-      });
-    }
-
-    let mouseX = 0;
-    let mouseY = 0;
-    let isHovering = false;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
-    };
-
-    const handleMouseEnter = () => { isHovering = true; };
-    const handleMouseLeave = () => { isHovering = false; };
-
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseenter', handleMouseEnter);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
-
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i];
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 90) {
-            const alpha = (1 - dist / 90) * 0.22;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 153, 255, ${alpha})`;
-            ctx.lineWidth = p1.radius > 6 || p2.radius > 6 ? 1.2 : 0.6;
-            ctx.stroke();
-          }
-        }
-
-        if (isHovering) {
-          const dx = p1.x - mouseX;
-          const dy = p1.y - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            const alpha = (1 - dist / 120) * 0.25;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(mouseX, mouseY);
-            ctx.strokeStyle = `rgba(6, 182, 212, ${alpha})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-          }
-        }
-      }
-
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
-
-        p.x = Math.max(0, Math.min(width, p.x));
-        p.y = Math.max(0, Math.min(height, p.y));
-
-        let currentRadius = p.radius;
-        if (p.radius > 6) {
-          currentRadius = p.radius + Math.sin(Date.now() * 0.003) * 1.5;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, currentRadius + 8, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(0, 153, 255, 0.15)';
-          ctx.fill();
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, currentRadius + 3, 0, Math.PI * 2);
-        ctx.strokeStyle = p.radius > 6 ? 'rgba(0, 153, 255, 0.4)' : 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-
-        if (p.label) {
-          ctx.font = p.radius > 6 ? 'bold 9px monospace' : '7px monospace';
-          ctx.fillStyle = p.radius > 6 ? '#ffffff' : '#94a3b8';
-          ctx.textAlign = 'center';
-          ctx.fillText(p.label, p.x, p.y - (currentRadius + 6));
-        }
-      });
-
-      animationFrameId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      if (canvas) {
-        canvas.removeEventListener('mousemove', handleMouseMove);
-        canvas.removeEventListener('mouseenter', handleMouseEnter);
-        canvas.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
+  const nodes = [
+    { id: 'iics', label: 'IICS AUTÓNOMO', role: 'Núcleo Científico', x: 200, y: 200, r: 24, color: '#0099ff', glow: 'rgba(0, 153, 255, 0.4)' },
+    { id: 'edwar', label: 'Edwar Saenz', role: 'CEO / Ideas', x: 90, y: 130, r: 18, color: '#c084fc', glow: 'rgba(192, 132, 252, 0.3)' },
+    { id: 'henry', label: 'Henry Díaz', role: 'Co-Fundador', x: 310, y: 130, r: 18, color: '#60a5fa', glow: 'rgba(96, 165, 250, 0.3)' },
+    { id: 'mendoza', label: 'M. Cs. J. Mendoza', role: 'RENACYT', x: 90, y: 270, r: 16, color: '#34d399', glow: 'rgba(52, 211, 153, 0.3)' },
+    { id: 'tejada', label: 'Luis Tejada', role: 'Investigador', x: 310, y: 270, r: 16, color: '#34d399', glow: 'rgba(52, 211, 153, 0.3)' },
+    { id: 'becerra', label: 'Luis Becerra', role: 'Territorio', x: 200, y: 320, r: 16, color: '#34d399', glow: 'rgba(52, 211, 153, 0.3)' },
+    { id: 'estudiantes', label: 'Estudiantes IICS', role: 'Soporte', x: 200, y: 70, r: 14, color: '#fbbf24', glow: 'rgba(251, 191, 36, 0.3)' }
+  ];
+
+  const connections = [
+    { from: 'iics', to: 'edwar' },
+    { from: 'iics', to: 'henry' },
+    { from: 'iics', to: 'mendoza' },
+    { from: 'iics', to: 'tejada' },
+    { from: 'iics', to: 'becerra' },
+    { from: 'edwar', to: 'henry' },
+    { from: 'edwar', to: 'estudiantes' },
+    { from: 'henry', to: 'estudiantes' },
+    { from: 'mendoza', to: 'tejada' },
+    { from: 'tejada', to: 'becerra' },
+    { from: 'mendoza', to: 'becerra' }
+  ];
+
+  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="absolute inset-0 w-full h-full block bg-transparent"
-    />
+    <div className="relative w-full aspect-square max-w-[340px] max-h-[340px] flex items-center justify-center">
+      <svg viewBox="0 0 400 400" className="w-full h-full text-zinc-500 overflow-visible relative z-10">
+        <defs>
+          <radialGradient id="node-glow-iics" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#0099ff" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+          </radialGradient>
+          <filter id="glow-effect" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* Outer orbital rings with slow rotation */}
+        <motion.circle 
+          cx="200" 
+          cy="200" 
+          r="145" 
+          stroke="rgba(0, 153, 255, 0.08)" 
+          strokeWidth="1.2" 
+          strokeDasharray="4 8"
+          fill="none" 
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
+          style={{ originX: '200px', originY: '200px' }}
+        />
+        <motion.circle 
+          cx="200" 
+          cy="200" 
+          r="95" 
+          stroke="rgba(192, 132, 252, 0.06)" 
+          strokeWidth="0.8" 
+          fill="none" 
+          animate={{ rotate: -360 }}
+          transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+          style={{ originX: '200px', originY: '200px' }}
+        />
+
+        {/* Connection lines representing animated data paths */}
+        {connections.map((conn, idx) => {
+          const fromNode = nodes.find(n => n.id === conn.from)!;
+          const toNode = nodes.find(n => n.id === conn.to)!;
+          
+          const getOffset = (id: string, coord: 'x' | 'y') => {
+            const seed = id.charCodeAt(0) + id.charCodeAt(1);
+            const freq = 0.8 + (seed % 5) * 0.1;
+            const amp = coord === 'y' ? 3.5 : 2;
+            return Math.sin(pulseOffset * freq + seed) * amp;
+          };
+
+          const x1 = fromNode.x + getOffset(fromNode.id, 'x');
+          const y1 = fromNode.y + getOffset(fromNode.id, 'y');
+          const x2 = toNode.x + getOffset(toNode.id, 'x');
+          const y2 = toNode.y + getOffset(toNode.id, 'y');
+
+          const isActive = hoveredNodeId === fromNode.id || hoveredNodeId === toNode.id;
+          const isDimmed = hoveredNodeId && !isActive;
+
+          return (
+            <g key={idx}>
+              {/* Static background wire */}
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={isActive ? '#0099ff' : 'rgba(255, 255, 255, 0.08)'}
+                strokeWidth={isActive ? 1.5 : 0.8}
+                className="transition-colors duration-300"
+                opacity={isDimmed ? 0.2 : 0.7}
+              />
+              
+              {/* Dynamic traveling data pulse */}
+              {(!isDimmed || isActive) && (
+                <motion.circle
+                  r="2"
+                  fill="#0099ff"
+                  filter="url(#glow-effect)"
+                  animate={{
+                    cx: [x1, x2],
+                    cy: [y1, y2]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 3.5 + (idx % 3) * 0.5,
+                    ease: "easeInOut",
+                    delay: (idx % 4) * 0.4
+                  }}
+                />
+              )}
+            </g>
+          );
+        })}
+
+        {/* Dynamic Nodes with Floating & Pulse animations */}
+        {nodes.map((node) => {
+          const isHovered = hoveredNodeId === node.id;
+          const isDimmed = hoveredNodeId && hoveredNodeId !== node.id;
+          
+          const seed = node.id.charCodeAt(0) + node.id.charCodeAt(1);
+          const freq = 0.8 + (seed % 5) * 0.1;
+          const offsetX = Math.sin(pulseOffset * freq + seed) * 2;
+          const offsetY = Math.sin(pulseOffset * freq + seed) * 3.5;
+
+          const cx = node.x + offsetX;
+          const cy = node.y + offsetY;
+
+          return (
+            <g 
+              key={node.id}
+              className="cursor-pointer"
+              onMouseEnter={() => setHoveredNodeId(node.id)}
+              onMouseLeave={() => setHoveredNodeId(null)}
+            >
+              {/* Glowing halo behind active node */}
+              {(isHovered || node.id === 'iics') && (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={node.r + 14}
+                  fill="url(#node-glow-iics)"
+                  className="transition-all duration-300 pointer-events-none"
+                  opacity={isHovered ? 0.75 : 0.35}
+                />
+              )}
+
+              {/* Pulsing outer boundary ring */}
+              <motion.circle
+                cx={cx}
+                cy={cy}
+                r={node.r + 4}
+                stroke={isHovered ? node.color : 'rgba(255,255,255,0.06)'}
+                strokeWidth={isHovered ? 2 : 1}
+                fill="none"
+                animate={{
+                  r: [node.r + 4, node.r + 7, node.r + 4]
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2.5,
+                  ease: "easeInOut"
+                }}
+                opacity={isDimmed ? 0.25 : 1}
+              />
+
+              {/* Central node circle */}
+              <circle
+                cx={cx}
+                cy={cy}
+                r={node.r}
+                fill="#050508"
+                stroke={isHovered ? '#ffffff' : (isDimmed ? '#121217' : 'rgba(255, 255, 255, 0.15)')}
+                strokeWidth={isHovered ? 1.8 : 1}
+                opacity={isDimmed ? 0.25 : 1}
+                className="transition-all duration-300"
+              />
+
+              {/* Glowing color core dot */}
+              <circle
+                cx={cx}
+                cy={cy}
+                r={4}
+                fill={node.color}
+                opacity={isDimmed ? 0.25 : 1}
+                className="transition-all duration-300"
+              />
+
+              {/* HUD labels */}
+              <text
+                x={cx}
+                y={cy + node.r + 15}
+                className="text-[7.5px] font-mono font-extrabold uppercase select-none tracking-widest"
+                textAnchor="middle"
+                fill={isHovered ? '#ffffff' : (isDimmed ? '#3f3f46' : '#a1a1aa')}
+                opacity={isDimmed ? 0.3 : 1}
+              >
+                {node.label}
+              </text>
+              <text
+                x={cx}
+                y={cy + node.r + 23}
+                className="text-[5.5px] font-mono uppercase select-none tracking-wide"
+                textAnchor="middle"
+                fill={isHovered ? '#0099ff' : '#52525b'}
+                opacity={isDimmed ? 0.2 : 0.8}
+              >
+                {node.role}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
   );
 }
 
@@ -619,15 +684,15 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                 </div>
               </div>
 
-              {/* Network graph visual right container (reutilized original SVG but beautifully wrapped) */}
+              {/* Network graph visual right container (pulsing SVG network structure, transparent without background) */}
               <motion.div 
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
-                className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] glass-card rounded-none overflow-hidden select-none hover:border-cyan-500/25 transition-all duration-300"
+                className="lg:col-span-7 flex items-center justify-center relative min-h-[385px] border border-white/[0.06] rounded-none overflow-hidden select-none hover:border-cyan-500/25 transition-all duration-300 bg-transparent"
               >
                 
-                {/* Dynamic Canvas Particle Network Constellation */}
-                <InteractiveNetworkCanvas />
+                {/* Dynamic Pulsing SVG Network Constellation */}
+                <AnimatedNetworkVisualizer />
 
                 <div className="absolute top-4 left-4 flex flex-col font-mono text-[9px] text-zinc-400 tracking-wider text-left leading-none uppercase select-none z-20">
                   <span>Estructura de Coordinación Académica</span>

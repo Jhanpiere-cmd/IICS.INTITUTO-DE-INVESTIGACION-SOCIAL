@@ -1,0 +1,29 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/src/AdminApp": ["./src/components/ui/mockAdminApp.tsx"],
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "src/components/**/*",
+    "src/lib/**/*",
+    "src/types.ts",
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/data.ts"
+  ],
+  "exclude": [
+    "src/AdminApp.tsx",
+    "components",
+    "contexts",
+    "hooks",
+    "lib",
+    "supabase",
+    "utils",
+    "types.ts",
+    "node_modules",
+    "dist"
+  ]
+}

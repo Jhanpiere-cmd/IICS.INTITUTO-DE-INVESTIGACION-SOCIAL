@@ -1,0 +1,5 @@
+{
+  "name": "Sistema de Gestión de Revista (SGR)",
+  "description": "Un sistema web colaborativo para gestionar todas las operaciones de una revista científica, utilizando React y Tailwind CSS, con una interfaz inspirada en un backend de Firebase/Firestore.",
+  "requestFramePermissions": []
+}

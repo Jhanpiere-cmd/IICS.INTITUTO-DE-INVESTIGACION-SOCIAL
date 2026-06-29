@@ -6,3 +6,17 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Credentials & Scratch files
+scratch/
+scripts/
+iics-gestion-interna/scratch/
+iics-gestion-interna/scripts/
+iics-gestion-interna/tmp/
+iics-gestion-interna/test_matrix_results.txt
+iics-gestion-interna/test_mercury_quota.js
+iics-gestion-interna/test_stream_final.mjs
+iics-gestion-interna/test_matrix.mjs
+iics-gestion-interna/tsc_output*.txt
+*.cjs
+*.ps1

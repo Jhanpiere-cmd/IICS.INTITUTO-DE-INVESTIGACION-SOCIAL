@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login Ejecutivo Split Negro Puro SGR-ACS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FFFFFF", // White as primary for maximum contrast on black
+                        "background-light": "#F3F4F6", // Gray-100 for light mode fallback
+                        "background-dark": "#000000", // Pure black for dark mode
+                        "surface-dark": "#0A0A0A", // Slightly lighter black for inputs
+                        "border-dark": "#333333", // Dark gray borders
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    borderRadius: {
+                        DEFAULT: "4px", // Minimal rounding as requested
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center font-sans antialiased text-gray-900 dark:text-gray-100 transition-colors duration-300">
+<div class="w-full h-screen flex flex-col md:flex-row overflow-hidden">
+<div class="hidden md:block md:w-1/2 relative bg-black">
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 pointer-events-none"></div>
+<img alt="Espacio de trabajo profesional minimalista en blanco y negro" class="absolute inset-0 w-full h-full object-cover grayscale opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9wcC5TxwfehczxCEtNp1JyB3q1ObENVqJEwhox9rdRppaInU74MehbpfDCCkiGELl1DgDgrBoNgeR9ab93CWjPo69PAc8Fdh8pDP4HD2-k-KvWH3_4_G0tCc2EXyJPBZs9h7yeLSUQVKRu2hxazrDfelDTuttwW8impweso2qpkjjEgoNQkajZFX74GnS_BhaCuuGNx3rfo3PUU_PNSYbsn5YZtERLFp5u_d9cfhjRm25L0RSuQrBx_7TxNDwPZ9YFxpvCXgmVMY"/>
+<div class="absolute bottom-16 left-12 z-20 max-w-lg">
+<h2 class="text-white font-serif text-4xl leading-tight mb-4">Gestión eficiente para la excelencia académica.</h2>
+<p class="text-gray-400 font-light text-sm tracking-widest uppercase">Facultad de Ciencias Sociales - UNC</p>
+</div>
+</div>
+<div class="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-20 bg-white dark:bg-background-dark relative">
+<button class="absolute top-6 right-6 p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors focus:outline-none" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons-outlined block dark:hidden">dark_mode</span>
+<span class="material-icons-outlined hidden dark:block">light_mode</span>
+</button>
+<div class="w-full max-w-md space-y-8">
+<div class="text-center">
+<div class="mx-auto h-24 w-24 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center bg-white dark:bg-black mb-6 shadow-sm dark:shadow-none">
+<div class="text-center leading-none">
+<span class="block font-serif text-2xl font-bold tracking-tight text-black dark:text-white">SGR</span>
+<span class="block text-[10px] uppercase tracking-wider text-gray-500">ACS</span>
+</div>
+</div>
+<h1 class="text-3xl font-serif font-bold tracking-tight text-gray-900 dark:text-white">
+                        SGR-ACS
+                    </h1>
+<p class="mt-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                        Sistema de Gestión de Revista
+                    </p>
+<p class="text-xs text-gray-500 dark:text-gray-500 mt-1 font-light tracking-wide">
+                        Equipo de Comunicación y Marketing
+                    </p>
+<p class="text-[10px] text-indigo-600 dark:text-gray-600 mt-1 font-medium uppercase tracking-widest">
+                        Facultad de Ciencias Sociales - UNC
+                    </p>
+</div>
+<form action="#" class="mt-8 space-y-6" method="POST">
+<div class="space-y-5">
+<div class="group">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2" for="email-address">
+                                Correo Electrónico
+                            </label>
+<div class="relative rounded-md shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-icons-outlined text-gray-400 text-lg">mail_outline</span>
+</div>
+<input autocomplete="email" class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-border-dark rounded bg-white dark:bg-surface-dark text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-white sm:text-sm transition-colors duration-200" id="email-address" name="email" placeholder="tu@email.com" required="" type="email"/>
+</div>
+</div>
+<div class="group">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2" for="password">
+                                Contraseña
+                            </label>
+<div class="relative rounded-md shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-icons-outlined text-gray-400 text-lg">lock</span>
+</div>
+<input autocomplete="current-password" class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-border-dark rounded bg-white dark:bg-surface-dark text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-white sm:text-sm transition-colors duration-200" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+</div>
+<div class="space-y-4 pt-2">
+<button class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded text-white bg-black dark:text-black dark:bg-primary hover:bg-gray-800 dark:hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black dark:focus:ring-white transition-all duration-200 shadow-lg" type="submit">
+                            Iniciar Sesión
+                        </button>
+<button class="w-full flex justify-center py-3 px-4 border border-gray-300 dark:border-border-dark text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 dark:bg-transparent dark:text-gray-300 dark:hover:text-white dark:hover:border-gray-500 transition-colors duration-200" type="button">
+                            ¿No tienes cuenta? Regístrate
+                        </button>
+</div>
+</form>
+<div class="text-center mt-6">
+<a class="font-light text-sm text-gray-500 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-300 transition-colors" href="#">
+                        ¿Olvidaste tu contraseña? <span class="underline decoration-1 underline-offset-2">Recupérala aquí.</span>
+</a>
+</div>
+<div class="pt-8 text-center">
+<p class="text-[10px] text-gray-400 uppercase tracking-widest opacity-50">© 2024 SGR-ACS System</p>
+</div>
+</div>
+</div>
+</div>
+<script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            // Defaulting to dark mode as per specific request context "Rediseño... en modo oscuro negro puro"
+            document.documentElement.classList.add('dark')
+        }
+    </script>
+
+</body></html>

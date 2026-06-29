@@ -1,0 +1,17 @@
+# Dependencias Python para Generador de Documentos
+# Instalación: pip install -r requirements.txt
+
+# Core - Generación de documentos
+python-docx==1.1.0
+
+# API Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+
+# IA - Gemini API
+google-generativeai==0.3.2
+
+# Utilidades
+Pillow==10.2.0  # Manejo de imágenes (logos)
+python-dateutil==2.8.2  # Formateo de fechas

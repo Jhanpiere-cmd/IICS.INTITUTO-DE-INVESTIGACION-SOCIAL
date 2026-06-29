@@ -47,9 +47,9 @@ export default function InteractiveMapSection({
           {/* Left Text & Detailed Statistics */}
           <div className="lg:col-span-4 flex flex-col justify-between py-2 text-left">
             <div>
-              <div className="flex items-center gap-2 self-start text-xs font-bold text-cyan-400 mb-5 max-w-max uppercase font-mono tracking-wider">
-                <Laptop className="h-4 w-4 shrink-0" />
-                <span>Geointeligencia Local</span>
+              <div className="flex items-center gap-3 self-start mb-5 max-w-max">
+                <img src="/icono-iics.png" alt="IICS" className="h-6 w-6 object-contain" />
+                <span className="text-xs font-bold text-cyan-400 uppercase font-mono tracking-wider">Geointeligencia Local</span>
               </div>
 
               <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">

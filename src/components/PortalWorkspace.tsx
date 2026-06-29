@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ProvinceData, Alert, EmergentTheme } from '../types';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface PortalWorkspaceProps {
   provinces: ProvinceData[];
@@ -59,6 +60,7 @@ export default function PortalWorkspace({
   setProvinces
 }: PortalWorkspaceProps) {
   // Navigation
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'home' | 'provinces' | 'analytics' | 'map' | 'alerts' | 'library' | 'settings'>('home');
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0);
   const [mapMode, setMapMode] = useState<'vector' | 'heatmap' | 'satellite'>('heatmap');
@@ -196,9 +198,11 @@ export default function PortalWorkspace({
           
           {/* Logo badge / user profile */}
           <div className="hidden lg:flex flex-col items-center gap-1 pb-4 mb-4 border-b border-zinc-900 w-full">
-            <div className="h-9 w-9 bg-cyan-950/40 border border-cyan-800/30 rounded-lg flex items-center justify-center text-[#0099ff] font-bold text-sm tracking-wider shadow-[0_0_15px_rgba(0,153,255,0.15)] animate-pulse">
-              IICS
-            </div>
+            <img 
+              src="/logo-iics-siglas.png" 
+              alt="IICS Logo" 
+              className="h-9 w-9 object-contain rounded-lg border border-cyan-800/30 shadow-[0_0_15px_rgba(0,153,255,0.15)] hover:scale-105 transition-transform duration-300"
+            />
           </div>
 
           {/* Navigation group */}
@@ -324,13 +328,23 @@ export default function PortalWorkspace({
           {/* Bottom user card / Logout button */}
           <div className="flex lg:flex-col lg:w-full items-center gap-4 lg:gap-2 lg:mt-auto pt-4 border-t lg:border-t border-zinc-900">
             <div className="flex flex-col text-right lg:text-center shrink-0">
-              <span className="text-[9px] font-mono text-zinc-500 font-bold block truncate max-w-[80px]">
-                analista@iics.org
+              <span className="text-[9px] font-mono text-zinc-500 font-bold block truncate max-w-[120px]" title={user?.email || 'Invitado'}>
+                {user?.email || 'Invitado (Público)'}
               </span>
-              <span className="text-[8px] font-black text-cyan-400 bg-cyan-950/40 px-1 py-0.2 uppercase border border-cyan-800/20 rounded-none mt-0.5">
-                ACTIVO
+              <span className="text-[8px] font-black text-cyan-400 bg-cyan-950/40 px-1.5 py-0.5 uppercase border border-cyan-800/20 rounded-none mt-0.5">
+                {user?.role || 'Invitado'}
               </span>
             </div>
+
+            {user && ['Director', 'Subdirector', 'Docente', 'Secretaria', 'Gestor de Redes', 'Coordinador de Eventos', 'Auxiliar Técnico'].includes(user.role) && (
+              <button
+                onClick={() => window.location.href = '/admin'}
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-cyan-400 hover:text-white bg-cyan-950/30 hover:bg-cyan-900/40 border border-cyan-800/35 hover:border-cyan-500 transition-colors cursor-pointer"
+                title="Ir a Gestión Interna (Admin)"
+              >
+                <Database className="h-5 w-5 animate-pulse" />
+              </button>
+            )}
 
             <button
               onClick={() => {

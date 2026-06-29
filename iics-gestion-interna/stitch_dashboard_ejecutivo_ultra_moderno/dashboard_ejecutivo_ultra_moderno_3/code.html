@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestión Financiera Ejecutiva Dark Mode - SGR-ACS</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'exec-black': '#000000',
+                        'exec-card-bg': '#0D0D0D', // Very dark charcoal for cards
+                        'exec-border': '#262626',
+                        'exec-blue-vib': '#3B82F6', // Vibrant blue for buttons
+                        'exec-text-primary': '#FFFFFF',
+                        'exec-text-secondary': '#A3A3A3',
+                        'exec-green': '#10B981',
+                        'exec-red': '#EF4444',
+                        'exec-chart-teal': '#2DD4BF',
+                        'exec-chart-blue': '#3B82F6',
+                    },
+                    fontFamily: {
+                        sans: ["'Inter'", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.5)',
+                        'glow': '0 0 15px rgba(59, 130, 246, 0.1)',
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .exec-card {
+                @apply bg-exec-card-bg border border-exec-border rounded-lg p-6 transition-all duration-200;
+            }
+            .exec-btn-primary {
+                @apply bg-exec-blue-vib text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-600 transition-colors shadow-glow flex items-center gap-2;
+            }
+            .exec-badge {
+                @apply px-2 py-0.5 rounded text-xs font-medium;
+            }
+            ::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                @apply bg-[#000000];
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-[#333] rounded-full;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                @apply bg-[#444];
+            }
+        }
+    </style>
+</head>
+<body class="bg-exec-black text-exec-text-primary font-sans antialiased h-screen flex overflow-hidden">
+<aside class="w-64 bg-exec-black text-white flex-shrink-0 flex flex-col justify-between border-r border-exec-border z-20">
+<div>
+<div class="h-20 flex items-center px-6 border-b border-exec-border bg-exec-black">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-white text-black flex items-center justify-center font-bold text-sm rounded-sm">
+                    SGR
+                </div>
+<span class="font-semibold text-lg tracking-tight text-white">SGR-ACS</span>
+</div>
+</div>
+<nav class="p-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+                Proyectos
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium bg-[#111] text-white rounded-md border border-exec-border" href="#">
+<span class="material-symbols-outlined text-[20px] text-exec-blue-vib">account_balance_wallet</span>
+                Gestión Financiera
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">campaign</span>
+                Comunicaciones
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+                Analítica
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">folder_open</span>
+                Recursos
+            </a>
+</nav>
+</div>
+<div class="p-4 border-t border-exec-border">
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+            Configuración
+        </a>
+<div class="mt-4 pt-4 border-t border-exec-border flex items-center gap-3 px-2">
+<img alt="User Avatar" class="w-8 h-8 rounded-full bg-gray-800 object-cover border border-gray-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDchzy8EoA-H16UAAa2odwO7FOdBus8U8L83fprJtVjq9NqPaHLdGNQ87ltsQmHuIZFWk-NWn8it7C65Hns522P3s3LGAcPURTqSJwhef0lWUU9lOU_A5F3tji2x_exck6r8dYStg4XJMdsEA8U15ELLejxf_qkSUHyhoR-1akrV4-LayPp8I3WcppRaMkZI8n55JY_GcQnMd-4ppuiYS62DSw5nupECC8tk9fhxyQT1O3fhgFK3sED6eGqVyfRfwte8CHj5WCViM4"/>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-white truncate">Edwar J.</p>
+<p class="text-[10px] text-gray-500 truncate">Director Financiero</p>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-exec-black">
+<header class="h-16 bg-exec-black border-b border-exec-border flex items-center justify-between px-8 flex-shrink-0">
+<div class="flex items-center gap-4 text-sm text-gray-500">
+<span class="text-white font-medium">Gestión Financiera</span>
+<span class="text-gray-600">/</span>
+<span>Movimientos y Balance</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-exec-green rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+<span class="text-xs font-medium text-gray-400 uppercase tracking-wide">Live Data</span>
+</div>
+<div class="h-4 w-px bg-exec-border"></div>
+<button class="text-gray-400 hover:text-white relative transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-exec-red rounded-full border-2 border-exec-black"></span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto bg-exec-black p-8">
+<div class="max-w-7xl mx-auto space-y-8">
+<div class="flex flex-col md:flex-row justify-between items-end gap-4">
+<div>
+<h1 class="text-2xl font-semibold text-white mb-1 tracking-tight flex items-center gap-3">
+<span class="material-symbols-outlined text-exec-blue-vib text-3xl">account_balance_wallet</span>
+                        Gestión Financiera
+                    </h1>
+<p class="text-sm text-gray-400">Control de presupuesto, ingresos y rendición de cuentas.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-3 py-2 bg-[#111] border border-exec-border text-gray-300 hover:text-white hover:border-gray-600 rounded-md text-sm font-medium transition-all flex items-center gap-2">
+<span>Noviembre 2025</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="px-3 py-2 bg-[#111] border border-exec-border text-gray-300 hover:text-white hover:border-gray-600 rounded-md text-sm font-medium transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Reporte Mensual
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="exec-card relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6 z-10 relative">
+<div>
+<h3 class="text-lg font-semibold text-white tracking-tight">Ingresos</h3>
+<p class="text-xs text-gray-500 mt-1">Desglose por categoría</p>
+</div>
+<span class="material-symbols-outlined text-exec-green text-2xl opacity-50 group-hover:opacity-100 transition-opacity">trending_up</span>
+</div>
+<div class="flex items-center justify-around">
+<div class="relative w-40 h-40 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full" style="background: conic-gradient(#2DD4BF 0% 73%, #3B82F6 73% 100%); mask: radial-gradient(transparent 65%, black 66%); -webkit-mask: radial-gradient(transparent 65%, black 66%);">
+</div>
+<div class="text-center z-10">
+<span class="block text-2xl font-bold text-white">S/ 141.5</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-exec-chart-teal"></span>
+<div>
+<p class="text-xs text-gray-400 uppercase tracking-wider">Donación</p>
+<p class="text-sm font-medium text-white">73%</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-exec-chart-blue"></span>
+<div>
+<p class="text-xs text-gray-400 uppercase tracking-wider">Evento</p>
+<p class="text-sm font-medium text-white">27%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exec-card relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6 z-10 relative">
+<div>
+<h3 class="text-lg font-semibold text-white tracking-tight">Gastos</h3>
+<p class="text-xs text-gray-500 mt-1">Desglose por categoría</p>
+</div>
+<span class="material-symbols-outlined text-exec-red text-2xl opacity-50 group-hover:opacity-100 transition-opacity">trending_down</span>
+</div>
+<div class="flex items-center justify-around">
+<div class="relative w-40 h-40 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full" style="background: conic-gradient(#3B82F6 0% 94%, #10B981 94% 100%); mask: radial-gradient(transparent 65%, black 66%); -webkit-mask: radial-gradient(transparent 65%, black 66%);">
+</div>
+<div class="text-center z-10">
+<span class="block text-2xl font-bold text-white">S/ 103.5</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-exec-chart-blue"></span>
+<div>
+<p class="text-xs text-gray-400 uppercase tracking-wider">Materiales</p>
+<p class="text-sm font-medium text-white">94%</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-exec-green"></span>
+<div>
+<p class="text-xs text-gray-400 uppercase tracking-wider">Alimentos</p>
+<p class="text-sm font-medium text-white">6%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="exec-card p-0 overflow-hidden bg-exec-card-bg border-exec-border">
+<div class="p-6 border-b border-exec-border flex flex-col sm:flex-row justify-between items-center gap-4 bg-[#0A0A0A]">
+<h2 class="text-lg font-semibold text-white">Movimientos Recientes</h2>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<div class="relative group">
+<button class="bg-[#111] text-gray-400 border border-exec-border px-3 py-1.5 rounded-md text-sm flex items-center gap-2 hover:border-gray-600 hover:text-white transition-all w-full sm:w-auto justify-between">
+                                Todas las categorías
+                                <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<button class="exec-btn-primary flex-shrink-0">
+<span class="material-symbols-outlined text-sm">add</span>
+                            Registrar
+                        </button>
+</div>
+</div>
+<div class="divide-y divide-exec-border">
+<div class="p-5 hover:bg-[#111] transition-colors group flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+<div class="w-10 h-10 rounded-full bg-exec-green/10 flex items-center justify-center flex-shrink-0 border border-exec-green/20">
+<span class="material-symbols-outlined text-exec-green text-xl">trending_up</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-medium text-white mb-1">Venta de revista-CONAESO-2025-PUNO</h4>
+<p class="text-xs text-gray-400 truncate">En el CONAESO 2025 en Puno, en la feria donde se exhibió la revista, vendimos 1 ejemplar...</p>
+<div class="flex items-center gap-3 mt-1.5">
+<span class="text-[10px] text-gray-500 bg-[#151515] px-1.5 py-0.5 rounded border border-exec-border">Evento</span>
+<span class="text-[10px] text-gray-500">2025-11-21</span>
+<span class="text-[10px] text-exec-blue-vib font-medium">Edwar Jhanpiere Saenz Tello</span>
+</div>
+</div>
+<div class="text-right flex-shrink-0 flex flex-col items-end">
+<span class="text-exec-green font-medium text-sm">+ S/ 10.00</span>
+<a class="text-[10px] text-exec-blue-vib hover:text-blue-400 flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" href="#">
+                                Ver Detalles <span class="material-symbols-outlined text-[10px]">description</span>
+</a>
+</div>
+</div>
+<div class="p-5 hover:bg-[#111] transition-colors group flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+<div class="w-10 h-10 rounded-full bg-exec-red/10 flex items-center justify-center flex-shrink-0 border border-exec-red/20">
+<span class="material-symbols-outlined text-exec-red text-xl">trending_down</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-medium text-white mb-1">Impresión y anillado de Revistas</h4>
+<p class="text-xs text-gray-400 truncate">Se imprimieron ejemplares de la revista para su venta en la feria del Congreso 2025...</p>
+<div class="flex items-center gap-3 mt-1.5">
+<span class="text-[10px] text-gray-500 bg-[#151515] px-1.5 py-0.5 rounded border border-exec-border">Materiales</span>
+<span class="text-[10px] text-gray-500">2025-11-21</span>
+<span class="text-[10px] text-exec-blue-vib font-medium">Edwar Jhanpiere Saenz Tello</span>
+</div>
+</div>
+<div class="text-right flex-shrink-0 flex flex-col items-end">
+<span class="text-exec-red font-medium text-sm">- S/ 32.00</span>
+<a class="text-[10px] text-exec-blue-vib hover:text-blue-400 flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" href="#">
+                                Ver Detalles <span class="material-symbols-outlined text-[10px]">description</span>
+</a>
+</div>
+</div>
+<div class="p-5 hover:bg-[#111] transition-colors group flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+<div class="w-10 h-10 rounded-full bg-exec-green/10 flex items-center justify-center flex-shrink-0 border border-exec-green/20">
+<span class="material-symbols-outlined text-exec-green text-xl">trending_up</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-medium text-white mb-1">Donación -Director-CM</h4>
+<p class="text-xs text-gray-400 truncate">El director, para comprar los materiales para el congreso, como el centro federado había destinado 100 soles...</p>
+<div class="flex items-center gap-3 mt-1.5">
+<span class="text-[10px] text-gray-500 bg-[#151515] px-1.5 py-0.5 rounded border border-exec-border">Donación</span>
+<span class="text-[10px] text-gray-500">2025-11-21</span>
+<span class="text-[10px] text-exec-blue-vib font-medium">Edwar Jhanpiere Saenz Tello</span>
+</div>
+</div>
+<div class="text-right flex-shrink-0 flex flex-col items-end">
+<span class="text-exec-green font-medium text-sm">+ S/ 3.50</span>
+<a class="text-[10px] text-exec-blue-vib hover:text-blue-400 flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" href="#">
+                                Ver Detalles <span class="material-symbols-outlined text-[10px]">description</span>
+</a>
+</div>
+</div>
+<div class="p-5 hover:bg-[#111] transition-colors group flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+<div class="w-10 h-10 rounded-full bg-exec-green/10 flex items-center justify-center flex-shrink-0 border border-exec-green/20">
+<span class="material-symbols-outlined text-exec-green text-xl">trending_up</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-medium text-white mb-1">Venta de 2 revistas-CONAESO-2025-PUNO</h4>
+<p class="text-xs text-gray-400 truncate">En el CONAESO 2025 en Puno, en la feria donde se exhibió la revista, vendimos 2 ejemplares con un descuento...</p>
+<div class="flex items-center gap-3 mt-1.5">
+<span class="text-[10px] text-gray-500 bg-[#151515] px-1.5 py-0.5 rounded border border-exec-border">Ventas</span>
+<span class="text-[10px] text-gray-500">2025-11-21</span>
+<span class="text-[10px] text-exec-blue-vib font-medium">Edwar Jhanpiere Saenz Tello</span>
+</div>
+</div>
+<div class="text-right flex-shrink-0 flex flex-col items-end">
+<span class="text-exec-green font-medium text-sm">+ S/ 18.00</span>
+<a class="text-[10px] text-exec-blue-vib hover:text-blue-400 flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" href="#">
+                                Ver Detalles <span class="material-symbols-outlined text-[10px]">description</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

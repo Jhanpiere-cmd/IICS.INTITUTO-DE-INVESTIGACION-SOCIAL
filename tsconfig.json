@@ -22,5 +22,12 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "Sistema de gestion Interna",
+    "iics-gestion-interna",
+    "supabase"
+  ]
 }

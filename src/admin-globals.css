@@ -1,0 +1,1853 @@
+
+
+
+.admin-theme {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 10%;
+  --accent-foreground: 0 0% 100%;
+  --border: 0 0% 12%;
+  --exec-bg-dark: #000000;
+  --exec-bg-card: #0d0d0d;
+  --exec-border: #262626;
+  --exec-text-slate: #a3a3a3;
+}
+
+.dark .admin-theme {
+  --background: 0 0% 0%;
+  --foreground: 210 40% 98%;
+  --card: 0 0% 4%;
+  --card-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --exec-bg-dark: #000000;
+  --exec-bg-card: #0d0d0d;
+  --exec-border: #262626;
+  --exec-text-slate: #a3a3a3;
+}
+
+html:not(.dark) .admin-theme {
+  --background: 210 20% 98%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --border: 214.3 31.8% 91.4%;
+  --exec-bg-dark: #f9fafb;
+  --exec-bg-card: #ffffff;
+  --exec-border: #e5e7eb;
+  --exec-text-slate: #4b5563;
+}
+
+
+.dark-black .admin-theme {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 10%;
+  --accent-foreground: 0 0% 100%;
+  --border: 0 0% 12%;
+  --exec-bg-dark: #000000;
+  --exec-bg-card: #0d0d0d;
+  --exec-border: #262626;
+  --exec-text-slate: #a3a3a3;
+}
+
+
+.admin-theme {
+  /* Scoped styles */
+  @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   STITCH ULTRA MODERN BLACK DESIGN SYSTEM
+   Basado en: stitch_dashboard_ejecutivo_ultra_moderno
+   ===================================================== */
+
+
+
+  /* === CARDS EJECUTIVAS === */
+  .exec-card {
+    background-color: var(--exec-bg-card);
+    border: 1px solid var(--exec-border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
+    border-radius: 0.125rem;
+    transition: all 0.2s;
+    color: var(--exec-text-slate);
+  }
+
+  .exec-card:hover {
+    border-color: rgba(0, 136, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 136, 255, 0.15);
+  }
+
+  /* === BOTONES === */
+  .exec-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.125rem;
+    transition: all 0.15s;
+  }
+
+  .exec-btn-primary {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.125rem;
+    transition: all 0.15s;
+    background-color: #0088FF;
+    color: #ffffff;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .exec-btn-secondary {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.125rem;
+    transition: all 0.15s;
+    background-color: var(--exec-bg-card);
+    border: 1px solid var(--exec-border);
+    color: var(--exec-text-slate);
+  }
+
+  /* === INPUTS === */
+  .exec-input {
+    border: 1px solid var(--exec-border);
+    background-color: var(--exec-bg-dark);
+    color: hsl(var(--foreground));
+    font-size: 0.875rem;
+    border-radius: 2px;
+    transition: all 0.15s;
+    width: 100%;
+  }
+
+  .exec-input::placeholder {
+    color: #6b7280;
+  }
+
+  .exec-input:focus {
+    outline: none;
+    border-color: #0088FF;
+    box-shadow: 0 0 0 1px #0088FF;
+  }
+
+  /* === FILTROS === */
+  .exec-filter {
+    background-color: var(--exec-bg-card);
+    border: 1px solid var(--exec-border);
+    color: var(--exec-text-slate);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    padding: 0.5rem 0.75rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23525252' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.6rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25em 1.25em;
+    padding-right: 2.25rem;
+  }
+
+  .exec-filter:hover {
+    border-color: var(--exec-border);
+    color: hsl(var(--foreground));
+    background-color: var(--exec-bg-dark);
+  }
+
+  .exec-filter:focus {
+    outline: none;
+    border-color: #0088FF;
+    box-shadow: 0 0 0 1px rgba(0, 136, 255, 0.3), 0 0 15px rgba(0, 136, 255, 0.1);
+    color: hsl(var(--foreground));
+  }
+
+  /* === SELECT CONTAINERS CON ICONOS === */
+  .exec-select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .exec-select-container .material-symbols-outlined {
+    position: absolute;
+    left: 0.75rem;
+    color: #6b7280;
+    pointer-events: none;
+    transition: color 0.2s;
+    font-size: 18px;
+  }
+
+  .exec-select-container:focus-within .material-symbols-outlined {
+    color: #0088FF;
+  }
+
+  .exec-select-container select {
+    padding-left: 2.5rem;
+  }
+
+  /* === SELECT OPTION DARK === */
+  .exec-filter option,
+  .exec-input option,
+  select option {
+    background-color: var(--exec-bg-card);
+    color: hsl(var(--foreground));
+  }
+
+  /* === SCROLLBARS ESTILO STITCH === */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--exec-bg-dark);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--exec-border);
+    border: 2px solid var(--exec-bg-dark);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--exec-text-slate);
+  }
+
+  /* === MATERIAL SYMBOLS === */
+  .material-symbols-outlined {
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 20;
+  }
+
+  /* === SGR CORPORATE BLUE === */
+  :root {
+    --exec-blue-vib: #0088ff; /* Azul Corporativo SGR */
+    --exec-blue-glow: rgba(0, 136, 255, 0.4);
+  }
+
+  .exec-electric-glow {
+    box-shadow: 0 0 15px var(--exec-blue-glow);
+  }
+
+  .exec-text-glow {
+    text-shadow: 0 0 8px var(--exec-blue-glow);
+  }
+
+  .exec-border-neon {
+    border-color: #00E5FF !important;
+  }
+
+  /* === CUSTOM SCROLLBAR UTILITY === */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #262626;
+    border-radius: 10px;
+    border: 1px solid #000000;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #404040;
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #262626 transparent;
+  }
+
+
+
+
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --border: 214.3 31.8% 91.4%;
+    --exec-bg-dark: #f9fafb;
+    --exec-bg-card: #ffffff;
+    --exec-border: #e5e7eb;
+    --exec-text-slate: #4b5563;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 210 40% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --exec-bg-dark: #000000;
+    --exec-bg-card: #0d0d0d;
+    --exec-border: #262626;
+    --exec-text-slate: #a3a3a3;
+  }
+
+
+
+  
+
+  body {
+    background-color: hsl(var(--background)); color: hsl(var(--foreground));
+  }
+
+
+
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Scrollbar personalizado para modo oscuro */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+  border: 2px solid #000000;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+
+/* Firefox scrollbar para modo oscuro */
+.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 #000000;
+  /* thumb track */
+}
+
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none !important;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none !important;
+  }
+
+  /* === WORD-LIKE A4 EDITOR === */
+  .a4-editor-container {
+    background-color: #141414;
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .a4-page {
+    background-color: #ffffff;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: visible;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 2.5cm;
+    margin: 0 auto;
+    color: black !important;
+  }
+
+  /* Ribbon Styling for Document Editor */
+  .editor-ribbon {
+    background-color: #0A0A0A;
+    border-bottom: 1px solid var(--exec-border);
+    padding: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  /* Sobrescribir Quill para modo A4 */
+  .ql-container.ql-snow {
+    border: none !important;
+    font-size: 11pt !important;
+    font-family: 'Inter', 'Arial', sans-serif !important;
+  }
+
+  .ql-editor {
+    padding: 0 !important;
+    overflow-y: visible !important;
+    height: auto !important;
+  }
+
+
+/* =====================================================
+   MODO OSCURO NEGRO PROFESIONAL (dark-black)
+   Fondo negro puro con máximo contraste
+   ===================================================== */
+
+.dark-black & {
+  /* Variables de color para dark-black */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 10%;
+  --accent-foreground: 0 0% 100%;
+  --border: 0 0% 12%;
+  --exec-bg-dark: #000000;
+  --exec-bg-card: #0d0d0d;
+  --exec-border: #262626;
+  --exec-text-slate: #a3a3a3;
+}
+
+/* ===== BASE - Aplicar fondo negro puro ===== */
+.dark-black & body,
+.dark-black & #root {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* ===== SOBRESCRITURA CLASES DARK: ===== */
+.dark-black & .dark\:bg-slate-900 {
+  background-color: #000000 !important;
+}
+
+.dark-black & .dark\:bg-slate-950 {
+  background-color: #0a0a0a !important;
+}
+
+.dark-black & .dark\:bg-slate-800 {
+  background-color: #141414 !important;
+}
+
+.dark-black & .dark\:bg-slate-700 {
+  background-color: #1a1a1a !important;
+}
+
+.dark-black & .dark\:from-slate-900 {
+  --tw-gradient-from: #000000 !important;
+}
+
+.dark-black & .dark\:to-slate-950 {
+  --tw-gradient-to: #0a0a0a !important;
+}
+
+/* ===== BASE FORZADA - SOBRESCRIBIR BLANCOS ===== */
+/* Esto garantiza que si Tailwind falla en detectar dark mode, forzamos oscuro */
+.dark-black & .bg-white,
+.dark-black & .bg-gray-50,
+.dark-black & .bg-slate-50 {
+  background-color: #0a0a0a !important;
+  background-image: linear-gradient(135deg, #0a0a0a, #121212) !important;
+  color: #ffffff !important;
+  border-color: #1f1f1f !important;
+}
+
+/* Forzar textos oscuros a blanco */
+.dark-black & .text-gray-900,
+.dark-black & .text-gray-800,
+.dark-black & .text-slate-900,
+.dark-black & .text-slate-800,
+.dark-black & .text-black {
+  color: #ffffff !important;
+}
+
+/* ===== TEXTO - BLANCO PURO ===== */
+.dark-black & .dark\:text-white {
+  color: #ffffff !important;
+}
+
+.dark-black & .dark\:text-gray-300 {
+  color: #e5e5e5 !important;
+}
+
+.dark-black & .dark\:text-gray-400 {
+  color: #a3a3a3 !important;
+}
+
+.dark-black & .dark\:text-slate-400 {
+  color: #999999 !important;
+}
+
+.dark-black & .dark\:text-slate-500 {
+  color: #737373 !important;
+}
+
+.dark-black & .dark\:text-blue-400,
+.dark-black & .dark\:text-blue-500,
+.dark-black & .dark\:text-indigo-400 {
+  color: #ffffff !important;
+  /* Todos los azules a blanco */
+}
+
+/* ===== BORDES ===== */
+.dark-black & .dark\:border-slate-800,
+.dark-black & .dark\:border-slate-700,
+.dark-black & .dark\:border-white\/10 {
+  border-color: #1f1f1f !important;
+}
+
+/* ===== SIDEBAR ===== */
+.dark-black & aside {
+  background: linear-gradient(to bottom, #000000, #0a0a0a) !important;
+  border-right-color: #1f1f1f !important;
+}
+
+/* ===== HEADER ===== */
+.dark-black & header {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px);
+  border-bottom-color: #1f1f1f !important;
+}
+
+/* ===== CARDS Y SUPERFICIES ===== */
+.dark-black & .dark\:bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-black & .dark\:bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.dark-black & .dark\:hover\:bg-white\/5:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ===== INPUTS, TEXTAREAS, SELECTS ===== */
+.dark-black & input,
+.dark-black & textarea,
+.dark-black & select {
+  background-color: #171717 !important;
+  border-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+.dark-black & input::placeholder,
+.dark-black & textarea::placeholder,
+.dark-black & select::placeholder {
+  color: #666666 !important;
+}
+
+.dark-black & select option {
+  background-color: #171717 !important;
+  color: #ffffff !important;
+}
+
+.dark-black & input:focus,
+.dark-black & textarea:focus,
+.dark-black & select:focus {
+  border-color: #3b82f6 !important;
+  /* Azul brillante */
+  background-color: #141414 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  /* GLOW AZUL */
+}
+
+/* ===== BOTONES HOVER ===== */
+.dark-black & .dark\:hover\:bg-slate-800:hover {
+  background-color: #1f1f1f !important;
+}
+
+.dark-black & .dark\:hover\:bg-slate-700:hover {
+  background-color: #282828 !important;
+}
+
+.dark-black & .dark\:hover\:bg-gray-100:hover {
+  background-color: #1a1a1a !important;
+}
+
+/* ===== DROPDOWNS Y MODALES ===== */
+.dark-black & .dark\:bg-slate-900\/80 {
+  background-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.dark-black & .dark\:bg-slate-900\/50 {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* ===== SCROLLBAR ===== */
+.dark-black & ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark-black & ::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+.dark-black & ::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 4px;
+  border: 2px solid #000000;
+}
+
+.dark-black & ::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+
+.dark-black & * {
+  scrollbar-width: thin;
+  scrollbar-color: #262626 #000000;
+}
+
+/* ===== GRADIENTES DE TEXTO ===== */
+.dark-black & .dark\:from-white {
+  --tw-gradient-from: #ffffff !important;
+}
+
+.dark-black & .dark\:to-gray-400,
+.dark-black & .dark\:to-slate-400 {
+  --tw-gradient-to: #999999 !important;
+}
+
+/* ===== HOVER ESTADOS ===== */
+.dark-black & .dark\:hover\:text-white:hover {
+  color: #ffffff !important;
+}
+
+.dark-black & .dark\:hover\:text-gray-300:hover {
+  color: #e5e5e5 !important;
+}
+
+/* ===== BACKGROUNDS DISABLED ===== */
+.dark-black & .dark\:bg-slate-700\/50 {
+  background-color: rgba(20, 20, 20, 0.5) !important;
+}
+
+/* ===== SOMBRAS ===== */
+.dark-black & .shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-black & .dark\:shadow-indigo-900\/50 {
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* =====================================================
+   CALENDARIO - ESPECIFICO
+   ===================================================== */
+
+/* Celdas de días del calendario */
+.dark-black & .calendar-day,
+.dark-black & [class*="calendar"] [class*="day"],
+.dark-black & .bg-white.border {
+  background: linear-gradient(135deg, #0f0f0f, #141414) !important;
+  color: #ffffff !important;
+  border-color: #1f1f1f !important;
+}
+
+/* Día actual (today) con GLOW */
+.dark-black & .calendar-day.today,
+.dark-black & [class*="today"],
+.dark-black & .border-indigo-500 {
+  border: 2px solid #3b82f6 !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5) !important;
+  /* GLOW AZUL */
+  background: linear-gradient(135deg, #0a0a0a, #141414) !important;
+}
+
+/* Números de días */
+.dark-black & .calendar-day span,
+.dark-black & [class*="calendar"] [class*="day"] span {
+  color: #ffffff !important;
+}
+
+/* Días con eventos */
+.dark-black & .calendar-event,
+.dark-black & [class*="event-pill"] {
+  background: linear-gradient(135deg, #1e40af, #3b82f6) !important;
+  /* Azul gradiente */
+  color: #ffffff !important;
+  font-size: 0.7rem !important;
+  padding: 2px 6px !important;
+  border-radius: 2px !important;
+}
+
+/* Eventos tipo reunión */
+.dark-black & [class*="event"][class*="meeting"] {
+  background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+}
+
+/* Eventos tipo tarea */
+.dark-black & [class*="event"][class*="task"] {
+  background: linear-gradient(135deg, #059669, #10b981) !important;
+}
+
+/* Cabecera del calendario */
+.dark-black & .calendar-header,
+.dark-black & [class*="calendar"] h2,
+.dark-black & [class*="calendar"] h3 {
+  color: #ffffff !important;
+}
+
+/* Botón "Hoy" del calendario */
+.dark-black & button[class*="bg-indigo"],
+.dark-black & .bg-indigo-600 {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+  /* GLOW */
+}
+
+.dark-black & button[class*="bg-indigo"]:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5) !important;
+  /* GLOW MÁS FUERTE */
+}
+
+/* =====================================================
+   TAREAS - CARDS COMPACTAS
+   ===================================================== */
+
+/* Cards de tareas más pequeñas */
+.dark-black & .task-card,
+.dark-black & [class*="task-"] {
+  background: linear-gradient(135deg, #0a0a0a, #121212) !important;
+  border: 1px solid #1f1f1f !important;
+  padding: 0.75rem !important;
+  /* MÁS COMPACTO */
+  margin-bottom: 0.5rem !important;
+  /* MENOS ESPACIO */
+  border-radius: 2px !important;
+}
+
+.dark-black & .task-card:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.2) !important;
+  /* GLOW SUTIL */
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* Título de tarea */
+.dark-black & .task-title,
+.dark-black & .task-card h3,
+.dark-black & .task-card h4 {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  /* MÁS PEQUEÑO */
+}
+
+/* Descripción de tarea */
+.dark-black & .task-description,
+.dark-black & .task-card p {
+  color: #a3a3a3 !important;
+  font-size: 0.85rem !important;
+  /* MÁS PEQUEÑO */
+  line-height: 1.4 !important;
+}
+
+/* Badges de prioridad */
+.dark-black & .task-priority,
+.dark-black & .badge {
+  font-size: 0.7rem !important;
+  /* COMPACTO */
+  padding: 2px 8px !important;
+  border-radius: 2px !important;
+  font-weight: 600 !important;
+}
+
+.dark-black & .task-priority-high,
+.dark-black & .priority-high {
+  background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3) !important;
+}
+
+.dark-black & .task-priority-medium,
+.dark-black & .priority-medium {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+  color: #000000 !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
+}
+
+.dark-black & .task-priority-low,
+.dark-black & .priority-low {
+  background: linear-gradient(135deg, #10b981, #34d399) !important;
+  color: #000000 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Checkboxes */
+.dark-black & .task-checkbox,
+.dark-black & input[type="checkbox"] {
+  border-color: #3b82f6 !important;
+  background-color: #0a0a0a !important;
+}
+
+.dark-black & input[type="checkbox"]:checked {
+  background-color: #3b82f6 !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* =====================================================
+   FORMULARIOS - ASIGNAR TAREAS/REUNIONES
+   ===================================================== */
+
+/* Labels */
+.dark-black & label {
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  font-size: 0.9rem !important;
+}
+
+/* Inputs con gradiente sutil */
+.dark-black & input[type="text"],
+.dark-black & input[type="email"],
+.dark-black & input[type="date"],
+.dark-black & input[type="time"],
+.dark-black & input[type="number"] {
+  background: linear-gradient(135deg, #0a0a0a, #0f0f0f) !important;
+  border: 1px solid #1f1f1f !important;
+  color: #ffffff !important;
+  padding: 0.65rem !important;
+  border-radius: 2px !important;
+}
+
+/* Textarea */
+.dark-black & textarea {
+  background: linear-gradient(135deg, #0a0a0a, #0f0f0f) !important;
+  border: 1px solid #1f1f1f !important;
+  color: #ffffff !important;
+  min-height: 80px !important;
+}
+
+/* Select dropdowns */
+.dark-black & select {
+  background: linear-gradient(135deg, #0a0a0a, #0f0f0f) !important;
+  border: 1px solid #1f1f1f !important;
+  color: #ffffff !important;
+}
+
+/* Botón primario con GLOW */
+.dark-black & button[type="submit"],
+.dark-black & .btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 2px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+  /* GLOW */
+}
+
+.dark-black & button[type="submit"]:hover,
+.dark-black & .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  box-shadow: 0 6px 25px rgba(59, 130, 246, 0.5) !important;
+  /* GLOW MÁS FUERTE */
+  transform: translateY(-2px);
+}
+
+/* =====================================================
+   EVENTOS / REUNIONES - CARDS
+   ===================================================== */
+
+.dark-black & .event-card {
+  background: linear-gradient(135deg, #0a0a0a, #101010) !important;
+  border-left: 4px solid #3b82f6 !important;
+  color: #ffffff !important;
+  padding: 1rem !important;
+  border-radius: 2px !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.dark-black & .event-card:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2) !important;
+  /* GLOW */
+  transform: translateX(4px);
+  transition: all 0.2s ease;
+}
+
+.dark-black & .event-title {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.dark-black & .event-time {
+  color: #10b981 !important;
+  /* Verde */
+  font-weight: 500 !important;
+}
+
+.dark-black & .event-location {
+  color: #a3a3a3 !important;
+}
+
+.dark-black & .event-badge {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+  border: 1px solid #3b82f6 !important;
+  padding: 2px 10px !important;
+  border-radius: 12px !important;
+  font-size: 0.75rem !important;
+}
+
+/* =====================================================
+   IA / CHAT ASISTENTE
+   ===================================================== */
+
+.dark-black & .ai-chat-container {
+  background: #000000 !important;
+}
+
+/* Mensajes del usuario */
+.dark-black & .ai-message-user,
+.dark-black & [class*="message-user"] {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* Mensajes del asistente */
+.dark-black & .ai-message-assistant,
+.dark-black & [class*="message-assistant"] {
+  background: linear-gradient(135deg, #141414, #1a1a1a) !important;
+  color: #ffffff !important;
+  border: 1px solid #1f1f1f !important;
+  border-radius: 2px !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* Input del chat */
+.dark-black & .ai-input {
+  background: linear-gradient(135deg, #0a0a0a, #0f0f0f) !important;
+  border: 2px solid #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.dark-black & .ai-btn-send {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* =====================================================
+   FINANZAS / GRÁFICOS
+   ===================================================== */
+
+.dark-black & .finance-card {
+  background: linear-gradient(135deg, #0a0a0a, #0f0f0f) !important;
+  border: 1px solid #1f1f1f !important;
+  padding: 1.25rem !important;
+  border-radius: 2px !important;
+}
+
+.dark-black & .finance-amount {
+  color: #ffffff !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+}
+
+.dark-black & .finance-label {
+  color: #a3a3a3 !important;
+  font-size: 0.9rem !important;
+}
+
+.dark-black & .finance-positive {
+  color: #10b981 !important;
+}
+
+.dark-black & .finance-negative {
+  color: #ef4444 !important;
+}
+
+/* Recharts/Charts */
+.dark-black & .recharts-wrapper,
+.dark-black & .recharts-surface {
+  background: transparent !important;
+}
+
+.dark-black & .recharts-text {
+  fill: #ffffff !important;
+}
+
+.dark-black & .recharts-cartesian-grid-horizontal line,
+.dark-black & .recharts-cartesian-grid-vertical line {
+  stroke: #1f1f1f !important;
+  stroke-opacity: 0.5 !important;
+}
+
+.dark-black & .recharts-legend-item-text {
+  color: #ffffff !important;
+}
+
+/* =====================================================
+   ICONOS GLOBALES
+   ===================================================== */
+
+/* SVG por defecto en blanco */
+.dark-black & svg {
+  color: #ffffff !important;
+}
+
+/* Iconos con colores de acento */
+.dark-black & .icon-primary {
+  color: #3b82f6 !important;
+}
+
+.dark-black & .icon-success {
+  color: #10b981 !important;
+}
+
+.dark-black & .icon-warning {
+  color: #f59e0b !important;
+}
+
+.dark-black & .icon-danger {
+  color: #ef4444 !important;
+}
+
+/* Iconos de navegación */
+.dark-black & .sidebar-icon {
+  color: #a3a3a3 !important;
+}
+
+.dark-black & .sidebar-icon.active {
+  color: #3b82f6 !important;
+}
+
+/* =====================================================
+   EFECTOS PREMIUM GENERALES
+   ===================================================== */
+
+/* Transiciones suaves */
+.dark-black & * {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism */
+.dark-black & .glass-effect {
+  background: rgba(20, 20, 20, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Hover lift effect */
+.dark-black & .hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Glow effect genérico */
+.dark-black & .glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* =====================================================
+   PROPUESTAS / NOTICIAS
+   ===================================================== */
+
+.dark-black & .proposal-card,
+.dark-black & .news-card {
+  background: linear-gradient(to right, #0a0a0a, #121212) !important;
+  border: 1px solid #1f1f1f !important;
+  color: #ffffff !important;
+  padding: 1rem !important;
+  border-radius: 2px !important;
+}
+
+.dark-black & .proposal-header,
+.dark-black & .news-header {
+  color: #ffffff !important;
+  border-bottom: 1px solid #1f1f1f !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.dark-black & .proposal-status {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: #ffffff !important;
+  padding: 4px 12px !important;
+  border-radius: 2px !important;
+  font-size: 0.75rem !important;
+}
+
+.dark-black & .news-date {
+  color: #10b981 !important;
+  font-weight: 500 !important;
+}
+
+.dark-black & .proposal-description,
+.dark-black & .news-content {
+  color: #cccccc !important;
+  line-height: 1.6 !important;
+}
+
+/* =====================================================
+   FIX ESPECÍFICO: TEXTOS AZULES A BLANCOS
+   ===================================================== */
+
+.dark-black & h1,
+.dark-black & h2,
+.dark-black & h3,
+.dark-black & h4,
+.dark-black & h5,
+.dark-black & h6 {
+  color: #ffffff !important;
+}
+
+.dark-black & p {
+  color: #e5e5e5 !important;
+}
+
+.dark-black & a {
+  color: #60a5fa !important;
+}
+
+.dark-black & a:hover {
+  color: #93c5fd !important;
+}
+
+/* Cualquier texto con clase text-blue se vuelve blanco */
+.dark-black & [class*="text-blue"] {
+  color: #ffffff !important;
+}
+
+.dark-black & [class*="text-indigo"] {
+  color: #ffffff !important;
+}
+
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .min-h-screen-safe {
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+
+  .h-screen-safe {
+    height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+
+  .mt-safe {
+    margin-top: env(safe-area-inset-top);
+  }
+
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+
+
+
+/* === MOTOR DE RENDERIZADO PARA NOTICIAS (MARKDOWN) === */
+.news-content {
+  color: #a3a3a3 !important;
+  line-height: 1.7 !important;
+  font-size: 15px !important;
+}
+
+.news-content h1 {
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin-bottom: 1.5rem !important;
+  border-bottom: 1px solid rgba(0, 136, 255, 0.2) !important;
+  padding-bottom: 0.5rem !important;
+  margin-top: 2rem !important;
+}
+
+.news-content h2 {
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
+  color: #0088FF !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin-bottom: 1rem !important;
+  margin-top: 1.8rem !important;
+}
+
+.news-content h3 {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  margin-bottom: 0.8rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.news-content p {
+  margin-bottom: 1.2rem !important;
+}
+
+.news-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.news-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.news-content li {
+  margin-bottom: 0.5rem !important;
+}
+
+.news-content strong {
+  font-weight: 800 !important;
+  color: #ffffff !important;
+}
+
+.news-content a {
+  color: #0088FF !important;
+  text-decoration: underline !important;
+  transition: opacity 0.2s !important;
+}
+
+.news-content a:hover {
+  opacity: 0.8 !important;
+}
+
+.news-content blockquote {
+  border-left: 4px solid rgba(0, 136, 255, 0.5) !important;
+  background: rgba(0, 136, 255, 0.05) !important;
+  padding: 1rem 1.5rem !important;
+  font-style: italic !important;
+  margin-bottom: 1.5rem !important;
+  color: #9ca3af !important;
+}
+
+/* =====================================================
+   AUTOMATIC LIGHT THEME CONTRAST & CARD OVERRIDES
+   ===================================================== */
+html:not(.dark) & body {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+/* Force dark pages and screens to have light grey background */
+html:not(.dark) & .bg-black.min-h-screen,
+html:not(.dark) & body,
+html:not(.dark) & #root,
+html:not(.dark) & .bg-background {
+  background-color: var(--exec-bg-dark) !important;
+}
+
+html:not(.dark) & [class*="bg-[#0A0A0A]"],
+html:not(.dark) & [class*="bg-[#0a0a0a]"],
+html:not(.dark) & [class*="bg-[#0D0D0D]"],
+html:not(.dark) & [class*="bg-[#0d0d0d]"],
+html:not(.dark) & [class*="bg-[#151515]"],
+html:not(.dark) & [class*="bg-[#111111]"],
+html:not(.dark) & [class*="bg-[#171717]"],
+html:not(.dark) & [class*="bg-[#111]"],
+html:not(.dark) & [class*="bg-[#121212]"],
+html:not(.dark) & [class*="bg-[#141414]"],
+html:not(.dark) & [class*="bg-[#1a1a1a]"],
+html:not(.dark) & [class*="bg-[#1A1A1A]"],
+html:not(.dark) & [class*="bg-[#050505]"],
+html:not(.dark) & [class*="bg-[#000000]"],
+html:not(.dark) & [class*="bg-zinc-950"],
+html:not(.dark) & [class*="bg-zinc-900"],
+html:not(.dark) & [class*="bg-zinc-800"],
+html:not(.dark) & [class*="bg-zinc-800/40"],
+html:not(.dark) & .bg-black,
+html:not(.dark) & .bg-zinc-950,
+html:not(.dark) & .bg-zinc-900,
+html:not(.dark) & .bg-zinc-800,
+html:not(.dark) & .bg-slate-900,
+html:not(.dark) & .bg-slate-950,
+html:not(.dark) & .bg-slate-800,
+html:not(.dark) & .bg-neutral-950,
+html:not(.dark) & .bg-neutral-900,
+html:not(.dark) & .bg-neutral-800 {
+  background-color: var(--exec-bg-card) !important;
+}
+
+/* Translucent overlays and modal backdrops in Light Mode (Glassmorphic) */
+html:not(.dark) & [class*="bg-black/95"],
+html:not(.dark) & [class*="bg-black/90"],
+html:not(.dark) & [class*="bg-black/85"],
+html:not(.dark) & [class*="bg-black/80"] {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html:not(.dark) & [class*="bg-black/75"],
+html:not(.dark) & [class*="bg-black/70"],
+html:not(.dark) & [class*="bg-black/60"],
+html:not(.dark) & [class*="bg-black/50"] {
+  background-color: rgba(255, 255, 255, 0.65) !important;
+}
+
+html:not(.dark) & [class*="bg-black/40"],
+html:not(.dark) & [class*="bg-black/30"],
+html:not(.dark) & [class*="bg-black/20"] {
+  background-color: rgba(243, 244, 246, 0.4) !important;
+}
+
+/* Hardcoded dark gray backgrounds mapping to light gray in Light Mode */
+html:not(.dark) & [class*="bg-[#262626]"],
+html:not(.dark) & [class*="bg-[#222]"],
+html:not(.dark) & [class*="bg-[#333]"],
+html:not(.dark) & [class*="bg-[#1f1f1f]"],
+html:not(.dark) & [class*="bg-[#161616]"],
+html:not(.dark) & [class*="bg-[#202020]"],
+html:not(.dark) & [class*="bg-[#1c1c1e]"],
+html:not(.dark) & [class*="bg-[#2c2c2e]"],
+html:not(.dark) & [class*="bg-[#18181b]"],
+html:not(.dark) & [class*="bg-[#27272a]"],
+html:not(.dark) & [class*="bg-[#09090b]"] {
+  background-color: #f3f4f6 !important;
+}
+
+/* Custom code block and table headers styling inside Chatbot View / Markdown */
+html:not(.dark) & [class*="bg-[#001429]"],
+html:not(.dark) & [class*="bg-[#001429]/50"] {
+  background-color: #f1f5f9 !important;
+}
+
+html:not(.dark) & th[class*="bg-[#0a0a0a]"],
+html:not(.dark) & th[class*="bg-[#0A0A0A]"] {
+  background-color: #e2e8f0 !important;
+  color: #111827 !important;
+  border-color: var(--exec-border) !important;
+}
+
+html:not(.dark) & tr[class*="bg-[#0a0a0a]"],
+html:not(.dark) & tr[class*="bg-[#0A0A0A]"] {
+  background-color: var(--exec-bg-card) !important;
+}
+
+html:not(.dark) & pre,
+html:not(.dark) & pre[class*="bg-[#0a0a0a]"],
+html:not(.dark) & pre[class*="bg-[#0A0A0A]"] {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) & pre code,
+html:not(.dark) & pre code.text-gray-300 {
+  color: #334155 !important;
+}
+
+html:not(.dark) & code[class*="bg-[#111]"] {
+  background-color: #f1f5f9 !important;
+  color: #0066cc !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Input boxes, textareas, selects, and options - unified off-white professional style */
+html:not(.dark) & select,
+html:not(.dark) & input,
+html:not(.dark) & textarea,
+html:not(.dark) & option {
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+  border-color: var(--exec-border) !important;
+}
+
+/* Inputs styling for specific hex classes */
+html:not(.dark) & [class*="bg-[#151515]"],
+html:not(.dark) & [class*="bg-[#151515]"] *,
+html:not(.dark) & input[class*="bg-[#151515]"],
+html:not(.dark) & select[class*="bg-[#151515]"],
+html:not(.dark) & textarea[class*="bg-[#151515]"] {
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+}
+
+html:not(.dark) & select option {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+html:not(.dark) & input::placeholder,
+html:not(.dark) & textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Adaptive Scrollbars for Light Theme */
+html:not(.dark) & .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+  border: 1px solid #f1f5f9 !important;
+  border-radius: 10px !important;
+}
+
+html:not(.dark) & .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8 !important;
+}
+
+html:not(.dark) & .custom-scrollbar {
+  scrollbar-color: #cbd5e1 transparent !important;
+}
+
+html:not(.dark) & ::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+  border: 1px solid #f1f5f9 !important;
+  border-radius: 10px !important;
+}
+
+html:not(.dark) & ::-webkit-scrollbar-track {
+  background-color: #f1f5f9 !important;
+}
+
+/* Override hardcoded dark border containers - supporting case variations */
+html:not(.dark) & [class*="border-[#262626]"],
+html:not(.dark) & [class*="border-[#222]"],
+html:not(.dark) & [class*="border-[#1a1a1a]"],
+html:not(.dark) & [class*="border-[#1A1A1A]"],
+html:not(.dark) & [class*="border-[#333333]"],
+html:not(.dark) & [class*="border-[#333]"],
+html:not(.dark) & [class*="border-white/5"],
+html:not(.dark) & [class*="border-white/10"],
+html:not(.dark) & [class*="border-white/15"],
+html:not(.dark) & [class*="border-white/20"],
+html:not(.dark) & .border-exec-border,
+html:not(.dark) & .border-gray-800,
+html:not(.dark) & .border-gray-700,
+html:not(.dark) & .border-zinc-800,
+html:not(.dark) & .border-zinc-700 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Card borders and shadows definition in Light Mode - highly defined and modern */
+html:not(.dark) & [class*="bg-[#0a0a0a]"],
+html:not(.dark) & [class*="bg-[#0A0A0A]"],
+html:not(.dark) & [class*="bg-[#0d0d0d]"],
+html:not(.dark) & [class*="bg-[#0D0D0D]"],
+html:not(.dark) & .exec-card,
+html:not(.dark) & [class*="exec-card"] {
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 8px -1px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 4px !important;
+}
+
+/* Force light text to dark grey for readability */
+html:not(.dark) & .text-white,
+html:not(.dark) & .text-gray-100,
+html:not(.dark) & .text-gray-200,
+html:not(.dark) & .text-gray-300,
+html:not(.dark) & .text-gray-400,
+html:not(.dark) & .text-slate-100,
+html:not(.dark) & .text-slate-200,
+html:not(.dark) & .text-slate-300,
+html:not(.dark) & .text-slate-400,
+html:not(.dark) & .text-exec-slate {
+  color: #111827 !important;
+}
+
+html:not(.dark) & .text-gray-500,
+html:not(.dark) & .text-slate-500 {
+  color: #374151 !important; /* Make gray-500 darker for contrast */
+}
+
+/* Force opacity text classes to readable colors (fixing white-on-white text issues) */
+html:not(.dark) & [class*="text-white/95"],
+html:not(.dark) & [class*="text-white/90"],
+html:not(.dark) & [class*="text-white/85"],
+html:not(.dark) & [class*="text-white/80"] {
+  color: #111827 !important;
+}
+
+html:not(.dark) & [class*="text-white/75"],
+html:not(.dark) & [class*="text-white/70"],
+html:not(.dark) & [class*="text-white/65"],
+html:not(.dark) & [class*="text-white/60"],
+html:not(.dark) & [class*="text-slate-300/80"],
+html:not(.dark) & [class*="text-slate-400/80"],
+html:not(.dark) & [class*="text-gray-300/80"],
+html:not(.dark) & [class*="text-gray-400/80"] {
+  color: #374151 !important;
+}
+
+html:not(.dark) & [class*="text-white/55"],
+html:not(.dark) & [class*="text-white/50"],
+html:not(.dark) & [class*="text-white/45"],
+html:not(.dark) & [class*="text-white/40"],
+html:not(.dark) & [class*="text-slate-400/60"],
+html:not(.dark) & [class*="text-gray-400/60"] {
+  color: #4b5563 !important;
+}
+
+/* Force opacity text-exec-slate and slate-opacity classes to solid readable colors */
+html:not(.dark) & [class*="text-exec-slate/30"],
+html:not(.dark) & [class*="text-exec-slate/40"],
+html:not(.dark) & [class*="text-gray-500/30"],
+html:not(.dark) & [class*="text-gray-500/40"] {
+  color: #556070 !important;
+}
+
+html:not(.dark) & [class*="text-exec-slate/50"],
+html:not(.dark) & [class*="text-gray-500/50"] {
+  color: #3f4a56 !important;
+}
+
+html:not(.dark) & [class*="text-gray-400/50"],
+html:not(.dark) & [class*="text-gray-400/60"],
+html:not(.dark) & [class*="text-gray-400/70"],
+html:not(.dark) & [class*="text-gray-400/80"] {
+  color: #4b5563 !important;
+}
+
+/* Exclude list for text overrides to keep white text on colored backgrounds */
+html:not(.dark) & .bg-exec-blue,
+html:not(.dark) & .bg-exec-blue *,
+html:not(.dark) & .bg-blue-600,
+html:not(.dark) & .bg-blue-600 *,
+html:not(.dark) & .bg-blue-500,
+html:not(.dark) & .bg-blue-500 *,
+html:not(.dark) & .bg-indigo-600,
+html:not(.dark) & .bg-indigo-600 *,
+html:not(.dark) & .bg-green-600,
+html:not(.dark) & .bg-green-600 *,
+html:not(.dark) & .bg-exec-green,
+html:not(.dark) & .bg-exec-green *,
+html:not(.dark) & .bg-emerald-600,
+html:not(.dark) & .bg-emerald-600 *,
+html:not(.dark) & .bg-red-600,
+html:not(.dark) & .bg-red-600 *,
+html:not(.dark) & .bg-red-500,
+html:not(.dark) & .bg-red-500 *,
+html:not(.dark) & .bg-amber-500,
+html:not(.dark) & .bg-amber-500 *,
+html:not(.dark) & .bg-yellow-500,
+html:not(.dark) & .bg-yellow-500 *,
+html:not(.dark) & .bg-purple-600,
+html:not(.dark) & .bg-purple-600 *,
+html:not(.dark) & .bg-violet-600,
+html:not(.dark) & .bg-violet-600 *,
+html:not(.dark) & .bg-pink-600,
+html:not(.dark) & .bg-pink-600 *,
+html:not(.dark) & .bg-rose-600,
+html:not(.dark) & .bg-rose-600 *,
+html:not(.dark) & .bg-orange-500,
+html:not(.dark) & .bg-orange-500 *,
+html:not(.dark) & .exec-btn-primary,
+html:not(.dark) & .exec-btn-primary *,
+html:not(.dark) & .bg-gradient-to-r *,
+html:not(.dark) & .bg-gradient-to-r,
+html:not(.dark) & [class~="bg-[#0088ff]"],
+html:not(.dark) & [class~="bg-[#0088ff]"] *,
+html:not(.dark) & [class~="bg-[#0088FF]"],
+html:not(.dark) & [class~="bg-[#0088FF]"] *,
+html:not(.dark) & .bg-cyan-500,
+html:not(.dark) & .bg-cyan-500 *,
+html:not(.dark) & .bg-cyan-600,
+html:not(.dark) & .bg-cyan-600 *,
+html:not(.dark) & .bg-red-600,
+html:not(.dark) & .bg-red-600 * {
+  color: #ffffff !important;
+}
+
+/* Hover feedback and special states styling for Light Mode buttons */
+html:not(.dark) & [class*="hover:bg-[#0a0a0a]"]:hover,
+html:not(.dark) & [class*="hover:bg-[#0A0A0A]"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+html:not(.dark) & [class*="hover:bg-[#111]"]:hover,
+html:not(.dark) & [class*="hover:bg-[#111111]"]:hover {
+  background-color: #e5e7eb !important;
+}
+
+html:not(.dark) & [class*="hover:text-white"]:hover {
+  color: #111827 !important;
+}
+
+html:not(.dark) & [class*="bg-white/5"] {
+  background-color: #f3f4f6 !important;
+}
+
+html:not(.dark) & [class*="bg-white/10"] {
+  background-color: #e5e7eb !important;
+}
+
+html:not(.dark) & [class*="bg-white/20"] {
+  background-color: #d1d5db !important;
+}
+
+/* Send button adaptation in ChatbotView - Blue and white text */
+html:not(.dark) & .bg-white.text-black[class*="hover:scale-105"] {
+  background-color: #0088ff !important;
+  color: #ffffff !important;
+}
+
+html:not(.dark) & [class*="hover:bg-white"]:hover {
+  background-color: #0077dd !important;
+  color: #ffffff !important;
+}
+
+/* Sidebar Specific overrides for Light Mode */
+html:not(.dark) & aside {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-right: 1px solid var(--exec-border) !important;
+}
+
+html:not(.dark) & aside * {
+  color: #374151 !important;
+}
+
+html:not(.dark) & aside [class*="bg-[#111]"] {
+  background-color: #f3f4f6 !important;
+}
+
+html:not(.dark) & aside [class*="hover:bg-[#111]"]:hover {
+  background-color: #e5e7eb !important;
+}
+
+html:not(.dark) & aside .text-gray-400 {
+  color: #4b5563 !important;
+}
+
+html:not(.dark) & aside [class*="hover:text-white"]:hover {
+  color: #111827 !important;
+}
+
+/* Specific overrides for logo and footer areas in sidebar */
+html:not(.dark) & aside [class*="bg-[#000000]"],
+html:not(.dark) & aside [class*="bg-black"] {
+  background-color: #ffffff !important;
+}
+
+/* Bottom Nav bar overrides for Light Mode mobile */
+html:not(.dark) & .md\:hidden.bg-black {
+  background-color: #ffffff !important;
+  border-top: 1px solid var(--exec-border) !important;
+}
+
+html:not(.dark) & .md\:hidden.bg-black * {
+  color: #374151 !important;
+}
+
+/* =====================================================
+   AI ASSISTANT (CHATBOTVIEW) LIGHT THEME CONTRAST OVERRIDES
+   ===================================================== */
+html:not(.dark) & .chat-input-container {
+  background-color: #ffffff !important;
+  border: 2px solid #94a3b8 !important; /* Defined, visible cool gray border */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) & .chat-input-container:focus-within {
+  border-color: #0088ff !important;
+  box-shadow: 0 0 15px rgba(0, 136, 255, 0.25) !important;
+}
+
+html:not(.dark) & .chat-textarea {
+  color: #0f172a !important; /* High contrast Dark Slate-900 text */
+  background-color: transparent !important;
+}
+
+html:not(.dark) & .chat-textarea::placeholder {
+  color: #64748b !important; /* Slate-500 placeholder for excellent readability */
+}
+
+html:not(.dark) & .chat-suggestion-btn {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+}
+
+html:not(.dark) & .chat-suggestion-btn:hover {
+  background-color: #f8fafc !important;
+  border-color: #0088ff !important;
+}
+
+html:not(.dark) & .chat-suggestion-btn * {
+  color: #334155 !important;
+}
+
+html:not(.dark) & .chat-suggestion-btn:hover * {
+  color: #0088ff !important;
+}
+
+/* Assistant Responses contrast styling */
+html:not(.dark) & .chat-assistant-response {
+  color: #1e293b !important; /* High contrast dark text color */
+}
+
+html:not(.dark) & .chat-assistant-response p {
+  color: #1e293b !important;
+}
+
+html:not(.dark) & .chat-assistant-response strong {
+  color: #0f172a !important; /* Darker bold text */
+}
+
+html:not(.dark) & .chat-assistant-response li {
+  color: #1e293b !important;
+}
+
+html:not(.dark) & .chat-assistant-response h1,
+html:not(.dark) & .chat-assistant-response h3 {
+  color: #0f172a !important;
+}
+
+html:not(.dark) & .chat-assistant-response h2 {
+  color: #0066cc !important; /* corporate blue for contrast */
+}
+
+/* Table styling inside chatbot response view for light mode */
+html:not(.dark) & div[class*="overflow-x-auto"] table {
+  border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) & div[class*="overflow-x-auto"] th {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) & div[class*="overflow-x-auto"] td {
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+  background-color: #ffffff !important;
+}
+
+/* Custom scrollbars inside chatbot view in light mode */
+html:not(.dark) & [class*="scrollbar-thumb-"] {
+  scrollbar-color: #cbd5e1 transparent !important;
+}
+html:not(.dark) & [class*="scrollbar-thumb-"]::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+}
+html:not(.dark) & .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+}
+html:not(.dark) & [class*="border-[#111]"] {
+  border-color: #e2e8f0 !important;
+}
+html:not(.dark) & [class*="border-[#222]"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Specific button overrides for high contrast in light mode */
+html:not(.dark) & .chat-model-selector-btn {
+  background-color: #ffffff !important;
+  border-color: #0088ff55 !important;
+  color: #0088ff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+html:not(.dark) & .chat-model-selector-btn * {
+  color: #0088ff !important;
+}
+
+html:not(.dark) & .chat-model-logo {
+  filter: brightness(0) !important; /* Forces logos to be black/dark for readability on white */
+}
+
+html:not(.dark) & .chat-send-btn {
+  transition: all 0.2s ease;
+}
+
+html:not(.dark) & .chat-send-btn:disabled,
+html:not(.dark) & .chat-send-btn[disabled] {
+  background-color: #e2e8f0 !important; /* Soft, visible light gray background */
+  color: #94a3b8 !important; /* Visible disabled arrow/text */
+  border-color: transparent !important;
+  cursor: not-allowed !important;
+}
+
+html:not(.dark) & .chat-send-btn:not(:disabled) {
+  background-color: #0088ff !important; /* Corporate blue background when enabled */
+  color: #ffffff !important; /* White arrow/text */
+}
+}

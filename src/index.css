@@ -13,13 +13,38 @@
   --color-cyan-500: #0088ff;
   --color-cyan-600: #0284c7;
   --color-cyan-700: #0369a1;
-  --color-cyan-800: #075985;
   --color-cyan-850: #052c5a;
   --color-cyan-900: #0c4a6e;
   --color-cyan-950: #021a38;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-exec-blue: #0088FF;
+  --color-exec-red: #FF4444;
+  --color-exec-dark: var(--exec-bg-dark);
+  --color-exec-card: var(--exec-bg-card);
+  --color-exec-border: var(--exec-border);
+  --color-exec-slate: var(--exec-text-slate);
+  
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
+  :root {
+    --border: 0 0% 12%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --input: 0 0% 12%;
+    --ring: 217.2 91.2% 59.8%;
+    --exec-bg-dark: #000000;
+    --exec-bg-card: #0d0d0d;
+    --exec-border: #262626;
+    --exec-text-slate: #a3a3a3;
+  }
+
   body {
     background-color: #000000;
     color: #f3f4f6;
@@ -74,12 +99,13 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #0e0e11;
   border-radius: 0px;
+  border: 1px solid #1a1a20;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0099ff;
+  background: #16161c;
 }
 
 /* Premium Glassmorphic Card base */
@@ -187,3 +213,5 @@
     background-position: 0% 50%;
   }
 }
+
+@import "./admin-globals.css";

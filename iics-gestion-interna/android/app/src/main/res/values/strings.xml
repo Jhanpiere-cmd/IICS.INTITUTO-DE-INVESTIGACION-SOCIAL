@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ACS</string>
+    <string name="title_activity_main">ACS</string>
+    <string name="package_name">com.acs.system</string>
+    <string name="custom_url_scheme">com.acs.system</string>
+</resources>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard Ejecutivo de Alto Nivel SGR-ACS</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'exec-slate': '#E2E8F0','exec-navy': '#000000','exec-blue': '#3B82F6','exec-gray': '#94A3B8','exec-light': '#000000','exec-white': '#0A0A0A','exec-border': '#262626','exec-dark-card': '#0A0A0A',
+                    },
+                    fontFamily: {
+                        sans: ["'Inter'", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.5)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.5)',
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .exec-card {
+                @apply bg-exec-dark-card border border-exec-border shadow-card rounded-sm transition-all duration-200 text-exec-slate;
+            }
+            .exec-btn {
+                @apply px-4 py-2 text-sm font-medium rounded-sm transition-colors duration-150;
+            }
+            .exec-input {
+                @apply border border-exec-border bg-[#171717] text-white text-sm rounded-sm focus:ring-1 focus:ring-exec-blue focus:border-exec-blue transition-all w-full placeholder-gray-500;
+            }
+            ::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                @apply bg-[#0A0A0A];
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-gray-700 rounded-full;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                @apply bg-gray-600;
+            }
+        }
+    </style>
+</head>
+<body class="bg-exec-light text-exec-slate font-sans antialiased h-screen flex overflow-hidden">
+<aside class="w-64 bg-black text-white flex-shrink-0 flex flex-col justify-between border-r border-exec-border z-20">
+<div>
+<div class="h-20 flex items-center px-6 border-b border-exec-border bg-black">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-white text-black flex items-center justify-center font-semibold text-sm rounded-sm">
+                    SGR
+                </div>
+<span class="font-medium text-lg tracking-tight text-white">SGR-ACS</span>
+</div>
+</div>
+<nav class="p-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium bg-[#1A1A1A] text-white rounded-sm border border-exec-border" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#1A1A1A] rounded-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">task_alt</span>
+                Proyectos
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#1A1A1A] rounded-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">campaign</span>
+                Comunicaciones
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#1A1A1A] rounded-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+                Analítica
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#1A1A1A] rounded-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">folder_open</span>
+                Recursos
+            </a>
+</nav>
+</div>
+<div class="p-4 border-t border-exec-border">
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#1A1A1A] rounded-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+            Configuración
+        </a>
+<div class="mt-4 pt-4 border-t border-exec-border flex items-center gap-3 px-2">
+<img alt="User Avatar" class="w-8 h-8 rounded-full bg-gray-800 object-cover border border-gray-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDchzy8EoA-H16UAAa2odwO7FOdBus8U8L83fprJtVjq9NqPaHLdGNQ87ltsQmHuIZFWk-NWn8it7C65Hns522P3s3LGAcPURTqSJwhef0lWUU9lOU_A5F3tji2x_exck6r8dYStg4XJMdsEA8U15ELLejxf_qkSUHyhoR-1akrV4-LayPp8I3WcppRaMkZI8n55JY_GcQnMd-4ppuiYS62DSw5nupECC8tk9fhxyQT1O3fhgFK3sED6eGqVyfRfwte8CHj5WCViM4"/>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-white truncate">Edwar J.</p>
+<p class="text-[10px] text-gray-500 truncate">Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-black">
+<header class="h-16 bg-[#0A0A0A] border-b border-exec-border flex items-center justify-between px-8 flex-shrink-0">
+<div class="flex items-center gap-4 text-sm text-gray-500">
+<span class="text-white font-medium">Dashboard General</span>
+<span class="text-gray-600">/</span>
+<span>Resumen Ejecutivo</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2">
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+<span class="text-xs font-medium text-gray-400 uppercase tracking-wide">Sistema Operativo</span>
+</div>
+<div class="h-4 w-px bg-exec-border"></div>
+<button class="text-gray-400 hover:text-white relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-exec-blue rounded-full border-2 border-[#0A0A0A]"></span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto bg-black p-8">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-8 pb-6 border-b border-exec-border gap-4">
+<div>
+<h1 class="text-2xl font-semibold text-white mb-1 tracking-tight">Bienvenido, Edwar</h1>
+<p class="text-sm text-gray-400">Resumen de actividad y métricas clave del día.</p>
+</div>
+<div class="flex gap-3">
+<button class="exec-btn bg-black border border-exec-border text-gray-300 hover:bg-[#1A1A1A] shadow-sm hover:text-white">
+                        Exportar Reporte
+                    </button>
+<button class="exec-btn bg-exec-blue text-white hover:bg-blue-600 flex items-center gap-2 shadow-sm border border-transparent">
+<span class="material-symbols-outlined text-sm">add</span>
+                        Nueva Tarea
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<div class="lg:col-span-8 space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="exec-card p-5 flex flex-col justify-between h-32 hover:border-exec-blue transition-colors bg-[#0A0A0A]">
+<div class="flex justify-between items-start">
+<h3 class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Pendientes</h3>
+<span class="material-symbols-outlined text-exec-blue text-xl">assignment</span>
+</div>
+<div>
+<p class="text-3xl font-light text-white">12</p>
+<div class="flex items-center gap-1 text-xs text-green-500 mt-1">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+<span class="font-medium">+2 hoy</span>
+</div>
+</div>
+</div>
+<div class="exec-card p-5 flex flex-col justify-between h-32 hover:border-green-500 transition-colors bg-[#0A0A0A]">
+<div class="flex justify-between items-start">
+<h3 class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Completadas</h3>
+<span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+</div>
+<div>
+<p class="text-3xl font-light text-white">45</p>
+<div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+<span class="material-symbols-outlined text-[14px]">calendar_month</span>
+<span>Mensual</span>
+</div>
+</div>
+</div>
+<div class="exec-card p-5 flex flex-col justify-between h-32 hover:border-purple-500 transition-colors bg-[#0A0A0A]">
+<div class="flex justify-between items-start">
+<h3 class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Reuniones</h3>
+<span class="material-symbols-outlined text-purple-500 text-xl">groups</span>
+</div>
+<div>
+<p class="text-3xl font-light text-white">03</p>
+<div class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>Próximas</span>
+</div>
+</div>
+</div>
+<div class="exec-card p-5 flex flex-col justify-between h-32 hover:border-pink-500 transition-colors bg-[#0A0A0A]">
+<div class="flex justify-between items-start">
+<h3 class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Recursos</h3>
+<span class="material-symbols-outlined text-pink-500 text-xl">folder_open</span>
+</div>
+<div>
+<p class="text-3xl font-light text-white">08</p>
+<div class="flex items-center gap-1 text-xs text-blue-400 mt-1">
+<span class="material-symbols-outlined text-[14px]">new_releases</span>
+<span class="font-medium">Nuevos</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="exec-card p-6 min-h-[320px] flex flex-col bg-[#0A0A0A]">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-sm font-semibold text-white">Distribución de Esfuerzo</h3>
+<button class="text-gray-500 hover:text-white">
+<span class="material-symbols-outlined text-lg">more_horiz</span>
+</button>
+</div>
+<div class="flex-1 flex items-center justify-center">
+<div class="relative w-48 h-48 rounded-full border-[16px] border-[#171717] flex items-center justify-center">
+<div class="absolute inset-0 rounded-full" style="background: conic-gradient(#3B82F6 0% 30%, #475569 30% 45%, #64748B 45% 55%, #94A3B8 55% 100%); mask: radial-gradient(transparent 60%, black 61%); -webkit-mask: radial-gradient(transparent 60%, black 61%);"></div>
+<div class="text-center z-10">
+<span class="block text-3xl font-light text-white">100%</span>
+<span class="text-xs text-gray-500 uppercase tracking-wide">Total</span>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-center gap-6 text-xs text-gray-400">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-exec-blue"></span> Dev (30%)
+                                </div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-gray-600"></span> Diseño (15%)
+                                </div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-gray-400"></span> Ops (45%)
+                                </div>
+</div>
+</div>
+<div class="exec-card p-6 min-h-[320px] flex flex-col bg-[#0A0A0A]">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-sm font-semibold text-white">Rendimiento Semanal</h3>
+<span class="text-xs font-medium text-gray-400 bg-[#171717] border border-exec-border px-2 py-1 rounded-sm">Vista: Director</span>
+</div>
+<div class="flex-1 flex items-end justify-between gap-4 px-2 pb-2 border-b border-exec-border">
+<div class="flex flex-col items-center gap-3 w-full group">
+<div class="w-full bg-[#171717] rounded-sm h-40 relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-exec-blue/70 h-[40%] rounded-sm group-hover:bg-exec-blue transition-colors"></div>
+</div>
+<span class="text-[10px] font-medium text-gray-500">LUN</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-full group">
+<div class="w-full bg-[#171717] rounded-sm h-40 relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-exec-blue/70 h-[65%] rounded-sm group-hover:bg-exec-blue transition-colors"></div>
+</div>
+<span class="text-[10px] font-medium text-gray-500">MAR</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-full group">
+<div class="w-full bg-[#171717] rounded-sm h-40 relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-exec-blue/70 h-[85%] rounded-sm group-hover:bg-exec-blue transition-colors"></div>
+</div>
+<span class="text-[10px] font-medium text-gray-500">MIE</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-full group">
+<div class="w-full bg-[#171717] rounded-sm h-40 relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-exec-blue/70 h-[55%] rounded-sm group-hover:bg-exec-blue transition-colors"></div>
+</div>
+<span class="text-[10px] font-medium text-gray-500">JUE</span>
+</div>
+<div class="flex flex-col items-center gap-3 w-full group">
+<div class="w-full bg-[#171717] rounded-sm h-40 relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-green-500 h-[92%] rounded-sm"></div>
+</div>
+<span class="text-[10px] font-medium text-gray-500">VIE</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4">
+<div class="exec-card bg-[#0A0A0A] h-full flex flex-col">
+<div class="p-6 border-b border-exec-border bg-[#111111]">
+<h3 class="text-sm font-semibold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400">campaign</span>
+                                Actualizaciones del Equipo
+                            </h3>
+</div>
+<div class="p-4 bg-[#0A0A0A] border-b border-exec-border">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-white flex-shrink-0"></div>
+<div class="w-full">
+<textarea class="exec-input p-2 resize-none h-16 mb-2 bg-[#171717] border-exec-border text-gray-200 placeholder:text-gray-600 focus:bg-[#202020]" placeholder="Compartir actualización..."></textarea>
+<div class="flex justify-end">
+<button class="px-3 py-1 bg-white text-black text-xs font-medium rounded-sm hover:bg-gray-200 transition-colors">Publicar</button>
+</div>
+</div>
+</div>
+</div>
+<div class="overflow-y-auto flex-1 p-0">
+<div class="p-5 border-b border-exec-border hover:bg-[#111111] transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-3">
+<img alt="User" class="w-8 h-8 rounded-full object-cover border border-gray-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQODPM2WOoxEBVRSef4XpMeyHWpW9aHR1R0Fe1pcMdnmBxAS3g_m3M1ZjT1vSJTjiXm33H_lQhvDxFz7ki4_1WI1rpWJjR-ZaKKZfyt3ZOpxYzxc91TEGI2lUuRFkdAlomTVc90vEhviQD73bll_wVVKxQ4dtV2bmkH3mN88YnQuucpouQIji9MOly8oJnHQgQfAmdOjlaA0So5fUoYdxTJah-GrGJGbqLCoCMKwdvDykFmbZCbRJ-FO8n2vtLs74-OVZI__XEf38"/>
+<div>
+<p class="text-sm font-medium text-white">Ana María</p>
+<p class="text-[11px] text-gray-500">UX Lead • Hace 5 min</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-600 text-sm cursor-pointer hover:text-white">more_horiz</span>
+</div>
+<p class="text-sm text-gray-300 leading-relaxed mb-3">La revisión de UX está lista. He subido los nuevos wireframes para la campaña de verano. Por favor, revisen Figma.</p>
+<div class="flex items-center gap-2 bg-[#171717] p-2 rounded-sm border border-exec-border mb-3 w-fit">
+<span class="material-symbols-outlined text-exec-blue text-sm">attach_file</span>
+<span class="text-xs text-exec-blue font-medium">wireframes_v2.fig</span>
+</div>
+<div class="flex gap-4 text-gray-500">
+<button class="flex items-center gap-1 hover:text-red-500 transition-colors text-xs"><span class="material-symbols-outlined text-[16px]">favorite</span> 12</button>
+<button class="flex items-center gap-1 hover:text-exec-blue transition-colors text-xs"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 3</button>
+</div>
+</div>
+<div class="p-5 border-b border-exec-border hover:bg-[#111111] transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[#1E293B] text-white border border-gray-700 flex items-center justify-center text-xs font-bold">SJ</div>
+<div>
+<p class="text-sm font-medium text-white">Sergio J.</p>
+<p class="text-[11px] text-gray-500">DevOps • Hace 32 min</p>
+</div>
+</div>
+</div>
+<p class="text-sm text-gray-300 leading-relaxed mb-3">Deploy realizado en producción. El dashboard ahora carga un 40% más rápido.</p>
+<div class="flex gap-4 text-gray-500">
+<button class="flex items-center gap-1 hover:text-red-500 transition-colors text-xs"><span class="material-symbols-outlined text-[16px]">favorite</span> 24</button>
+<button class="flex items-center gap-1 hover:text-exec-blue transition-colors text-xs"><span class="material-symbols-outlined text-[16px]">chat_bubble</span> 8</button>
+</div>
+</div>
+<div class="p-5 hover:bg-[#111111] transition-colors opacity-75">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-3">
+<img alt="User" class="w-8 h-8 rounded-full object-cover border border-gray-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVoaZy2FabyjCwihn94no_03Md44ArHu-mOUMVvRqFc7BD9lU6TuHYxCY2dtbLPADUvSPtpAb4ABZ34NTbPkP9ASzFVKauPV0JtYCF9JLk3j4pCYV7vYOSPohK5AF4fBFv_D9t0A-B1f3MYsEJ3fanDwa5t7wZIjrJnkkf35ZgW2z5aQJHjBiE-5hrsF2sfMybIPAoUHOVC_jasRl6FQxsx9r16k8G7DCTlZvdfask5z7nxe5t9dhv_U5yJ7lTop4egbGeI2XxFzk"/>
+<div>
+<p class="text-sm font-medium text-white">Carlos M.</p>
+<p class="text-[11px] text-gray-500">Marketing • Hace 1h</p>
+</div>
+</div>
+</div>
+<p class="text-sm text-gray-300 leading-relaxed">¿Alguien tiene los assets del logo en SVG? Los necesito para la presentación de mañana.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

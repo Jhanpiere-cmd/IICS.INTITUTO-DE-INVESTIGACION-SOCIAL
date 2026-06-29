@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'motion/react';
+import { Routes, Route } from 'react-router-dom';
+import AdminApp from '@/src/AdminApp';
+import { useAuth } from '../contexts/AuthContext';
 import Header from './components/Header';
 import Preloader from './components/ui/Preloader';
 import Hero from './components/Hero';
@@ -18,7 +21,7 @@ import { FallingPattern } from './components/ui/falling-pattern';
 import { provincesData, alertsData, emergentThemesData, researchLinesData } from './data';
 import { ProvinceData, Alert, ResearchLine } from './types';
 
-export default function App() {
+function LandingPage() {
   // Application Data States
   const [provinces, setProvinces] = useState<ProvinceData[]>(provincesData);
   const [alerts, setAlerts] = useState<Alert[]>(alertsData);
@@ -33,7 +36,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('inicio');
 
   // User Authentication State
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { user, signOut } = useAuth();
+  const isLoggedIn = !!user;
 
   // Initial Preloader State
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -106,7 +110,7 @@ export default function App() {
           themes={emergentThemesData}
           selectedProvinceId={selectedProvinceId}
           onSelectProvince={setSelectedProvinceId}
-          onLogout={() => setIsLoggedIn(false)}
+          onLogout={signOut}
           onSubmitSimulatedAlert={handleAddProposedAlert}
           setAlerts={setAlerts}
           setProvinces={setProvinces}
@@ -158,7 +162,7 @@ export default function App() {
         }}
         activeSection={activeTab}
         isLoggedIn={isLoggedIn}
-        onLogout={() => setIsLoggedIn(false)}
+        onLogout={signOut}
         activeModal={activeModal}
       />
 
@@ -215,7 +219,7 @@ export default function App() {
         activeModal={activeModal}
         selectedResearchLine={selectedResearchLine}
         isLoggedIn={isLoggedIn}
-        onLogin={setIsLoggedIn}
+        onLogin={() => {}}
         onClose={() => {
           setActiveModal(null);
           setSelectedResearchLine(null);
@@ -227,5 +231,14 @@ export default function App() {
       />
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/admin/*" element={<AdminApp />} />
+      <Route path="/*" element={<LandingPage />} />
+    </Routes>
   );
 }

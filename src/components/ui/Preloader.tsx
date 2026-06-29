@@ -133,7 +133,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               : { scale: 0.85, opacity: 0 }
           }
           transition={{ duration: 1.5, ease: 'easeInOut' }}
-          src="/logo-iics.png" 
+          src="/logo-iics-siglas.png" 
           alt="Watermark" 
           className="h-[55vh] w-[55vh] object-contain filter blur-[3px]"
         />
@@ -226,7 +226,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             }
             className="h-20 w-20 flex items-center justify-center relative z-10"
           >
-            <img src="/logo-iics.png" alt="IICS Logo" className="h-16 w-16 object-contain" />
+            <img src="/logo-iics-siglas.png" alt="IICS Logo" className="h-20 w-20 object-contain" />
           </motion.div>
         </div>
 

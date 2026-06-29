@@ -1,0 +1,5 @@
+El impacto de la inteligencia artificial en la investigación social: Retos éticos y metodológicos
+Autor: Edwar J. Saenz Tello, Elfer G. Miranda V.
+
+RESUMEN
+Este artículo explora cómo los modelos generativos de lenguaje y las herramientas de automatización están transformando el campo de las ciencias sociales en el Perú, con especial atención a las universidades del norte peruano. Se discuten los riesgos éticos de la autoría automatizada y el sesgo de datos de entrenamiento en la representación de minorías culturales en Cajamarca.

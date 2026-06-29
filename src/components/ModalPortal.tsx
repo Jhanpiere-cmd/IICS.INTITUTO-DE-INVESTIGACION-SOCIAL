@@ -7,6 +7,7 @@ import { CharacterPanel } from './CharacterPanel';
 import AboutValues from './AboutValues';
 import PublicationsSection from './PublicationsSection';
 import { FallingPattern } from './ui/falling-pattern';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ModalPortalProps {
   provinces: ProvinceData[];
@@ -36,6 +37,7 @@ export default function ModalPortal({
   console.log('ModalPortal rendering with activeModal:', activeModal);
   
   // Login States
+  const { signIn } = useAuth();
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -103,7 +105,7 @@ export default function ModalPortal({
     setTimeout(() => setExportNotice(false), 3000);
   };
 
-  const handleLoginSubmit = (e: FormEvent) => {
+  const handleLoginSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!usernameInput || !passwordInput) {
       setLoginError('Por favor complete todos los campos.');
@@ -113,26 +115,41 @@ export default function ModalPortal({
     setIsLoggingIn(true);
     setLoginError('');
 
-    // Simulated network latencies representing a realistic secure server handshakes
-    setTimeout(() => {
-      const u = usernameInput.toLowerCase().trim();
-      const p = passwordInput.trim();
+    const u = usernameInput.toLowerCase().trim();
+    const p = passwordInput.trim();
+
+    try {
+      // 1. Intentar inicio de sesión real en Supabase
+      const { error } = await signIn(u, p);
       
+      if (!error) {
+        setIsLoggingIn(false);
+        setUsernameInput('');
+        setPasswordInput('');
+        setLoginError('');
+        onLogin(true);
+        return;
+      }
+
+      // 2. Si falla en Supabase, verificar contra las credenciales locales de prueba/simulación
       if (
         (u === 'analista@iics.org' || u === 'admin') &&
         (p === 'cajamarca2026' || p === 'admin123')
       ) {
         onLogin(true);
         setIsLoggingIn(false);
-        // Clean inputs upon success
         setUsernameInput('');
         setPasswordInput('');
         setLoginError('');
       } else {
-        setLoginError('Acceso denegado: Credenciales no reconocidas en el servidor central del IICS.');
+        setLoginError(error.message || 'Acceso denegado: Credenciales no reconocidas en el servidor central del IICS.');
         setIsLoggingIn(false);
       }
-    }, 1000);
+    } catch (err) {
+      console.error("Login exception:", err);
+      setLoginError('Error de red o conexión con el servidor de autenticación.');
+      setIsLoggingIn(false);
+    }
   };
 
   const handleAutofillClick = () => {
@@ -200,23 +217,8 @@ export default function ModalPortal({
           <div className="relative hidden lg:flex flex-col justify-between h-full bg-gradient-to-b from-gray-100 via-gray-150 to-gray-300 text-zinc-900 p-12 overflow-hidden select-none border-r border-gray-300/40">
             {/* Brand Logo - Top Left */}
             <div className="flex items-center gap-2.5 relative z-10">
-              <div className="h-9 w-9 flex items-center justify-center rounded-xl bg-zinc-900 border border-zinc-850 text-cyan-400 shadow-sm flex-shrink-0">
-                <svg viewBox="0 0 100 100" className="h-5.5 w-5.5 text-cyan-400" fill="currentColor">
-                  <circle cx="50" cy="50" r="10" />
-                  <circle cx="50" cy="18" r="7" />
-                  <circle cx="50" cy="82" r="7" />
-                  <circle cx="18" cy="50" r="7" />
-                  <circle cx="82" cy="50" r="7" />
-                  <circle cx="28" cy="28" r="5" />
-                  <circle cx="72" cy="72" r="5" />
-                  <circle cx="72" cy="28" r="5" />
-                  <circle cx="28" cy="72" r="5" />
-                  {/* Connected web lines */}
-                  <line x1="50" y1="18" x2="50" y2="82" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-                  <line x1="18" y1="50" x2="82" y2="50" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-                  <line x1="28" y1="28" x2="72" y2="72" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-                  <line x1="28" y1="72" x2="72" y2="28" stroke="currentColor" strokeWidth="2" opacity="0.4" />
-                </svg>
+              <div className="h-10 w-10 flex items-center justify-center bg-transparent p-0 flex-shrink-0">
+                <img src="/icono-iics.png" alt="IICS Icon" className="h-10 w-10 object-contain" />
               </div>
               <div className="text-left leading-none">
                 <h1 className="text-base font-black text-zinc-900 tracking-wider font-sans">
