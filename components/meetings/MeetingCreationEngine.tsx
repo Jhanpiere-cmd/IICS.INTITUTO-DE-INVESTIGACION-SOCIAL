@@ -92,10 +92,18 @@ export const MeetingCreationEngine: React.FC<MeetingCreationEngineProps> = ({
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, full_name, email, role, avatar_url')
-        .order('full_name');
+        .select('id, "fullName", email, role, "avatarUrl"')
+        .order('"fullName"');
       if (error) throw error;
-      setAllUsers(data || []);
+      
+      const mappedData = (data || []).map((u: any) => ({
+        id: u.id,
+        full_name: u.fullName || 'Sin nombre',
+        email: u.email,
+        role: u.role,
+        avatar_url: u.avatarUrl
+      }));
+      setAllUsers(mappedData);
     } catch (e) {
       console.error('Error loading users for meeting engine:', e);
     } finally {

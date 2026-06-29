@@ -383,7 +383,7 @@ export const ChatbotView: React.FC = () => {
         supabase.from('meetings').select('*').order('scheduled_at', { ascending: false }),
         supabase.from('news').select('*').eq('status', 'Publicado'),
         supabase.from('proposals').select('*'),
-        supabase.from('profiles').select('id, full_name, role, avatar_url, email, birth_date'),
+        supabase.from('profiles').select('id, "fullName", role, "avatarUrl", email, birth_date'),
         supabase.from('benefits').select('*').eq('status', 'Publicado'),
         supabase.from('alliances').select('*').eq('status', 'Activo'),
         supabase.from('system_documentation').select('*'),
@@ -516,7 +516,14 @@ export const ChatbotView: React.FC = () => {
         })),
         news: newsResult.data || [],
         proposals: proposalsResult.data || [],
-        team: teamResult.data || [],
+        team: (teamResult.data || []).map((p: any) => ({
+          id: p.id,
+          full_name: p.fullName || 'Sin nombre',
+          role: p.role,
+          avatar_url: p.avatarUrl,
+          email: p.email,
+          birth_date: p.birth_date
+        })),
         benefits: (benefitsResult.data || []).map((b: any) => {
           const app = (benefitApplicationsResult.data || []).find((a: any) => a.benefit_id === b.id);
           return {

@@ -8,6 +8,7 @@ import AboutValues from './AboutValues';
 import PublicationsSection from './PublicationsSection';
 import { FallingPattern } from './ui/falling-pattern';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
 
 interface ModalPortalProps {
   provinces: ProvinceData[];
@@ -82,6 +83,10 @@ export default function ModalPortal({
   const [draftTitle, setDraftTitle] = useState('');
   const [draftLine, setDraftLine] = useState('Sociología Digital y Nuevas Tecnologías');
   const [draftFile, setDraftFile] = useState<string>('');
+  const [draftAuthorName, setDraftAuthorName] = useState('');
+  const [draftAuthorEmail, setDraftAuthorEmail] = useState('');
+  const [draftInstitution, setDraftInstitution] = useState('');
+  const [isSubmittingDraft, setIsSubmittingDraft] = useState(false);
   const [draftSubmitted, setDraftSubmitted] = useState(false);
   const [submittedDrafts, setSubmittedDrafts] = useState<any[]>([]);
 
@@ -1512,51 +1517,104 @@ export default function ModalPortal({
                       </div>
 
                       <form
-                        onSubmit={(e) => {
+                        onSubmit={async (e) => {
                           e.preventDefault();
-                          if (!draftTitle || !draftFile) {
-                            alert('Por favor complete el título y seleccione un documento para subir.');
+                          if (!draftTitle || !draftFile || !draftAuthorName || !draftAuthorEmail) {
+                            alert('Por favor complete todos los campos obligatorios.');
                             return;
                           }
-                          setDraftSubmitted(true);
+                          setIsSubmittingDraft(true);
                           
-                          const newDraft = {
-                            id: Math.random().toString(),
-                            title: draftTitle,
-                            line: draftLine,
-                            filename: draftFile,
-                            date: 'Hoy',
-                            status: 'En Cola de Revisión de Pares'
-                          };
+                          try {
+                            const { data, error } = await supabase
+                              .from('research_submissions')
+                              .insert({
+                                title: draftTitle,
+                                abstract: 'Monografía / Borrador presentado para revisión por pares.',
+                                author_name: draftAuthorName,
+                                author_email: draftAuthorEmail,
+                                institution: draftInstitution,
+                                research_line: draftLine,
+                                pdf_url: draftFile,
+                                status: 'Recibido'
+                              })
+                              .select()
+                              .single();
 
-                          setTimeout(() => {
+                            if (error) throw error;
+
+                            const newDraft = {
+                              id: data.id,
+                              title: data.title,
+                              line: data.research_line,
+                              filename: data.pdf_url,
+                              date: 'Hoy',
+                              status: 'Recibido'
+                            };
+
                             setSubmittedDrafts([newDraft, ...submittedDrafts]);
-                            setDraftSubmitted(false);
                             setDraftTitle('');
                             setDraftFile('');
+                            setDraftAuthorName('');
+                            setDraftAuthorEmail('');
+                            setDraftInstitution('');
                             alert(`¡Éxito! Su borrador de investigación "${newDraft.title}" ha sido ingresado en el servidor IICS en cola de arbitraje.`);
-                          }, 1500);
+                          } catch (err) {
+                            console.error('Error al enviar borrador:', err);
+                            alert('Hubo un error al enviar el borrador. Por favor intente de nuevo.');
+                          } finally {
+                            setIsSubmittingDraft(false);
+                          }
                         }}
                         className="bg-[#050506] border border-gray-900 p-4 space-y-3.5 text-left font-sans text-xs"
                       >
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
-                            Título del Borrador Científico
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="Ej. Análisis de impacto rural de la tecnología en Namora..."
-                            value={draftTitle}
-                            onChange={(e) => setDraftTitle(e.target.value)}
-                            className="w-full bg-black border border-gray-800 p-2 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500"
-                          />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
+                              Nombre Completo del Autor *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Ej. Dra. Ana María Díaz"
+                              value={draftAuthorName}
+                              onChange={(e) => setDraftAuthorName(e.target.value)}
+                              className="w-full bg-black border border-gray-800 p-2 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500"
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
+                              Correo de Contacto *
+                            </label>
+                            <input
+                              type="email"
+                              required
+                              placeholder="Ej. ana.diaz@unc.edu.pe"
+                              value={draftAuthorEmail}
+                              onChange={(e) => setDraftAuthorEmail(e.target.value)}
+                              className="w-full bg-black border border-gray-800 p-2 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500"
+                            />
+                          </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="space-y-1">
                             <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
-                              Línea Temática Correspondiente
+                              Filiación / Institución
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Ej. Universidad Nacional de Cajamarca"
+                              value={draftInstitution}
+                              onChange={(e) => setDraftInstitution(e.target.value)}
+                              className="w-full bg-black border border-gray-800 p-2 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500"
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
+                              Línea Temática *
                             </label>
                             <select
                               value={draftLine}
@@ -1569,40 +1627,56 @@ export default function ModalPortal({
                               <option value="Género y Cambio Cultural">Género y Cambio Cultural</option>
                             </select>
                           </div>
+                        </div>
 
-                          <div className="space-y-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="space-y-1 sm:col-span-2">
                             <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
-                              Simular Archivo de Texto (.pdf, .docx)
+                              Título del Borrador Científico *
                             </label>
                             <input
                               type="text"
                               required
-                              placeholder="Ej. borrador_beca_namora_v3.pdf"
-                              value={draftFile}
-                              onChange={(e) => setDraftFile(e.target.value)}
+                              placeholder="Ej. Análisis de impacto rural de la tecnología en Namora..."
+                              value={draftTitle}
+                              onChange={(e) => setDraftTitle(e.target.value)}
                               className="w-full bg-black border border-gray-800 p-2 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500"
                             />
                           </div>
                         </div>
 
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
+                            Enlace del Documento o Simulación (.pdf, .docx) *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="Ej. borrador_beca_namora_v3.pdf"
+                            value={draftFile}
+                            onChange={(e) => setDraftFile(e.target.value)}
+                            className="w-full bg-black border border-gray-800 p-2 text-xs text-white placeholder-gray-700 outline-none focus:border-cyan-500"
+                          />
+                        </div>
+
                         {/* Drag and drop simulator area */}
-                        <div className="border border-dashed border-gray-850 p-4 text-center space-y-1 bg-black/40">
-                          <UploadCloud className="h-6 w-6 text-gray-650 mx-auto" />
-                          <p className="text-[10.5px] font-mono text-gray-505">
-                            Cargue su pre-print usando el campo de simulación de texto superior
+                        <div className="border border-dashed border-gray-850 p-3 text-center space-y-1 bg-black/40">
+                          <UploadCloud className="h-5 w-5 text-gray-650 mx-auto" />
+                          <p className="text-[10px] font-mono text-gray-505">
+                            Cargue su pre-print usando el campo de texto superior
                           </p>
-                          <p className="text-[9px] text-gray-600">
+                          <p className="text-[8.5px] text-gray-600">
                             Formatos habilitados: PDF, DOCX, LaTeX de hasta 25MB
                           </p>
                         </div>
 
                         <button
                           type="submit"
-                          disabled={draftSubmitted}
+                          disabled={isSubmittingDraft}
                           className="w-full flex items-center justify-center gap-2 bg-[#0099ff]/10 hover:bg-[#0099ff]/20 text-[#0099ff] border border-[#0099ff]/30 py-2.5 font-mono text-[10.5px] uppercase font-bold transition-all cursor-pointer"
                         >
                           <Send className="h-3.5 w-3.5" />
-                          {draftSubmitted ? 'Subiendo manuscrito al Clúster...' : 'Enviar Borrador para Pares'}
+                          {isSubmittingDraft ? 'Enviando manuscrito al Clúster...' : 'Enviar Borrador para Pares'}
                         </button>
                       </form>
 

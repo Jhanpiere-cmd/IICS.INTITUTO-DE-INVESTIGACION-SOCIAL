@@ -3,11 +3,28 @@ import { useLocation } from 'react-router-dom';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
-import { generateNewsContent, generateImagePrompt, AIConfig, DEFAULT_AI_CONFIG } from '../../lib/ai';
+import { generateNewsContent, AIConfig, DEFAULT_AI_CONFIG } from '../../lib/ai';
 import { AIEngineSelector } from '../ai/AIEngineSelector';
 import ReactMarkdown from 'react-markdown';
-import { Calendar, User, X, Image as ImageIcon, Upload, Bot, Loader2, Copy, Check, Sparkles, Newspaper, Trash2, Edit2, ExternalLink, ChevronRight } from 'lucide-react';
-import { getUserColor, getUserGlow } from '../../lib/userColors';
+import {
+  Calendar,
+  User,
+  X,
+  Image as ImageIcon,
+  Upload,
+  Bot,
+  Loader2,
+  Sparkles,
+  Newspaper,
+  Trash2,
+  GraduationCap,
+  Inbox,
+  AlertTriangle,
+  Tag,
+  Download,
+  Send,
+  Plus
+} from 'lucide-react';
 import { useToast } from '../ui/ToastContext';
 
 interface News {
@@ -24,54 +41,153 @@ interface News {
   publisher?: { fullName?: string; full_name?: string; avatarUrl?: string | null; avatar_url?: string | null };
 }
 
+interface Publication {
+  id: string;
+  title: string;
+  authors: string;
+  published_date: string | null;
+  research_line: string | null;
+  pdf_url: string | null;
+  url: string | null;
+  abstract: string | null;
+  keywords: string | null;
+  rights: string | null;
+  volume: string | null;
+  number: string | null;
+  created_at: string;
+}
+
+interface DraftSubmission {
+  id: string;
+  title: string;
+  abstract: string | null;
+  author_name: string;
+  author_email: string;
+  institution: string | null;
+  research_line: string;
+  pdf_url: string | null;
+  status: 'Recibido' | 'En Dictamen' | 'Aprobado' | 'Rechazado';
+  submitted_at: string;
+}
+
+interface SocioenvironmentalAlert {
+  id: string;
+  title: string;
+  description: string;
+  province: string;
+  type: 'Bajo' | 'Medio' | 'Alto';
+  created_at: string;
+}
+
+const provinces = [
+  'Cajamarca',
+  'Cajabamba',
+  'Celendín',
+  'Chota',
+  'Contumazá',
+  'Cutervo',
+  'Hualgayoc',
+  'Jaén',
+  'San Ignacio',
+  'San Marcos',
+  'San Miguel',
+  'San Pablo',
+  'Santa Cruz'
+];
+
 export const NewsView: React.FC = () => {
   const { user } = useAuth();
+  const { showToast } = useToast();
+  const location = useLocation();
+
+  // Tab State
+  const [activeTab, setActiveTab] = useState<'news' | 'publications' | 'inbox' | 'alerts'>('news');
+
+  // --- TAB 1: NOTICIAS STATES ---
   const [newsList, setNewsList] = useState<News[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreate, setShowCreate] = useState(false);
+  const [loadingNews, setLoadingNews] = useState(true);
+  const [showCreateNews, setShowCreateNews] = useState(false);
   const [selectedNews, setSelectedNews] = useState<News | null>(null);
-  const [form, setForm] = useState({
+  const [newsForm, setNewsForm] = useState({
     title: '',
     content: '',
-    category: 'General',
+    category: 'General'
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const { showToast } = useToast();
+  const [uploadingNews, setUploadingNews] = useState(false);
+  const [showConfirmDeleteNews, setShowConfirmDeleteNews] = useState<string | null>(null);
 
-  // AI State
+  // AI Assistant States
   const [showAiModal, setShowAiModal] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [generatingAi, setGeneratingAi] = useState(false);
   const [aiConfig, setAiConfig] = useState<AIConfig>(DEFAULT_AI_CONFIG);
 
-  // Image Prompt State
-  const [showPromptModal, setShowPromptModal] = useState(false);
-  const [generatedImagePrompt, setGeneratedImagePrompt] = useState('');
-  const [copiedPrompt, setCopiedPrompt] = useState(false);
-  const [isPreview, setIsPreview] = useState(false);
-  const [showConfirmDelete, setShowConfirmDelete] = useState<string | null>(null);
+  // --- TAB 2: PUBLICACIONES STATES (Dublin Core) ---
+  const [publicationsList, setPublicationsList] = useState<Publication[]>([]);
+  const [loadingPubs, setLoadingPubs] = useState(true);
+  const [showCreatePub, setShowCreatePub] = useState(false);
+  const [pubForm, setPubForm] = useState({
+    title: '',
+    authors: '',
+    published_date: '',
+    research_line: 'Sociología Digital y Nuevas Tecnologías',
+    url: '',
+    abstract: '',
+    keywords: '',
+    rights: 'Creative Commons Attribution 4.0',
+    volume: '',
+    number: ''
+  });
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pubUploading, setPubUploading] = useState(false);
+  const [showConfirmDeletePub, setShowConfirmDeletePub] = useState<string | null>(null);
 
-  // Removed local toast effect
+  // --- TAB 3: BANDEJA DE ENTRADA STATES ---
+  const [submissionsList, setSubmissionsList] = useState<DraftSubmission[]>([]);
+  const [loadingSubmissions, setLoadingSubmissions] = useState(true);
+  const [dictamenTarget, setDictamenTarget] = useState<DraftSubmission | null>(null);
+  const [newDictamenStatus, setNewDictamenStatus] = useState<'Recibido' | 'En Dictamen' | 'Aprobado' | 'Rechazado'>('Recibido');
+  const [updatingDictamen, setUpdatingDictamen] = useState(false);
 
-  const location = useLocation();
+  // --- TAB 4: ALERTAS STATES ---
+  const [alertsList, setAlertsList] = useState<SocioenvironmentalAlert[]>([]);
+  const [loadingAlerts, setLoadingAlerts] = useState(true);
+  const [showCreateAlert, setShowCreateAlert] = useState(false);
+  const [alertForm, setAlertForm] = useState({
+    title: '',
+    description: '',
+    province: 'Cajamarca',
+    type: 'Bajo' as 'Bajo' | 'Medio' | 'Alto'
+  });
+  const [uploadingAlert, setUploadingAlert] = useState(false);
+  const [showConfirmDeleteAlert, setShowConfirmDeleteAlert] = useState<string | null>(null);
 
+  // --- LOAD INITIAL DATA & SYNC FROM LOCATION STATE ---
   useEffect(() => {
     if (location.state?.action === 'create' && location.state?.data) {
-      setForm(prev => ({
+      setNewsForm(prev => ({
         ...prev,
         title: location.state.data.title || '',
         content: location.state.data.content || '',
         category: location.state.data.category || 'General'
       }));
-      setShowCreate(true);
+      setShowCreateNews(true);
       window.history.replaceState({}, document.title);
     }
   }, [location]);
 
-  const load = async () => {
-    setLoading(true);
+  useEffect(() => {
+    if (activeTab === 'news') loadNews();
+    else if (activeTab === 'publications') loadPublications();
+    else if (activeTab === 'inbox') loadSubmissions();
+    else if (activeTab === 'alerts') loadAlerts();
+  }, [activeTab]);
+
+  // --- TAB 1: NOTICIAS LOGIC ---
+  const loadNews = async () => {
+    setLoadingNews(true);
     try {
       const { data, error } = await supabase
         .from('news')
@@ -84,100 +200,75 @@ export const NewsView: React.FC = () => {
       if (error) throw error;
       setNewsList((data || []) as unknown as News[]);
     } catch (e) {
-      console.error('Error loading news:', e);
+      console.error('Error al cargar noticias:', e);
+      showToast({ message: 'Error al cargar noticias', type: 'error' });
     } finally {
-      setLoading(false);
+      setLoadingNews(false);
     }
   };
-
-  useEffect(() => {
-    load();
-    const ch = supabase
-      .channel('news-realtime')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'news' }, (payload) => {
-        const newNews = payload.new as any;
-        if (newNews.published_by !== user?.id && newNews.status === 'Publicado') {
-          showToast({
-            type: 'info',
-            title: 'NUEVA NOTICIA',
-            message: `${newNews.title || 'Se ha publicado un nuevo comunicado.'}`,
-            duration: 7000
-          });
-        }
-        load();
-      })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'news' }, () => load())
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'news' }, () => load())
-      .subscribe();
-    return () => { supabase.removeChannel(ch); };
-  }, [user?.id, showToast]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
-  const handleCreate = async () => {
-    if (!form.title.trim() || !form.content.trim()) {
-      showToast({ type: 'error', title: 'DATOS INCOMPLETOS', message: 'Título y contenido son obligatorios' });
+  const handleCreateNews = async () => {
+    if (!newsForm.title.trim() || !newsForm.content.trim()) {
+      showToast({ message: 'Por favor complete el título y contenido.', type: 'error' });
       return;
     }
-
-    setUploading(true);
+    setUploadingNews(true);
     try {
-      let imageUrl = null;
-
-      // Subir imagen si existe
+      let finalImageUrl: string | null = null;
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `news-images/${fileName}`;
-
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `news/${fileName}`;
         const { error: uploadError } = await supabase.storage
           .from('resources')
           .upload(filePath, imageFile);
-
         if (uploadError) throw uploadError;
-
-        const { data: urlData } = supabase.storage
-          .from('resources')
-          .getPublicUrl(filePath);
-
-        imageUrl = urlData.publicUrl;
+        const { data: urlData } = supabase.storage.from('resources').getPublicUrl(filePath);
+        finalImageUrl = urlData.publicUrl;
       }
 
-      // Insertar noticia
       const { error } = await supabase.from('news').insert({
-        title: form.title,
-        summary: form.content.substring(0, 150),
-        content: form.content,
-        category: form.category || 'General',
-        published_by: user?.id,
+        title: newsForm.title,
+        content: newsForm.content,
+        category: newsForm.category,
+        published_by: user?.id || null,
         status: 'Publicado',
         published_at: new Date().toISOString(),
-        image_url: imageUrl,
+        image_url: finalImageUrl
       });
-
       if (error) throw error;
 
-      setShowCreate(false);
-      setForm({ title: '', content: '', category: 'General' });
+      showToast({ message: '¡Noticia publicada con éxito!', type: 'success' });
+      setNewsForm({ title: '', content: '', category: 'General' });
       setImageFile(null);
       setImagePreview(null);
-      showToast({ type: 'success', title: 'PUBLICADO', message: 'Noticia publicada con éxito en el portal' });
-      await load();
-
+      setShowCreateNews(false);
+      loadNews();
     } catch (e: any) {
-      showToast({ type: 'error', title: 'ERROR DE PUBLICACIÓN', message: `No se pudo publicar: ${e?.message || 'Error desconocido'}` });
+      console.error('Error al publicar noticia:', e);
+      showToast({ message: e.message || 'Error al publicar noticia', type: 'error' });
     } finally {
-      setUploading(false);
+      setUploadingNews(false);
+    }
+  };
+
+  const deleteNews = async (id: string) => {
+    try {
+      const { error } = await supabase.from('news').delete().eq('id', id);
+      if (error) throw error;
+      showToast({ message: 'Noticia eliminada correctamente.', type: 'success' });
+      loadNews();
+    } catch (e: any) {
+      console.error('Error al eliminar noticia:', e);
+      showToast({ message: e.message || 'Error al eliminar', type: 'error' });
     }
   };
 
@@ -185,573 +276,1116 @@ export const NewsView: React.FC = () => {
     if (!aiPrompt.trim()) return;
     setGeneratingAi(true);
     try {
-      const { data: files } = await supabase.storage.from('resources').list('', { limit: 100 });
-      const resourceNames = files?.map(f => f.name).filter(n => n !== '.keep') || [];
-
-      const userContext = {
-        name: user?.user_metadata?.full_name || user?.email || 'Usuario',
-        role: user?.user_metadata?.role || 'Estudiante/Miembro'
-      };
-
-      const result = await generateNewsContent(aiPrompt, {
-        user: userContext,
-        resources: resourceNames
-      }, aiConfig);
-
-      if (result) {
-        setForm({
-          title: result.title || '',
-          content: result.content || '',
-          category: result.category || 'General',
-        });
-
-        setShowAiModal(false);
-        setAiPrompt('');
-        setShowCreate(true);
-        showToast({ type: 'success', title: 'IA', message: 'Noticia generada con IA' });
-      } else {
-        showToast({ type: 'error', title: 'ERROR IA', message: 'No se pudo generar la noticia. Intenta con otro tema.' });
-      }
-    } catch (e) {
-      console.error(e);
-      showToast({ type: 'error', title: 'EXPLOTÓ', message: 'Error al generar con IA' });
+      const response = await generateNewsContent(aiPrompt, undefined, aiConfig);
+      setNewsForm(prev => ({
+        ...prev,
+        title: response.title || prev.title,
+        content: response.content || prev.content
+      }));
+      setShowAiModal(false);
+      setAiPrompt('');
+      showToast({ message: '¡Borrador generado por la IA!', type: 'success' });
+    } catch (e: any) {
+      console.error('Error al generar con IA:', e);
+      showToast({ message: 'Error de IA: ' + e.message, type: 'error' });
     } finally {
       setGeneratingAi(false);
     }
   };
 
-  const handleCopyPrompt = () => {
-    navigator.clipboard.writeText(generatedImagePrompt);
-    setCopiedPrompt(true);
-    setTimeout(() => setCopiedPrompt(false), 2000);
-    showToast({ type: 'success', title: 'COPIADO', message: 'Prompt copiado al portapapeles' });
+  // --- TAB 2: PUBLICACIONES LOGIC ---
+  const loadPublications = async () => {
+    setLoadingPubs(true);
+    try {
+      const { data, error } = await supabase
+        .from('journal_publications')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setPublicationsList(data || []);
+    } catch (e) {
+      console.error('Error al cargar publicaciones:', e);
+      showToast({ message: 'Error al cargar catálogo', type: 'error' });
+    } finally {
+      setLoadingPubs(false);
+    }
   };
 
-  const deleteNews = async (id: string) => {
-    try {
-      const { error } = await supabase.from('news').delete().eq('id', id);
+  const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPdfFile(e.target.files[0]);
+    }
+  };
 
-        if (error) {
-          console.error('Error al eliminar noticia:', error);
-          if (error.code === 'PGRST301' || error.code === '42501') {
-            showToast({
-              type: 'error',
-              title: 'PERMISOS',
-              message: 'No tienes permisos para eliminar esta noticia.'
-            });
-            return;
-          }
-          showToast({
-            type: 'error',
-            title: 'ERROR',
-            message: `Error: ${error.message || 'No se pudo eliminar la noticia'}`
-          });
-          return;
-        }
-        showToast({ type: 'success', title: 'ELIMINADO', message: 'Noticia eliminada exitosamente' });
-        await load();
-      } catch (e: any) {
-        console.error('Error inesperado al eliminar:', e);
-        showToast({ type: 'error', title: 'FATAL', message: 'Error inesperado al eliminar la noticia' });
+  const handleCreatePublication = async () => {
+    if (!pubForm.title.trim() || !pubForm.authors.trim()) {
+      showToast({ message: 'El título y autores son campos requeridos.', type: 'error' });
+      return;
+    }
+    setPubUploading(true);
+    try {
+      let finalPdfUrl = pubForm.url || null;
+      if (pdfFile) {
+        const fileExt = pdfFile.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `publications/${fileName}`;
+        const { error: uploadError } = await supabase.storage
+          .from('resources')
+          .upload(filePath, pdfFile);
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage.from('resources').getPublicUrl(filePath);
+        finalPdfUrl = urlData.publicUrl;
       }
-    };
+
+      const { error } = await supabase.from('journal_publications').insert({
+        title: pubForm.title,
+        authors: pubForm.authors,
+        published_date: pubForm.published_date || null,
+        research_line: pubForm.research_line,
+        pdf_url: finalPdfUrl,
+        url: pubForm.url || null,
+        abstract: pubForm.abstract || null,
+        keywords: pubForm.keywords || null,
+        rights: pubForm.rights || null,
+        volume: pubForm.volume || null,
+        number: pubForm.number || null
+      });
+      if (error) throw error;
+
+      showToast({ message: '¡Artículo indexado correctamente!', type: 'success' });
+      setPubForm({
+        title: '',
+        authors: '',
+        published_date: '',
+        research_line: 'Sociología Digital y Nuevas Tecnologías',
+        url: '',
+        abstract: '',
+        keywords: '',
+        rights: 'Creative Commons Attribution 4.0',
+        volume: '',
+        number: ''
+      });
+      setPdfFile(null);
+      setShowCreatePub(false);
+      loadPublications();
+    } catch (e: any) {
+      console.error('Error al indexar publicación:', e);
+      showToast({ message: e.message || 'Error al indexar', type: 'error' });
+    } finally {
+      setPubUploading(false);
+    }
+  };
+
+  const deletePublication = async (id: string) => {
+    try {
+      const { error } = await supabase.from('journal_publications').delete().eq('id', id);
+      if (error) throw error;
+      showToast({ message: 'Publicación removida del índice.', type: 'success' });
+      loadPublications();
+    } catch (e: any) {
+      console.error('Error al borrar publicación:', e);
+      showToast({ message: e.message || 'Error al borrar', type: 'error' });
+    }
+  };
+
+  // --- TAB 3: BANDEJA DE ENTRADA LOGIC ---
+  const loadSubmissions = async () => {
+    setLoadingSubmissions(true);
+    try {
+      const { data, error } = await supabase
+        .from('research_submissions')
+        .select('*')
+        .order('submitted_at', { ascending: false });
+      if (error) throw error;
+      setSubmissionsList(data || []);
+    } catch (e) {
+      console.error('Error al cargar la bandeja de entrada:', e);
+      showToast({ message: 'Error al consultar bandeja', type: 'error' });
+    } finally {
+      setLoadingSubmissions(false);
+    }
+  };
+
+  const handleDictaminar = async () => {
+    if (!dictamenTarget) return;
+    setUpdatingDictamen(true);
+    try {
+      const { error } = await supabase
+        .from('research_submissions')
+        .update({ status: newDictamenStatus })
+        .eq('id', dictamenTarget.id);
+      if (error) throw error;
+      showToast({ message: `Borrador dictaminado como: ${newDictamenStatus}`, type: 'success' });
+      setDictamenTarget(null);
+      loadSubmissions();
+    } catch (e: any) {
+      console.error('Error al dictaminar borrador:', e);
+      showToast({ message: e.message || 'Error al guardar dictamen', type: 'error' });
+    } finally {
+      setUpdatingDictamen(false);
+    }
+  };
+
+  const startPublicationFromApprovedDraft = (draft: DraftSubmission) => {
+    setPubForm({
+      title: draft.title,
+      authors: draft.author_name,
+      published_date: new Date().toISOString().substring(0, 10),
+      research_line: draft.research_line || 'Sociología Digital y Nuevas Tecnologías',
+      url: draft.pdf_url || '',
+      abstract: draft.abstract || '',
+      keywords: '',
+      rights: 'Creative Commons Attribution 4.0',
+      volume: '',
+      number: ''
+    });
+    setActiveTab('publications');
+    setShowCreatePub(true);
+  };
+
+  // --- TAB 4: ALERTAS LOGIC ---
+  const loadAlerts = async () => {
+    setLoadingAlerts(true);
+    try {
+      const { data, error } = await supabase
+        .from('socioenvironmental_alerts')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setAlertsList(data || []);
+    } catch (e) {
+      console.error('Error al cargar alertas:', e);
+      showToast({ message: 'Error al consultar alertas socioambientales', type: 'error' });
+    } finally {
+      setLoadingAlerts(false);
+    }
+  };
+
+  const handleCreateAlert = async () => {
+    if (!alertForm.title.trim() || !alertForm.description.trim()) {
+      showToast({ message: 'Todos los campos son requeridos.', type: 'error' });
+      return;
+    }
+    setUploadingAlert(true);
+    try {
+      const { error } = await supabase.from('socioenvironmental_alerts').insert({
+        title: alertForm.title,
+        description: alertForm.description,
+        province: alertForm.province,
+        type: alertForm.type
+      });
+      if (error) throw error;
+      showToast({ message: '¡Alerta territorial activada!', type: 'success' });
+      setAlertForm({
+        title: '',
+        description: '',
+        province: 'Cajamarca',
+        type: 'Bajo'
+      });
+      setShowCreateAlert(false);
+      loadAlerts();
+    } catch (e: any) {
+      console.error('Error al activar alerta:', e);
+      showToast({ message: e.message || 'Error al guardar alerta', type: 'error' });
+    } finally {
+      setUploadingAlert(false);
+    }
+  };
+
+  const deleteAlert = async (id: string) => {
+    try {
+      const { error } = await supabase.from('socioenvironmental_alerts').delete().eq('id', id);
+      if (error) throw error;
+      showToast({ message: 'Alerta desactivada con éxito.', type: 'success' });
+      loadAlerts();
+    } catch (e: any) {
+      console.error('Error al borrar alerta:', e);
+      showToast({ message: e.message || 'Error al desactivar', type: 'error' });
+    }
+  };
 
   return (
-    <div className="p-4 md:pt-4 md:px-6 space-y-6 animate-in fade-in duration-700">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-exec-border pb-4">
+    <div className="flex flex-col gap-6">
+      
+      {/* HEADER DE MÓDULO */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-exec-border">
         <div>
-          <h1 className="text-2xl font-black text-white uppercase tracking-tighter leading-none flex items-center gap-3">
-            <div className="p-1.5 bg-exec-blue/10 rounded-none border border-exec-blue/20">
-              <Newspaper className="w-6 h-6 text-exec-blue" />
-            </div>
-            <span>Noticias y <span className="text-exec-blue">Comunicados</span></span>
-          </h1>
-          <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 mt-1">Difusión estratégica de actualizaciones y comunicados corporativos.</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight font-mono uppercase">Difusión Científica y Territorial</h1>
+          <p className="text-xs text-gray-500 font-sans leading-normal">
+            Administra el contenido científico del Observatorio, dictamina borradores AFI y difunde alertas socioambientales.
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowAiModal(true)}
-            className="px-4 py-2 bg-white hover:bg-gray-100 text-black rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 group"
-          >
-            <Bot size={16} className="text-exec-blue" />
-            <span>Redactar con IA</span>
-          </button>
+          {activeTab === 'news' && (
+            <>
+              <button
+                onClick={() => setShowAiModal(true)}
+                className="px-4 py-2 border border-exec-blue/20 bg-exec-blue/5 hover:bg-exec-blue/15 text-exec-blue font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all"
+              >
+                <Bot size={14} />
+                <span>Asistente IA</span>
+              </button>
+              <button
+                onClick={() => setShowCreateNews(true)}
+                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all"
+              >
+                <Plus size={14} />
+                <span>Publicar Noticia</span>
+              </button>
+            </>
+          )}
 
-          <button
-            onClick={() => setShowCreate(true)}
-            className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-exec-blue/20 flex items-center justify-center gap-2"
-          >
-            <Upload size={16} />
-            <span>Publicar Noticia</span>
-          </button>
+          {activeTab === 'publications' && (
+            <button
+              onClick={() => setShowCreatePub(true)}
+              className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all"
+            >
+              <Plus size={14} />
+              <span>Indexar Artículo</span>
+            </button>
+          )}
+
+          {activeTab === 'alerts' && (
+            <button
+              onClick={() => setShowCreateAlert(true)}
+              className="px-4 py-2 bg-red-650 hover:bg-red-500 text-white font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all animate-pulse"
+            >
+              <AlertTriangle size={14} />
+              <span>Activar Alerta</span>
+            </button>
+          )}
         </div>
       </div>
 
-      {loading && (
-        <div className="flex flex-col items-center justify-center p-12">
-          <div className="h-8 w-8 border-2 border-exec-blue border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-sm font-medium text-gray-400 animate-pulse uppercase tracking-widest">Cargando noticias...</p>
+      {/* SELECTOR DE PESTAÑAS */}
+      <div className="flex border-b border-gray-900 bg-black/40 p-1 gap-1">
+        <button
+          onClick={() => setActiveTab('news')}
+          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none ${
+            activeTab === 'news' ? 'bg-[#0099ff]/10 text-exec-blue border-b-2 border-exec-blue' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Newspaper size={14} />
+          <span>Noticias e Impacto</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('publications')}
+          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none ${
+            activeTab === 'publications' ? 'bg-[#0099ff]/10 text-exec-blue border-b-2 border-exec-blue' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <GraduationCap size={14} />
+          <span>Artículos y Dublin Core</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('inbox')}
+          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none relative ${
+            activeTab === 'inbox' ? 'bg-[#0099ff]/10 text-exec-blue border-b-2 border-exec-blue' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Inbox size={14} />
+          <span>Bandeja de Recibidos</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('alerts')}
+          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none ${
+            activeTab === 'alerts' ? 'bg-red-950/20 text-red-500 border-b-2 border-red-500' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <AlertTriangle size={14} />
+          <span>Alertas Socioambientales</span>
+        </button>
+      </div>
+
+      {/* VISTAS DE PESTAÑAS */}
+      {activeTab === 'news' && (
+        <div className="space-y-6">
+          {loadingNews ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-exec-blue" />
+            </div>
+          ) : newsList.length === 0 ? (
+            <div className="text-center p-12 bg-black/40 border border-gray-900 font-mono text-xs text-gray-500">
+              NO SE ENCONTRARON NOTICIAS ACTIVAS EN EL PORTAL.
+            </div>
+          ) : (
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {newsList.map((news) => (
+                <div key={news.id} className="bg-[#050506] border border-gray-900 p-4 flex flex-col justify-between gap-4 text-left">
+                  <div className="space-y-3">
+                    {news.image_url ? (
+                      <div className="w-full h-32 bg-black border border-gray-955 overflow-hidden">
+                        <img src={news.image_url} alt="" className="w-full h-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="w-full h-32 bg-zinc-950 border border-gray-950 flex items-center justify-center text-gray-800">
+                        <ImageIcon size={30} />
+                      </div>
+                    )}
+
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded-none bg-exec-blue/10 border border-exec-blue/30 text-exec-blue">
+                          {news.category}
+                        </span>
+                        <span className="text-[10px] text-gray-500 font-mono">
+                          {news.published_at ? new Date(news.published_at).toLocaleDateString() : ''}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold text-white uppercase tracking-tight leading-snug line-clamp-2">{news.title}</h4>
+                      <p className="text-[11px] text-gray-400 line-clamp-3 leading-relaxed font-sans font-normal">
+                        {news.content.replace(/[#*`]/g, '')}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center border-t border-gray-950 pt-3">
+                    <button
+                      onClick={() => setSelectedNews(news)}
+                      className="text-[10px] font-mono text-exec-blue hover:text-white uppercase font-bold"
+                    >
+                      Ver Detalle
+                    </button>
+                    <button
+                      onClick={() => setShowConfirmDeleteNews(news.id)}
+                      className="p-1 text-gray-650 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      {/* News Grid */}
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-stretch">
-        {!loading && newsList.map(n => {
-          const publisherColor = n.published_by ? getUserColor(n.published_by) : '#6366F1';
-          return (
-            <div
-              key={n.id}
-              className="group relative bg-[#0A0A0A] border border-exec-border rounded-none overflow-hidden hover:border-exec-blue/50 transition-all duration-300 flex flex-col h-full hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] cursor-pointer"
-              onClick={() => setSelectedNews(n)}
-            >
-              {/* Image Area */}
-              <div className="w-full aspect-video overflow-hidden relative border-b border-exec-border bg-[#050505]">
-                {n.image_url ? (
-                  <img
-                    src={n.image_url}
-                    alt={n.title}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-[#0A0A0A]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#111] to-[#050505]"></div>
-                    <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-exec-blue/40 via-transparent to-transparent"></div>
-                    <ImageIcon className="w-12 h-12 text-gray-800 relative z-10 opacity-50 group-hover:text-gray-600 transition-colors" />
-                  </div>
-                )}
-                <div className="absolute top-3 right-3 z-10">
-                  <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-none bg-black/60 backdrop-blur-md border border-white/10 text-white shadow-sm">
-                    {n.category}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 leading-tight group-hover:text-exec-blue transition-colors">
-                  {n.title}
-                </h3>
-                <p className="text-gray-400 text-sm line-clamp-3 mb-4 leading-relaxed flex-1">
-                  {n.summary || n.content.substring(0, 100)}...
-                </p>
-
-                <div className="flex items-center justify-between pt-4 border-t border-exec-border mt-auto">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-none border border-gray-700 overflow-hidden flex items-center justify-center text-[10px] font-bold bg-[#111]">
-                      {(n.publisher?.avatar_url || n.publisher?.avatarUrl) ? (
-                        <img src={n.publisher.avatar_url || n.publisher.avatarUrl || ''} alt="" className="w-full h-full object-cover rounded-none" />
-                      ) : (
-                        <span style={{ color: publisherColor }}>{(n.publisher?.fullName || n.publisher?.full_name || 'A').charAt(0)}</span>
-                      )}
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-xs text-gray-300 font-medium truncate max-w-[100px]">{n.publisher?.fullName || n.publisher?.full_name || 'Usuario'}</span>
-                      <span className="text-[10px] text-gray-600">{new Date(n.published_at || n.created_at).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-
-                  {/* Read More Icon */}
-                  <div className="w-8 h-8 rounded-none bg-[#111] border border-exec-border flex items-center justify-center group-hover:bg-exec-blue group-hover:border-exec-blue group-hover:text-white transition-all text-gray-500">
-                    <ChevronRight className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
+      {activeTab === 'publications' && (
+        <div className="space-y-6">
+          {loadingPubs ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-exec-blue" />
             </div>
-          );
-        })}
-
-        {newsList.length === 0 && !loading && (
-          <div className="col-span-full flex flex-col items-center justify-center py-24 border border-dashed border-[#222] rounded-none bg-[#0E0E0E] text-gray-500">
-            <Newspaper className="w-16 h-16 mb-4 text-[#222]" />
-            <p className="font-medium text-gray-400">No hay noticias publicadas</p>
-            <p className="text-xs mt-1">Sé el primero en publicar algo interesante.</p>
-          </div>
-        )}
-      </div>
-
-      {/* Create Modal */}
-      {showCreate && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-[#0A0A0A] border border-exec-border rounded-none shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col">
-            <div className="p-6 border-b border-exec-border sticky top-0 bg-[#0A0A0A] z-10 flex justify-between items-center">
-              <div>
-                <h3 className="text-xl font-bold text-white">Redactar Noticia</h3>
-                <p className="text-sm text-gray-400">Comparte información relevante con el equipo.</p>
-              </div>
-              <button onClick={() => setShowCreate(false)} className="text-gray-500 hover:text-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
+          ) : publicationsList.length === 0 ? (
+            <div className="text-center p-12 bg-black/40 border border-gray-900 font-mono text-xs text-gray-500">
+              NO SE ENCONTRARON ARTÍCULOS CIENTÍFICOS REGISTRADOS.
             </div>
-
-            <div className="p-6 space-y-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Título</label>
-                  <input
-                    className="exec-input p-3 text-lg font-medium"
-                    placeholder="Escribe un título atractivo..."
-                    value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Categoría</label>
-                    <select
-                      className="exec-input p-3"
-                      value={form.category}
-                      onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    >
-                      <option value="General">General</option>
-                      <option value="Evento">Evento</option>
-                      <option value="Anuncio">Anuncio</option>
-                      <option value="Comunicado">Comunicado</option>
-                      <option value="Actividad">Actividad</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Imagen de portada</label>
-                    <button
-                      onClick={async () => {
-                        if (!form.content) {
-                          showToast({ type: 'error', title: 'DATOS', message: 'Escribe contenido para generar el prompt' });
-                          return;
-                        }
-                        setGeneratingAi(true);
-                        try {
-                          const prompt = await generateImagePrompt(form.content, aiConfig);
-                          if (prompt) {
-                            setGeneratedImagePrompt(prompt);
-                            setShowPromptModal(true);
-                          }
-                        } catch (e) { console.error(e); }
-                        finally { setGeneratingAi(false); }
-                      }}
-                      className="text-xs flex items-center gap-1 text-exec-blue hover:text-blue-400 disabled:opacity-50 transition-colors font-bold uppercase tracking-wider"
-                      disabled={generatingAi || !form.content}
-                    >
-                      {generatingAi ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                      Generar Prompt con IA
-                    </button>
-                  </div>
-
-                  <div className="border border-dashed border-[#333] hover:border-exec-blue/50 rounded-none p-6 bg-[#111] transition-colors">
-                    {imagePreview ? (
-                      <div className="relative group">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-48 object-cover rounded-none border border-gray-800"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          ) : (
+            <div className="overflow-x-auto border border-gray-900 bg-[#050506]">
+              <table className="w-full text-left border-collapse font-sans text-xs">
+                <thead>
+                  <tr className="border-b border-gray-900 bg-black text-gray-500 font-mono text-[9px] uppercase tracking-wider">
+                    <th className="p-3">Título / Línea</th>
+                    <th className="p-3">Autores</th>
+                    <th className="p-3">Indexación (Vol/Nº)</th>
+                    <th className="p-3">Dublin Core</th>
+                    <th className="p-3 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-950">
+                  {publicationsList.map((pub) => (
+                    <tr key={pub.id} className="hover:bg-zinc-950/30">
+                      <td className="p-3">
+                        <div className="font-bold text-white uppercase tracking-tight">{pub.title}</div>
+                        <div className="text-[10px] text-gray-500 font-mono mt-0.5">{pub.research_line}</div>
+                      </td>
+                      <td className="p-3 text-gray-300 font-normal">{pub.authors}</td>
+                      <td className="p-3 text-gray-400 font-mono">
+                        {pub.published_date ? new Date(pub.published_date).getFullYear() : 'N/A'} {pub.volume && `(${pub.volume})`} {pub.number && `No.${pub.number}`}
+                      </td>
+                      <td className="p-3">
+                        <span className="px-1.5 py-0.5 text-[8.5px] font-mono bg-green-950/30 text-green-400 border border-green-900/30">
+                          {pub.rights ? 'Dublin Core OK' : 'Estándar'}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          {pub.pdf_url && (
+                            <a
+                              href={pub.pdf_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-1 hover:bg-[#111] border border-gray-850 text-gray-400 hover:text-white"
+                              title="Bajar PDF"
+                            >
+                              <Download size={13} />
+                            </a>
+                          )}
                           <button
-                            onClick={() => {
-                              setImageFile(null);
-                              setImagePreview(null);
-                            }}
-                            className="px-4 py-2 bg-red-600/90 hover:bg-red-600 text-white rounded-none text-sm font-medium backdrop-blur-sm"
+                            onClick={() => setShowConfirmDeletePub(pub.id)}
+                            className="p-1 border border-gray-850 hover:border-red-900 text-gray-400 hover:text-red-500"
+                            title="Eliminar registro"
                           >
-                            Eliminar Imagen
+                            <Trash2 size={13} />
                           </button>
                         </div>
-                      </div>
-                    ) : (
-                      <label className="flex flex-col items-center justify-center cursor-pointer py-4">
-                        <div className="w-12 h-12 rounded-none bg-[#1A1A1A] flex items-center justify-center mb-3">
-                          <Upload className="w-5 h-5 text-gray-400" />
-                        </div>
-                        <span className="text-sm font-medium text-gray-300">Haz clic para subir una imagen</span>
-                        <span className="text-xs text-gray-500 mt-1">Recomendado: 1200x630px JPG, PNG</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageSelect}
-                          className="hidden"
-                        />
-                      </label>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'inbox' && (
+        <div className="space-y-6">
+          {loadingSubmissions ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-exec-blue" />
+            </div>
+          ) : submissionsList.length === 0 ? (
+            <div className="text-center p-12 bg-black/40 border border-gray-900 font-mono text-xs text-gray-500">
+              LA BANDEJA DE PRE-PRINTS ESTÁ VACÍA.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {submissionsList.map((sub) => (
+                <div key={sub.id} className="bg-[#050506] border border-gray-900 p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-left">
+                  <div className="space-y-1.5 font-sans">
+                    <div className="flex items-center gap-3">
+                      <span className={`px-2 py-0.5 text-[8.5px] font-mono font-bold uppercase rounded-none border ${
+                        sub.status === 'Recibido' ? 'bg-zinc-950 text-gray-400 border-gray-800' :
+                        sub.status === 'En Dictamen' ? 'bg-amber-955/40 text-amber-500 border-amber-900/60' :
+                        sub.status === 'Aprobado' ? 'bg-green-955/40 text-green-400 border-green-900/60' :
+                        'bg-red-955/40 text-red-400 border-red-900/60'
+                      }`}>
+                        {sub.status}
+                      </span>
+                      <span className="text-[9.5px] font-mono text-gray-500">Recibido: {new Date(sub.submitted_at).toLocaleDateString()}</span>
+                    </div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-tight leading-snug">{sub.title}</h4>
+                    <p className="text-[11px] text-gray-400">
+                      <span className="font-bold text-gray-300">Autor:</span> {sub.author_name} ({sub.author_email}) • <span className="font-bold text-gray-300">Filiación:</span> {sub.institution || 'Independiente'}
+                    </p>
+                    <p className="text-[10px] text-gray-500 font-mono">
+                      Línea: {sub.research_line}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end md:self-auto">
+                    {sub.pdf_url && (
+                      <a
+                        href={sub.pdf_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3 py-1.5 bg-black hover:bg-zinc-950 border border-gray-850 hover:border-gray-700 text-gray-300 rounded-none font-mono text-[10.5px] flex items-center gap-1.5"
+                      >
+                        <Download size={12} />
+                        <span>Bajar PDF</span>
+                      </a>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setDictamenTarget(sub);
+                        setNewDictamenStatus(sub.status);
+                      }}
+                      className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-850 hover:border-zinc-700 rounded-none font-mono text-[10.5px]"
+                    >
+                      Dictaminar
+                    </button>
+
+                    {sub.status === 'Aprobado' && (
+                      <button
+                        onClick={() => startPublicationFromApprovedDraft(sub)}
+                        className="px-3 py-1.5 bg-exec-blue hover:bg-blue-500 text-white rounded-none font-mono text-[10.5px] flex items-center gap-1"
+                      >
+                        <Send size={12} />
+                        <span>Publicar</span>
+                      </button>
                     )}
                   </div>
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Contenido</label>
-                    <div className="flex bg-black border border-exec-border p-0.5">
-                      <button 
-                         onClick={() => setIsPreview(false)}
-                         className={`px-3 py-1 text-[9px] font-bold uppercase tracking-widest transition-all ${!isPreview ? 'bg-exec-blue text-white' : 'text-gray-500 hover:text-gray-300'}`}
-                      >
-                        Editar
-                      </button>
-                      <button 
-                         onClick={() => setIsPreview(true)}
-                         className={`px-3 py-1 text-[9px] font-bold uppercase tracking-widest transition-all ${isPreview ? 'bg-exec-blue text-white' : 'text-gray-500 hover:text-gray-300'}`}
-                      >
-                        Vista Previa
-                      </button>
+      {activeTab === 'alerts' && (
+        <div className="space-y-6">
+          {loadingAlerts ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-exec-blue" />
+            </div>
+          ) : alertsList.length === 0 ? (
+            <div className="text-center p-12 bg-black/40 border border-gray-900 font-mono text-xs text-gray-500">
+              NO SE ENCONTRARON ALERTAS SOCIOAMBIENTALES REGISTRADAS.
+            </div>
+          ) : (
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {alertsList.map((al) => (
+                <div key={al.id} className="bg-[#050506] border border-gray-900 p-4 flex flex-col justify-between gap-3 text-left">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Tag className="w-3.5 h-3.5 text-exec-blue" />
+                        <span className="text-[10px] font-mono uppercase font-bold text-gray-400">{al.province}</span>
+                      </div>
+                      <span className={`px-2 py-0.5 text-[8.5px] font-mono font-bold uppercase rounded-full ${
+                        al.type === 'Bajo' ? 'bg-green-950 text-green-400' :
+                        al.type === 'Medio' ? 'bg-yellow-950 text-yellow-400' :
+                        'bg-red-950 text-red-400'
+                      }`}>
+                        Prioridad {al.type}
+                      </span>
                     </div>
+                    <h4 className="text-xs font-bold text-white uppercase leading-snug">{al.title}</h4>
+                    <p className="text-[10.5px] text-gray-400 leading-relaxed font-sans">{al.description}</p>
                   </div>
-                  
-                  {isPreview ? (
-                    <div className="w-full bg-black border border-exec-border p-5 h-[300px] overflow-y-auto news-content">
-                      <ReactMarkdown>{form.content || '*Sin contenido para mostrar*'}</ReactMarkdown>
-                    </div>
-                  ) : (
-                    <textarea
-                      className="exec-input p-4 min-h-[200px] leading-relaxed resize-y"
-                      placeholder="Escribe el contenido de la noticia aquí (soporta Markdown)..."
-                      value={form.content}
-                      onChange={(e) => setForm({ ...form, content: e.target.value })}
-                    />
-                  )}
+
+                  <div className="flex justify-between items-center border-t border-gray-955 pt-2 text-[9px] font-mono text-gray-500">
+                    <span>Activada: {new Date(al.created_at).toLocaleDateString()}</span>
+                    <button
+                      onClick={() => setShowConfirmDeleteAlert(al.id)}
+                      className="p-1 hover:bg-red-500/10 hover:text-red-500 text-gray-655 transition-colors"
+                      title="Remover alerta"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ================= MODALES Y DIÁLOGOS DE CREACIÓN / EDICIÓN ================= */}
+
+      {/* 1. Modal: Publicar Noticia */}
+      {showCreateNews && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#050506] border border-gray-900 w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-4 text-left">
+            <div className="flex justify-between items-center border-b border-gray-900 pb-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                <Newspaper className="h-4 w-4 text-exec-blue" />
+                <span>Registrar Noticia / Comunicado</span>
+              </h3>
+              <button onClick={() => setShowCreateNews(false)} className="text-gray-505 hover:text-white transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-3.5 font-sans text-xs">
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Título de la Noticia</label>
+                <input
+                  type="text"
+                  placeholder="Ej. Resultados de la investigación en Namora..."
+                  value={newsForm.title}
+                  onChange={(e) => setNewsForm(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Categoría</label>
+                  <select
+                    value={newsForm.category}
+                    onChange={(e) => setNewsForm(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none cursor-pointer"
+                  >
+                    <option value="General">General</option>
+                    <option value="Investigación">Investigación</option>
+                    <option value="Evento">Evento</option>
+                    <option value="Academia">Academia</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Imagen Ilustrativa</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="w-full bg-black border border-gray-855 p-1.5 text-white outline-none cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {imagePreview && (
+                <div className="w-full h-32 bg-black border border-gray-900 relative overflow-hidden flex items-center justify-center">
+                  <img src={imagePreview} alt="Preview" className="h-full object-contain" />
+                  <button
+                    onClick={() => { setImageFile(null); setImagePreview(null); }}
+                    className="absolute top-1 right-1 bg-black/80 p-1 text-red-500 hover:text-white border border-gray-855"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono font-bold text-gray-550 uppercase block">Cuerpo de la Noticia</label>
+                <textarea
+                  rows={6}
+                  placeholder="Detalla los pormenores de la noticia aquí..."
+                  value={newsForm.content}
+                  onChange={(e) => setNewsForm(prev => ({ ...prev, content: e.target.value }))}
+                  className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue font-sans leading-relaxed"
+                />
               </div>
             </div>
 
-            <div className="p-6 border-t border-exec-border bg-[#0A0A0A] flex justify-end gap-3 sticky bottom-0">
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-900">
               <button
-                onClick={() => {
-                  setShowCreate(false);
-                  setImageFile(null);
-                  setImagePreview(null);
-                }}
-                className="px-5 py-2.5 border border-exec-border text-gray-300 hover:bg-[#111] hover:text-white rounded-none text-sm font-medium transition-colors"
-                disabled={uploading}
+                onClick={() => setShowCreateNews(false)}
+                className="px-4 py-2 border border-gray-855 text-gray-400 hover:text-white hover:bg-zinc-950 font-mono text-[10px] uppercase font-bold"
               >
                 Cancelar
               </button>
               <button
-                onClick={handleCreate}
-                disabled={uploading}
-                className="px-6 py-2.5 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-sm font-medium shadow-lg shadow-exec-blue/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                onClick={handleCreateNews}
+                disabled={uploadingNews}
+                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-[10px] uppercase font-bold flex items-center gap-1.5"
               >
-                {uploading ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Publicando...</span>
-                  </div>
-                ) : 'Publicar Noticia'}
+                {uploadingNews ? <Loader2 className="animate-spin w-3.5 h-3.5" /> : null}
+                <span>{uploadingNews ? 'Subiendo...' : 'Publicar Noticia'}</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* News Detail Modal */}
-      {selectedNews && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in zoom-in-95 duration-200">
-          <div className="bg-[#0A0A0A] border border-exec-border rounded-none shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col relative">
+      {/* 2. Modal: Indexar Artículo */}
+      {showCreatePub && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#050506] border border-gray-900 w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-4 text-left">
+            <div className="flex justify-between items-center border-b border-gray-900 pb-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-exec-blue" />
+                <span>Indexar Publicación Científica</span>
+              </h3>
+              <button onClick={() => setShowCreatePub(false)} className="text-gray-550 hover:text-white transition-colors">
+                <X size={18} />
+              </button>
+            </div>
 
-            <button
-              onClick={() => setSelectedNews(null)}
-              className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-md rounded-none text-white hover:bg-white hover:text-black transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {selectedNews.image_url && (
-              <div className="w-full h-64 md:h-80 relative">
-                <img
-                  src={selectedNews.image_url}
-                  alt={selectedNews.title}
-                  className="w-full h-full object-cover mask-image-gradient"
+            <div className="space-y-3.5 font-sans text-xs">
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono font-bold text-gray-550 uppercase block">Título del Artículo *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Dinámicas territoriales y conflictos en la cuenca del Sendamal..."
+                  value={pubForm.title}
+                  onChange={(e) => setPubForm(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent"></div>
               </div>
-            )}
 
-            <div className="p-8 -mt-20 relative z-10">
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-none bg-exec-blue/10 border border-exec-blue/30 text-exec-blue">
-                    {selectedNews.category}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-sm text-gray-400">
-                    <Calendar className="w-4 h-4" />
-                    {new Date(selectedNews.published_at || selectedNews.created_at).toLocaleDateString()}
-                  </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Autores *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ej. Jaime Abanto P., Ana Díaz L."
+                    value={pubForm.authors}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, authors: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
                 </div>
 
-                <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">{selectedNews.title}</h2>
-
-                <div className="flex items-center justify-between pb-6 border-b border-exec-border">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-none border border-gray-700 overflow-hidden flex items-center justify-center text-lg font-bold bg-[#111] text-white">
-                      {(selectedNews.publisher?.avatar_url || selectedNews.publisher?.avatarUrl) ? (
-                        <img src={selectedNews.publisher.avatar_url || selectedNews.publisher.avatarUrl || ''} alt="" className="w-full h-full object-cover rounded-none" />
-                      ) : (
-                        <span>{(selectedNews.publisher?.fullName || selectedNews.publisher?.full_name || 'A').charAt(0)}</span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-white">{selectedNews.publisher?.fullName || selectedNews.publisher?.full_name || 'Usuario'}</p>
-                      <p className="text-xs text-gray-500">Autor</p>
-                    </div>
-                  </div>
-
-                  {user?.id === selectedNews.published_by && (
-                    <button
-                      onClick={() => setShowConfirmDelete(selectedNews.id)}
-                      className="px-3 py-1.5 border border-red-900/50 text-red-400 hover:bg-red-900/20 rounded-none text-sm flex items-center gap-2 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Eliminar
-                    </button>
-                  )}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Línea de Investigación</label>
+                  <select
+                    value={pubForm.research_line}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, research_line: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none cursor-pointer"
+                  >
+                    <option value="Sociología Digital y Nuevas Tecnologías">Sociología Digital</option>
+                    <option value="Transformación Social y Desarrollo Regional">Transformación Social</option>
+                    <option value="Educación y Juventudes">Educación y Juventudes</option>
+                    <option value="Género y Cambio Cultural">Género y Cambio Cultural</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="mt-8 news-content max-w-none">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Volumen</label>
+                  <input
+                    type="text"
+                    placeholder="Ej. Vol. 2"
+                    value={pubForm.volume}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, volume: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Número</label>
+                  <input
+                    type="text"
+                    placeholder="Ej. Nº 1"
+                    value={pubForm.number}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, number: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Fecha Publicación</label>
+                  <input
+                    type="date"
+                    value={pubForm.published_date}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, published_date: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-gray-955 pt-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Subir Archivo PDF</label>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handlePdfSelect}
+                    className="w-full bg-black border border-gray-855 p-1.5 text-white outline-none cursor-pointer"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">O URL Alternativa</label>
+                  <input
+                    type="text"
+                    placeholder="Ej. https://doi.org/10..."
+                    value={pubForm.url}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, url: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Resumen / Abstract (Metadatos Dublin Core)</label>
+                <textarea
+                  rows={4}
+                  placeholder="Escriba la síntesis o resumen del artículo..."
+                  value={pubForm.abstract}
+                  onChange={(e) => setPubForm(prev => ({ ...prev, abstract: e.target.value }))}
+                  className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 border-t border-gray-955 pt-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Palabras Clave</label>
+                  <input
+                    type="text"
+                    placeholder="Ej. conflictos, sociología, Cajamarca"
+                    value={pubForm.keywords}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, keywords: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Derechos / Licencia</label>
+                  <input
+                    type="text"
+                    value={pubForm.rights}
+                    onChange={(e) => setPubForm(prev => ({ ...prev, rights: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-900">
+              <button
+                onClick={() => setShowCreatePub(false)}
+                className="px-4 py-2 border border-gray-855 text-gray-400 hover:text-white hover:bg-zinc-950 font-mono text-[10px] uppercase font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleCreatePublication}
+                disabled={pubUploading}
+                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-[10px] uppercase font-bold flex items-center gap-1.5"
+              >
+                {pubUploading ? <Loader2 className="animate-spin w-3.5 h-3.5" /> : null}
+                <span>{pubUploading ? 'Indexando...' : 'Indexar Artículo'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Dialog: Dictaminar manuscrito */}
+      {dictamenTarget && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#050506] border border-gray-900 w-full max-w-sm p-6 space-y-4 text-left font-sans text-xs">
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-widest">Dictaminar Borrador</h3>
+              <p className="text-[10px] text-gray-550 font-mono mt-1 leading-normal line-clamp-2 uppercase">Tema: {dictamenTarget.title}</p>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Seleccione el estado del Dictamen</label>
+              <select
+                value={newDictamenStatus}
+                onChange={(e) => setNewDictamenStatus(e.target.value as any)}
+                className="w-full bg-black border border-gray-855 p-2 text-white outline-none cursor-pointer"
+              >
+                <option value="Recibido">Recibido (En cola)</option>
+                <option value="En Dictamen">En Dictamen (Revisión de Pares)</option>
+                <option value="Aprobado">Aprobado (Listo para publicación)</option>
+                <option value="Rechazado">Rechazado (No califica)</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-900">
+              <button
+                onClick={() => setDictamenTarget(null)}
+                className="px-4 py-2 border border-gray-855 text-gray-400 hover:text-white font-mono text-[10px] uppercase font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDictaminar}
+                disabled={updatingDictamen}
+                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-[10px] uppercase font-bold flex items-center gap-1.5"
+              >
+                {updatingDictamen ? <Loader2 className="animate-spin w-3.5 h-3.5" /> : null}
+                <span>{updatingDictamen ? 'Guardando...' : 'Aplicar Dictamen'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Modal: Activar Alerta Socioambiental */}
+      {showCreateAlert && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#050506] border border-gray-900 w-full max-w-sm p-6 space-y-4 text-left">
+            <div className="flex justify-between items-center border-b border-gray-900 pb-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-red-500" />
+                <span>Activar Alerta Territorial</span>
+              </h3>
+              <button onClick={() => setShowCreateAlert(false)} className="text-gray-500 hover:text-white transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-3.5 font-sans text-xs">
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Título de la Alerta *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Derrame menor en canal o corte de agua..."
+                  value={alertForm.title}
+                  onChange={(e) => setAlertForm(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-550 uppercase block">Provincia *</label>
+                  <select
+                    value={alertForm.province}
+                    onChange={(e) => setAlertForm(prev => ({ ...prev, province: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none cursor-pointer"
+                  >
+                    {provinces.map(p => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Gravedad / Tipo *</label>
+                  <select
+                    value={alertForm.type}
+                    onChange={(e) => setAlertForm(prev => ({ ...prev, type: e.target.value as any }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none cursor-pointer"
+                  >
+                    <option value="Bajo">Baja Prioridad</option>
+                    <option value="Medio">Mediana Prioridad</option>
+                    <option value="Alto">Alta Prioridad / Crítica</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono font-bold text-gray-555 uppercase block">Detalles / Descripción *</label>
+                <textarea
+                  rows={4}
+                  required
+                  placeholder="Escriba los detalles concretos del suceso..."
+                  value={alertForm.description}
+                  onChange={(e) => setAlertForm(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-900">
+              <button
+                onClick={() => setShowCreateAlert(false)}
+                className="px-4 py-2 border border-gray-855 text-gray-400 hover:text-white font-mono text-[10px] uppercase font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleCreateAlert}
+                disabled={uploadingAlert}
+                className="px-4 py-2 bg-red-650 hover:bg-red-500 text-white font-mono text-[10px] uppercase font-bold flex items-center gap-1.5"
+              >
+                {uploadingAlert ? <Loader2 className="animate-spin w-3.5 h-3.5" /> : null}
+                <span>{uploadingAlert ? 'Guardando...' : 'Activar Alerta'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Modal: AI News Assistant */}
+      {showAiModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#050506] border border-gray-900 w-full max-w-xl p-6 space-y-4 text-left">
+            <div className="flex justify-between items-center border-b border-gray-900 pb-3">
+              <h3 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-exec-blue" />
+                <span>Asistente de Redacción IA</span>
+              </h3>
+              <button onClick={() => setShowAiModal(false)} className="text-gray-550 hover:text-white transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-3 font-sans text-xs">
+              <p className="text-gray-450 leading-relaxed text-[11px]">
+                Describe la noticia que quieres redactar. El asistente de IA redactará una propuesta de noticia lista para publicar.
+              </p>
+              <textarea
+                rows={4}
+                placeholder="Escribe aquí el tema, ej: Taller de capacitación sobre bases de datos en la UNC dictado por el Dr. Jaime..."
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+              />
+
+              <AIEngineSelector config={aiConfig} onConfigChange={setAiConfig} />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-900">
+              <button
+                onClick={() => setShowAiModal(false)}
+                className="px-4 py-2 border border-gray-855 text-gray-400 hover:text-white font-mono text-[10px] uppercase font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleGenerateNews}
+                disabled={generatingAi || !aiPrompt.trim()}
+                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-[10px] uppercase font-bold flex items-center gap-1.5"
+              >
+                {generatingAi ? <Loader2 className="animate-spin w-3.5 h-3.5" /> : null}
+                <span>{generatingAi ? 'Pensando...' : 'Generar Borrador'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Modal: Detalle de Noticia */}
+      {selectedNews && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#050506] border border-gray-900 w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 text-left">
+            <div className="flex justify-between items-center border-b border-gray-900 pb-3">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-exec-blue font-bold">{selectedNews.category}</span>
+              <button onClick={() => setSelectedNews(null)} className="text-gray-550 hover:text-white transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-white uppercase tracking-tight">{selectedNews.title}</h2>
+              
+              {selectedNews.image_url && (
+                <div className="w-full max-h-80 bg-black border border-gray-900 overflow-hidden flex items-center justify-center">
+                  <img src={selectedNews.image_url} alt="noticia" className="max-h-80 object-contain" />
+                </div>
+              )}
+
+              <div className="prose prose-invert max-w-none text-xs text-gray-300 leading-relaxed font-sans font-normal border-t border-gray-900/60 pt-4">
                 <ReactMarkdown>{selectedNews.content}</ReactMarkdown>
               </div>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* AI Modal */}
-      {showAiModal && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-lg bg-[#0A0A0A] border border-exec-blue/30 rounded-none shadow-[0_0_40px_rgba(59,130,246,0.1)] overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div className="bg-gradient-to-r from-exec-blue/10 to-transparent p-8 border-b border-exec-blue/20 relative">
-              <div className="absolute top-0 right-0 p-4 opacity-5">
-                 <Bot size={40} className="text-exec-blue" />
+            <div className="flex justify-between items-center border-t border-gray-900 pt-4 text-[10px] font-mono text-gray-550">
+              <div className="flex items-center gap-2">
+                <User size={13} className="text-exec-blue" />
+                <span>Publicado por: {selectedNews.publisher?.fullName || selectedNews.publisher?.full_name || 'Miembro'}</span>
               </div>
-              <div className="flex items-center gap-4 text-exec-blue mb-3 relative z-10">
-                <div className="p-2 bg-exec-blue/10 rounded-none border border-exec-blue/20">
-                   <span className="material-symbols-outlined text-exec-blue text-[24px]">smart_toy</span>
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-white tracking-tight">REDACTOR IA</h2>
-                  <p className="text-[9px] font-bold text-exec-blue uppercase tracking-[0.3em] font-sans">Generación Ejecutiva Stitch</p>
-                </div>
-              </div>
-              <p className="text-gray-500 text-xs leading-relaxed relative z-10">
-                Describe tu idea y la inteligencia artificial redactará una noticia con estructura profesional y tono corporativo.
-              </p>
-            </div>
-
-            <div className="p-8 space-y-6">
-              <div className="space-y-4">
-                <textarea
-                  className="w-full bg-black border border-[#262626] rounded-none p-5 h-44 focus:border-exec-blue/50 outline-none resize-none text-xs text-white placeholder-gray-700 shadow-inner transition-all"
-                  placeholder="Ej: 'Escribe un comunicado sobre la nueva política de vacaciones que empieza el próximo mes...'"
-                  value={aiPrompt}
-                  onChange={(e) => setAiPrompt(e.target.value)}
-                />
-                <AIEngineSelector 
-                  config={aiConfig} 
-                  onConfigChange={setAiConfig} 
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  className="px-6 py-2.5 text-gray-500 hover:text-white hover:bg-white/5 rounded-none transition-all text-[10px] font-bold uppercase tracking-widest"
-                  onClick={() => setShowAiModal(false)}
-                  disabled={generatingAi}
-                >
-                  Regresar
-                </button>
-                <button
-                  className="px-8 py-2.5 bg-white text-black rounded-none flex items-center gap-3 hover:bg-gray-100 shadow-[0_0_25px_rgba(0,0,0,0.5)] transition-all disabled:opacity-30 disabled:grayscale font-bold text-[10px] uppercase tracking-widest"
-                  onClick={handleGenerateNews}
-                  disabled={generatingAi || !aiPrompt.trim()}
-                >
-                  {generatingAi ? (
-                    <>
-                      <Loader2 size={14} className="animate-spin text-exec-blue" />
-                      <span>Redactando...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-exec-blue text-[18px]">smart_toy</span>
-                      <span>Generar Borrador</span>
-                    </>
-                  )}
-                </button>
-              </div>
+              <div>Fecha: {selectedNews.published_at ? new Date(selectedNews.published_at).toLocaleString() : 'N/A'}</div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Image Prompt Modal */}
-      {showPromptModal && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[60] p-4 animate-in zoom-in-95 duration-200">
-          <div className="w-full max-w-xl bg-[#0A0A0A] border border-exec-blue/30 rounded-none shadow-[0_0_50px_rgba(59,130,246,0.1)] overflow-hidden">
-            <div className="p-8 border-b border-exec-border bg-gradient-to-r from-exec-blue/5 to-transparent flex justify-between items-start">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-exec-blue/10 rounded-none border border-exec-blue/20">
-                  <ImageIcon className="w-6 h-6 text-exec-blue" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">PROMPT DE IMAGEN IA</h3>
-                  <p className="text-[9px] font-bold text-exec-blue uppercase tracking-[0.3em]">Optimización Stitch Drive</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowPromptModal(false)}
-                className="text-gray-600 hover:text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-8 space-y-6">
-              <div className="relative group">
-                <div className="bg-black p-6 rounded-none text-[11px] text-gray-400 font-mono leading-relaxed border border-[#262626] group-hover:border-exec-blue/30 transition-all">
-                  {generatedImagePrompt}
-                </div>
-                <button
-                  onClick={handleCopyPrompt}
-                  className="absolute top-3 right-3 p-2 bg-[#1a1a1a] hover:bg-white hover:text-black border border-[#333] hover:border-white rounded-none shadow-lg transition-all"
-                  title="Copiar"
-                >
-                  {copiedPrompt ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-
-              <div className="p-4 bg-exec-blue/5 border border-exec-blue/20 rounded-none">
-                <p className="text-[10px] text-exec-blue font-bold uppercase tracking-widest flex items-center gap-3">
-                  <Sparkles className="w-3 h-3" />
-                  TIp: Utiliza este prompt en Midjourney o DALL-E para generar la portada oficial.
-                </p>
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setShowPromptModal(false)}
-                  className="px-8 py-2.5 bg-white text-black hover:bg-gray-200 rounded-none text-[10px] font-bold uppercase tracking-widest transition-all shadow-lg"
-                >
-                  Entendido
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      <ConfirmModal 
-        isOpen={!!showConfirmDelete}
-        title="¿Eliminar Noticia?"
-        message="Esta acción no se puede deshacer. La noticia será eliminada permanentemente del portal."
-        confirmText="Eliminar Noticia"
-        cancelText="Conservar"
-        isDestructive={true}
+      {/* CONFIRMACIÓN DE ELIMINACIONES */}
+      <ConfirmModal
+        isOpen={showConfirmDeleteNews !== null}
+        title="¿ELIMINAR NOTICIA?"
+        message="Esta acción removerá de forma permanente el comunicado del portal. ¿Desea continuar?"
+        confirmText="Confirmar Eliminación"
+        cancelText="Cancelar"
         onConfirm={() => {
-          if (showConfirmDelete) {
-            deleteNews(showConfirmDelete);
-            setShowConfirmDelete(null);
-            setSelectedNews(null);
+          if (showConfirmDeleteNews) {
+            deleteNews(showConfirmDeleteNews);
+            setShowConfirmDeleteNews(null);
           }
         }}
-        onCancel={() => setShowConfirmDelete(null)}
+        onCancel={() => setShowConfirmDeleteNews(null)}
       />
-    </div >
+
+      <ConfirmModal
+        isOpen={showConfirmDeletePub !== null}
+        title="¿REMOVER PUBLICACIÓN?"
+        message="Esta acción retirará el artículo científico del catálogo público del Observatorio. ¿Desea continuar?"
+        confirmText="Remover de Indexación"
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (showConfirmDeletePub) {
+            deletePublication(showConfirmDeletePub);
+            setShowConfirmDeletePub(null);
+          }
+        }}
+        onCancel={() => setShowConfirmDeletePub(null)}
+      />
+
+      <ConfirmModal
+        isOpen={showConfirmDeleteAlert !== null}
+        title="¿DESACTIVAR ALERTA?"
+        message="Esta acción removerá la alerta territorial del mapa del Observatorio. ¿Desea continuar?"
+        confirmText="Desactivar Alerta"
+        cancelText="Cancelar"
+        onConfirm={() => {
+          if (showConfirmDeleteAlert) {
+            deleteAlert(showConfirmDeleteAlert);
+            setShowConfirmDeleteAlert(null);
+          }
+        }}
+        onCancel={() => setShowConfirmDeleteAlert(null)}
+      />
+
+    </div>
   );
 };
+
+export default NewsView;

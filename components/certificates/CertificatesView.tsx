@@ -492,8 +492,18 @@ function RecognitionModal({ onClose, onSave }: { onClose: () => void; onSave: ()
     useEffect(() => { loadProfiles(); }, []);
 
     async function loadProfiles() {
-        const { data } = await supabase.from('profiles').select('id, full_name, role, avatar_url').order('full_name');
-        if (data) setProfiles(data);
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('id, "fullName", role, "avatarUrl"')
+            .order('"fullName"');
+        if (data) {
+            setProfiles(data.map((p: any) => ({
+                id: p.id,
+                full_name: p.fullName || 'Sin nombre',
+                role: p.role || 'Miembro',
+                avatar_url: p.avatarUrl
+            })));
+        }
     }
 
     const filteredProfiles = profiles.filter(p => 

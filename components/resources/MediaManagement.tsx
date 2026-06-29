@@ -104,8 +104,14 @@ export const MediaManagement: React.FC = () => {
   });
 
   useEffect(() => {
-    supabase.from('profiles').select('id, full_name, role').then(({ data }) => {
-      if (data) setUserList(data);
+    supabase.from('profiles').select('id, "fullName", role').then(({ data }) => {
+      if (data) {
+        setUserList(data.map((p: any) => ({
+          id: p.id,
+          full_name: p.fullName || 'Sin nombre',
+          role: p.role
+        })));
+      }
     });
   }, []);
 

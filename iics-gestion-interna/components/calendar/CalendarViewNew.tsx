@@ -108,13 +108,16 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
       // Cargar todos los usuarios para obtener nombres y asignar colores
       const { data: usersData, error: usersError } = await supabase
         .from('profiles')
-        .select('id, "fullName", avatar_url');
+        .select('id, "fullName", "avatarUrl"');
 
       if (usersError) throw usersError;
 
       const usersMap = new Map<string, {name: string, avatar: string | null}>();
-      usersData?.forEach(u => {
-        usersMap.set(u.id, { name: u.fullName, avatar: u.avatar_url });
+      (usersData || []).forEach((u: any) => {
+        usersMap.set(u.id, { 
+          name: u.fullName || 'Sin nombre', 
+          avatar: u.avatarUrl || null 
+        });
       });
       setAllUsers(usersMap);
 

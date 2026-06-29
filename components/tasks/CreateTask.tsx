@@ -126,7 +126,7 @@ export const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated, 
     try {
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, email, "fullName", role, avatar_url')
+        .select('id, email, "fullName", role, "avatarUrl"')
         .order('"fullName"');
 
       if (profilesError) throw profilesError;
@@ -137,7 +137,7 @@ export const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated, 
         fullName: p.fullName || 'Sin nombre',
         role: p.role || 'Miembro',
         status: 'Aprobado',
-        avatarUrl: p.avatar_url,
+        avatarUrl: p.avatarUrl,
         createdAt: new Date(),
       }));
 

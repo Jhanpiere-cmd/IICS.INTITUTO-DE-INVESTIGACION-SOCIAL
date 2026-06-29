@@ -85,15 +85,20 @@ interface Signatory {
     signatureUrl?: string;
 }
 
-// Helper to fetch context
 const fetchSystemContext = async (currentFolderFiles: any[]) => {
     const [users, events] = await Promise.all([
-        supabase.from('profiles').select('full_name, role, email').limit(20),
+        supabase.from('profiles').select('"fullName", role, email').limit(20),
         supabase.from('calendar_events').select('title, start_time, location').gte('start_time', new Date().toISOString()).limit(5)
     ]);
 
+    const mappedUsers = (users.data || []).map((u: any) => ({
+        full_name: u.fullName || 'Sin nombre',
+        role: u.role,
+        email: u.email
+    }));
+
     return {
-        users: users.data || [],
+        users: mappedUsers,
         events: events.data || [],
         files: currentFolderFiles
     };

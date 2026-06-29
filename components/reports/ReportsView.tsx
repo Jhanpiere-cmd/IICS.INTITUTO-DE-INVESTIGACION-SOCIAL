@@ -108,7 +108,7 @@ export const ReportsView: React.FC = () => {
         // --- 2. FETCH SYSTEM DATA ---
         const [
           { data: tasks },
-          { data: users },
+          { data: rawUsers },
           { data: newsCount },
           { data: allNews },
           { data: proposals },
@@ -118,7 +118,7 @@ export const ReportsView: React.FC = () => {
           { data: participants }
         ] = await Promise.all([
           supabase.from('tasks').select('*'),
-          supabase.from('profiles').select('id, full_name, email, role'),
+          supabase.from('profiles').select('id, "fullName", email, role'),
           supabase.from('news').select('id').eq('status', 'Publicado'),
           supabase.from('news').select('category'),
           supabase.from('proposals').select('id, status'),
@@ -127,6 +127,13 @@ export const ReportsView: React.FC = () => {
           supabase.from('events').select('id, title, status'),
           supabase.from('event_participants').select('event_id, payment_amount, payment_status')
         ]);
+
+        const users = (rawUsers || []).map((u: any) => ({
+          id: u.id,
+          full_name: u.fullName || 'Sin nombre',
+          email: u.email,
+          role: u.role
+        }));
 
         // --- 3. PROCESS TASKS ---
         const rawTasks = tasks || [];
