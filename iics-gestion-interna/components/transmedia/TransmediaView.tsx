@@ -213,44 +213,48 @@ export const TransmediaView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 md:p-2">
-      {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-exec-border pb-5">
+    <div className="w-full bg-black min-h-screen px-4 pb-4 pt-0 md:pt-4 md:px-6 space-y-6">
+
+      {/* ═══ HEADER ═══ */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-4 border-b border-exec-border">
         <div>
-          <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-wider font-sans">
-            Difusión Transmedia y Videoteca
+          <h1 className="text-2xl font-black text-white uppercase tracking-tighter leading-none flex items-center gap-3">
+            <div className="p-1.5 bg-exec-blue/10 rounded-none border border-exec-blue/20">
+              <Video className="w-6 h-6 text-exec-blue" />
+            </div>
+            <span>Difusión <span className="text-exec-blue">Transmedia</span> y Videoteca</span>
           </h1>
-          <p className="text-xs text-exec-slate/80 mt-1">
-            Administra documentales, reportajes de campo y cápsulas transmedia de precisión para el Observatorio Territorial.
-          </p>
+          <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 mt-1">Administra documentales, reportajes de campo y cápsulas transmedia para el Observatorio Territorial.</p>
         </div>
         <button
           onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 bg-[#0099ff] hover:bg-blue-600 text-white font-bold text-xs uppercase px-4 py-2.5 rounded-none transition-all cursor-pointer tracking-wider"
+          className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-exec-blue/20 flex items-center justify-center gap-2"
         >
-          <Plus size={16} />
+          <Plus className="w-4 h-4" />
           Agregar Video
         </button>
       </div>
 
-      {/* Grid of Videos */}
+      {/* ═══ ESTADO: CARGANDO ═══ */}
       {loading ? (
-        <div className="h-64 flex flex-col items-center justify-center gap-3">
-          <Loader2 className="animate-spin text-[#0099ff]" size={28} />
-          <span className="text-xs font-mono text-exec-slate">Cargando videoteca...</span>
+        <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center gap-3">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-exec-border border-t-exec-blue"></div>
+            <span className="text-xs text-gray-500 uppercase tracking-wider">Cargando videoteca...</span>
+          </div>
         </div>
       ) : videos.length === 0 ? (
-        <div className="border border-dashed border-exec-border p-12 text-center">
-          <Video className="mx-auto text-exec-slate/20 mb-4" size={48} />
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">No se encontraron documentales registrados</h3>
-          <p className="text-xs text-exec-slate/60 mt-1 max-w-sm mx-auto">
-            Comienza agregando tu primer documental transmedia para alimentar el Observatorio Territorial del IICS.
+        <div className="text-center p-12 bg-[#0A0A0A] border border-exec-border">
+          <span className="material-symbols-outlined notranslate text-gray-700 text-5xl mb-3 block" translate="no">video_library</span>
+          <h3 className="text-xs font-bold text-white uppercase tracking-widest">No se encontraron documentales registrados</h3>
+          <p className="text-[10px] uppercase font-bold tracking-widest text-gray-600 mt-1 max-w-sm mx-auto">
+            Registra el primer documental transmedia para alimentar el Observatorio Territorial del IICS.
           </p>
           <button
             onClick={handleOpenAdd}
-            className="mt-4 inline-flex items-center gap-2 bg-transparent hover:bg-white/5 border border-exec-border text-white px-4 py-2 text-xs font-bold uppercase transition-all rounded-none cursor-pointer"
+            className="mt-4 inline-flex items-center gap-2 bg-exec-blue hover:bg-blue-500 text-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all rounded-none"
           >
-            <Plus size={14} /> Registrar primer video
+            <Plus className="w-4 h-4" /> Registrar primer video
           </button>
         </div>
       ) : (
@@ -335,43 +339,44 @@ export const TransmediaView: React.FC = () => {
               </div>
 
               {/* Actions Footer */}
-              <div className="border-t border-exec-border px-4 py-3 bg-[#08080a] flex items-center justify-end gap-2.5">
-                <button
-                  onClick={() => handleOpenEdit(video)}
-                  className="flex items-center gap-1 text-exec-slate hover:text-white text-xs font-bold uppercase transition-colors cursor-pointer"
-                  title="Editar video"
-                >
-                  <Edit3 size={14} />
-                  <span>Editar</span>
-                </button>
-                <div className="h-3 w-[1px] bg-exec-border"></div>
-                <button
-                  onClick={() => setVideoToDelete(video)}
-                  className="flex items-center gap-1 text-red-500 hover:text-red-400 text-xs font-bold uppercase transition-colors cursor-pointer"
-                  title="Eliminar video"
-                >
-                  <Trash2 size={14} />
-                  <span>Eliminar</span>
-                </button>
+              <div className="border-t border-exec-border px-4 py-3 bg-[#0A0A0A] flex items-center justify-between gap-2.5">
+                <span className="text-[9px] font-mono text-gray-600 uppercase tracking-widest">{video.year || 'N/A'}</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleOpenEdit(video)}
+                    className="flex items-center gap-1 text-gray-500 hover:text-white text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                    title="Editar video"
+                  >
+                    <Edit3 size={13} />
+                    <span>Editar</span>
+                  </button>
+                  <div className="h-3 w-[1px] bg-exec-border"></div>
+                  <button
+                    onClick={() => setVideoToDelete(video)}
+                    className="flex items-center gap-1 text-red-500 hover:text-red-400 text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                    title="Eliminar video"
+                  >
+                    <Trash2 size={13} />
+                    <span>Eliminar</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
-      )}
-
-      {/* CREATE / EDIT MODAL */}
+       {/* ═══ MODAL CREAR / EDITAR ═══ */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#0b0c0f] border border-exec-border w-full max-w-xl max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#0A0A0A] border border-exec-border w-full max-w-xl max-h-[90vh] overflow-y-auto flex flex-col">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-exec-border">
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Video size={18} className="text-[#0099ff]" />
+              <h2 className="text-sm font-black text-white uppercase tracking-tighter flex items-center gap-2">
+                <Video className="w-5 h-5 text-exec-blue" />
                 {editingVideo ? 'Editar Video Transmedia' : 'Registrar Nuevo Video Transmedia'}
               </h2>
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
-                className="text-exec-slate hover:text-white transition-colors cursor-pointer"
+                className="text-gray-500 hover:text-white transition-colors cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -507,14 +512,14 @@ export const TransmediaView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="bg-transparent hover:bg-white/5 border border-exec-border text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-none transition-colors cursor-pointer"
+                  className="bg-transparent hover:bg-white/5 border border-exec-border text-white text-[11px] font-bold uppercase tracking-widest px-5 py-2.5 rounded-none transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex items-center justify-center gap-2 bg-[#0099ff] hover:bg-blue-600 disabled:opacity-55 text-white text-xs font-bold uppercase tracking-wider px-6 py-2.5 rounded-none transition-colors cursor-pointer"
+                  className="flex items-center justify-center gap-2 bg-exec-blue hover:bg-blue-500 disabled:opacity-55 text-white text-[11px] font-bold uppercase tracking-widest px-6 py-2.5 rounded-none transition-colors cursor-pointer shadow-lg shadow-exec-blue/20"
                 >
                   {isSaving && <Loader2 size={12} className="animate-spin" />}
                   <span>{editingVideo ? 'Guardar Cambios' : 'Registrar Video'}</span>

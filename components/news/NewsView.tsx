@@ -637,14 +637,17 @@ export const NewsView: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      
-      {/* HEADER DE MÓDULO */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-exec-border">
+
+      {/* ═══ HEADER DE MÓDULO ═══ */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-4 border-b border-exec-border">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight font-mono uppercase">Difusión Científica y Territorial</h1>
-          <p className="text-xs text-gray-500 font-sans leading-normal">
-            Administra el contenido científico del Observatorio, dictamina borradores AFI y difunde alertas socioambientales.
-          </p>
+          <h1 className="text-2xl font-black text-white uppercase tracking-tighter leading-none flex items-center gap-3">
+            <div className="p-1.5 bg-exec-blue/10 rounded-none border border-exec-blue/20">
+              <Newspaper className="w-6 h-6 text-exec-blue" />
+            </div>
+            <span>Difusión <span className="text-exec-blue">Científica</span> y Territorial</span>
+          </h1>
+          <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 mt-1">Administra noticias, artículos Dublin Core, bandeja de borradores y alertas socioambientales.</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -652,17 +655,17 @@ export const NewsView: React.FC = () => {
             <>
               <button
                 onClick={() => setShowAiModal(true)}
-                className="px-4 py-2 border border-exec-blue/20 bg-exec-blue/5 hover:bg-exec-blue/15 text-exec-blue font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all"
+                className="px-4 py-2 bg-white hover:bg-gray-100 text-black rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg flex items-center gap-2"
               >
-                <Bot size={14} />
-                <span>Asistente IA</span>
+                <Bot size={14} className="text-exec-blue" />
+                Asistente IA
               </button>
               <button
                 onClick={() => setShowCreateNews(true)}
-                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all"
+                className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-exec-blue/20 flex items-center gap-2"
               >
-                <Plus size={14} />
-                <span>Publicar Noticia</span>
+                <Plus className="w-4 h-4" />
+                Publicar Noticia
               </button>
             </>
           )}
@@ -670,31 +673,31 @@ export const NewsView: React.FC = () => {
           {activeTab === 'publications' && (
             <button
               onClick={() => setShowCreatePub(true)}
-              className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all"
+              className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-exec-blue/20 flex items-center gap-2"
             >
-              <Plus size={14} />
-              <span>Indexar Artículo</span>
+              <Plus className="w-4 h-4" />
+              Indexar Artículo
             </button>
           )}
 
           {activeTab === 'alerts' && (
             <button
               onClick={() => setShowCreateAlert(true)}
-              className="px-4 py-2 bg-red-650 hover:bg-red-500 text-white font-mono text-xs uppercase font-bold flex items-center gap-2 transition-all animate-pulse"
+              className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-none text-[11px] font-bold uppercase tracking-widest transition-all shadow-lg flex items-center gap-2"
             >
-              <AlertTriangle size={14} />
-              <span>Activar Alerta</span>
+              <AlertTriangle className="w-4 h-4" />
+              Activar Alerta
             </button>
           )}
         </div>
       </div>
 
-      {/* SELECTOR DE PESTAÑAS */}
-      <div className="flex border-b border-gray-900 bg-black/40 p-1 gap-1">
+      {/* ═══ TABS SELECTOR ═══ */}
+      <div className="flex items-center gap-1 bg-[#0A0A0A] border border-exec-border rounded-none p-1 overflow-x-auto whitespace-nowrap scrollbar-hide w-full lg:w-auto">
         <button
           onClick={() => setActiveTab('news')}
-          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none ${
-            activeTab === 'news' ? 'bg-[#0099ff]/10 text-exec-blue border-b-2 border-exec-blue' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          className={`flex items-center gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all rounded-none whitespace-nowrap ${
+            activeTab === 'news' ? 'bg-exec-blue text-white shadow-lg shadow-exec-blue/20' : 'text-gray-500 hover:text-white hover:bg-white/5'
           }`}
         >
           <Newspaper size={14} />
@@ -703,8 +706,8 @@ export const NewsView: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('publications')}
-          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none ${
-            activeTab === 'publications' ? 'bg-[#0099ff]/10 text-exec-blue border-b-2 border-exec-blue' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          className={`flex items-center gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all rounded-none whitespace-nowrap ${
+            activeTab === 'publications' ? 'bg-exec-blue text-white shadow-lg shadow-exec-blue/20' : 'text-gray-500 hover:text-white hover:bg-white/5'
           }`}
         >
           <GraduationCap size={14} />
@@ -713,18 +716,18 @@ export const NewsView: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('inbox')}
-          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none relative ${
-            activeTab === 'inbox' ? 'bg-[#0099ff]/10 text-exec-blue border-b-2 border-exec-blue' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          className={`flex items-center gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all rounded-none whitespace-nowrap relative ${
+            activeTab === 'inbox' ? 'bg-exec-blue text-white shadow-lg shadow-exec-blue/20' : 'text-gray-500 hover:text-white hover:bg-white/5'
           }`}
         >
           <Inbox size={14} />
-          <span>Bandeja de Recibidos</span>
+          <span>Bandeja Recibidos</span>
         </button>
 
         <button
           onClick={() => setActiveTab('alerts')}
-          className={`flex items-center gap-2 px-4 py-2.5 font-mono text-xs uppercase font-bold tracking-wider transition-all rounded-none ${
-            activeTab === 'alerts' ? 'bg-red-950/20 text-red-500 border-b-2 border-red-500' : 'text-gray-400 hover:text-white hover:bg-white/5'
+          className={`flex items-center gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-all rounded-none whitespace-nowrap ${
+            activeTab === 'alerts' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'text-gray-500 hover:text-white hover:bg-white/5'
           }`}
         >
           <AlertTriangle size={14} />
