@@ -143,7 +143,7 @@ export function FallingPattern({
 							backgroundPosition: startPositions,
 						},
 						animate: {
-							backgroundPosition: [startPositions, endPositions],
+							backgroundPosition: endPositions,
 							transition: {
 								duration: duration,
 								ease: 'linear',
@@ -158,7 +158,7 @@ export function FallingPattern({
 			<div
 				className="absolute inset-0 z-1 dark:brightness-600"
 				style={{
-					backdropFilter: `blur(${blurIntensity})`,
+					...(blurIntensity && blurIntensity !== '0px' ? { backdropFilter: `blur(${blurIntensity})`, WebkitBackdropFilter: `blur(${blurIntensity})` } : {}),
 					backgroundImage: `radial-gradient(circle at 50% 50%, transparent 0, transparent 2px, ${backgroundColor} 2px)`,
 					backgroundSize: `${8 * density}px ${8 * density}px`,
 				}}
