@@ -35,6 +35,7 @@ function LandingPage() {
         const { data, error } = await supabase
           .from('alerts')
           .select('*')
+          .eq('status', 'aprobado')
           .order('created_at', { ascending: false });
         if (error) throw error;
         if (data && data.length > 0) {
@@ -59,6 +60,41 @@ function LandingPage() {
       }
     };
     fetchDbAlerts();
+  }, []);
+
+  // Load province metrics from Supabase dynamically on mount
+  useEffect(() => {
+    const fetchDbProvinces = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('province_metrics')
+          .select('*');
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setProvinces(prev => 
+            prev.map(p => {
+              const dbP = data.find((d: any) => d.id === p.id);
+              if (dbP) {
+                return {
+                  ...p,
+                  riskScore: Number(dbP.risk_score),
+                  riskDescription: dbP.risk_description as any,
+                  mencionesRedes: Number(dbP.menciones_redes),
+                  alertCount: Number(dbP.alert_count),
+                  keyIssues: dbP.key_issues || [],
+                  activeAlert: dbP.active_alert,
+                  indicators: dbP.indicators || p.indicators
+                };
+              }
+              return p;
+            })
+          );
+        }
+      } catch (err) {
+        console.error('Error fetching database province metrics:', err);
+      }
+    };
+    fetchDbProvinces();
   }, []);
 
   // Modal Control States

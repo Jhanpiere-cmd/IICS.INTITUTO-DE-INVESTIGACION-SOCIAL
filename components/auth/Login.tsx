@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabaseUrl } from '../../lib/supabase';
 import { AlertCircle, User, Lock, ArrowRight } from 'lucide-react';
 import { Register } from './Register';
 import { SmokeyBackground } from '../ui/SmokeyBackground';
@@ -204,6 +205,9 @@ export const Login: React.FC = () => {
           <div className="pt-4 text-center opacity-40 pb-6">
             <p className="text-[8px] text-gray-500 uppercase tracking-[0.4em]">
               © 2026 SDI-IICS / INSTITUTO DE INVESTIGACIÓN CIENTÍFICA SOCIAL
+            </p>
+            <p className="text-[7px] text-gray-600 mt-2 font-mono uppercase tracking-wider">
+              Host DB: {supabaseUrl ? supabaseUrl.replace('https://', '') : 'No conectado'}
             </p>
           </div>
         </div>

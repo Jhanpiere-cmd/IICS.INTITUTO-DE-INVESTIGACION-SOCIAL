@@ -74,6 +74,32 @@ export default function PortalWorkspace({
   const [activeTab, setActiveTab] = useState<'home' | 'provinces' | 'analytics' | 'map' | 'alerts' | 'library' | 'media' | 'afi' | 'consulting' | 'settings'>('home');
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0);
   const [mapMode, setMapMode] = useState<'vector' | 'heatmap' | 'satellite'>('heatmap');
+  const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
+
+  const getAlertSvgCoords = (al: Alert) => {
+    const latitude = (al as any).latitude;
+    const longitude = (al as any).longitude;
+    if (latitude !== undefined && latitude !== null && longitude !== undefined && longitude !== null) {
+      const minLon = -79.5;
+      const maxLon = -77.5;
+      const minLat = -4.5;
+      const maxLat = -7.7;
+      
+      const x = 50 + ((longitude - minLon) / (maxLon - minLon)) * 400;
+      const y = 50 + ((latitude - minLat) / (maxLat - minLat)) * 600;
+      return { x, y };
+    }
+    
+    const prov = provinces.find(p => p.name.toLowerCase() === al.province.toLowerCase());
+    if (prov) {
+      const numId = parseInt(al.id.replace(/\D/g, '') || '0') || 1;
+      return {
+        x: prov.coordinates.x + (Math.sin(numId * 17) * 15),
+        y: prov.coordinates.y + (Math.cos(numId * 17) * 15)
+      };
+    }
+    return null;
+  };
 
   // Integrated subtabs and features states
   const [librarySubTab, setLibrarySubTab] = useState<'publications' | 'preprints' | 'datasets'>('publications');
@@ -249,26 +275,36 @@ export default function PortalWorkspace({
   const areaString = `${padding},${height - padding} ${pointsString} ${width - padding},${height - padding}`;
 
   // Handle reporting simulated incident
-  const handleAlertSubmit = (e: FormEvent) => {
+  const [reportingAlertToDb, setReportingAlertToDb] = useState(false);
+
+  const handleAlertSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formTitle || !formDescription) return;
 
-    const mockNewAlert: Alert = {
-      id: Math.random().toString(),
-      title: formTitle,
-      province: formProvince,
-      time: 'Hace unos instantes',
-      type: formType,
-      description: formDescription
-    };
+    setReportingAlertToDb(true);
+    try {
+      const { error } = await supabase
+        .from('alerts')
+        .insert({
+          title: formTitle,
+          description: formDescription,
+          province: formProvince,
+          type: formType,
+          status: 'pendiente'
+        });
+      if (error) throw error;
 
-    onSubmitSimulatedAlert(mockNewAlert);
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setFormSubmitted(false);
-      setFormTitle('');
-      setFormDescription('');
-    }, 2800);
+      setFormSubmitted(true);
+      setTimeout(() => {
+        setFormSubmitted(false);
+        setFormTitle('');
+        setFormDescription('');
+      }, 2800);
+    } catch (err) {
+      console.error('Error reporting alert to database:', err);
+    } finally {
+      setReportingAlertToDb(false);
+    }
   };
 
   // Filter & sort provinces for 'provinces' tab
@@ -1691,10 +1727,91 @@ export default function PortalWorkspace({
                                     </g>
                                   );
                                 })}
+
+                                {/* Geolocalized Alert Pinpoints overlay */}
+                                {alerts.map((al) => {
+                                  const coords = getAlertSvgCoords(al);
+                                  if (!coords) return null;
+
+                                  const isSelected = selectedAlertId === al.id;
+                                  return (
+                                    <g
+                                      key={`alert-pin-${al.id}`}
+                                      className="cursor-pointer group z-20"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedAlertId(isSelected ? null : al.id);
+                                      }}
+                                    >
+                                      {/* Outer pulsating ring for active alerts */}
+                                      <circle
+                                        cx={coords.x}
+                                        cy={coords.y}
+                                        r={isSelected ? 16 : 8}
+                                        fill="none"
+                                        stroke={al.type === 'Alto' ? '#ef4444' : al.type === 'Medio' ? '#f59e0b' : '#10b981'}
+                                        strokeWidth="1.5"
+                                        className="animate-pulse"
+                                        opacity="0.7"
+                                      />
+                                      {/* Small center pin */}
+                                      <circle
+                                        cx={coords.x}
+                                        cy={coords.y}
+                                        r={isSelected ? 5 : 3.5}
+                                        fill={al.type === 'Alto' ? '#ef4444' : al.type === 'Medio' ? '#f59e0b' : '#10b981'}
+                                        stroke="#ffffff"
+                                        strokeWidth="1"
+                                      />
+                                      {/* Tiny map pin icon path */}
+                                      <path
+                                        d={`M ${coords.x} ${coords.y} L ${coords.x - 3} ${coords.y - 8} A 4 4 0 1 1 ${coords.x + 3} ${coords.y - 8} Z`}
+                                        fill={al.type === 'Alto' ? '#ef4444' : al.type === 'Medio' ? '#f59e0b' : '#10b981'}
+                                        stroke="#ffffff"
+                                        strokeWidth="0.5"
+                                        transform={`translate(0, -2) scale(${isSelected ? 1.5 : 1})`}
+                                        transform-origin={`${coords.x} ${coords.y}`}
+                                      />
+                                    </g>
+                                  );
+                                })}
                               </svg>
 
                               {/* Water depth background aura */}
                               <div className="absolute top-1/2 left-1/3 h-32 w-32 rounded-full bg-cyan-500/5 blur-3xl pointer-events-none animate-pulse"></div>
+
+                              {/* Selected Alert Popup Detail */}
+                              {selectedAlertId && (() => {
+                                const selAlert = alerts.find(a => a.id === selectedAlertId);
+                                if (!selAlert) return null;
+                                return (
+                                  <div className="absolute bottom-4 left-4 right-4 bg-[#0a0a0d] border border-zinc-800 p-3.5 z-30 font-sans text-xs text-left shadow-2xl animate-fade-in space-y-2">
+                                    <div className="flex justify-between items-start border-b border-zinc-850 pb-1.5">
+                                      <div>
+                                        <span className={`px-1.5 py-0.2 text-[8px] font-mono font-bold uppercase rounded-none border mr-2 ${
+                                          selAlert.type === 'Alto' ? 'bg-red-955/40 text-red-400 border-red-900/60' :
+                                          selAlert.type === 'Medio' ? 'bg-yellow-955/40 text-yellow-400 border-yellow-900/60' :
+                                          'bg-green-955/40 text-green-400 border-green-900/60'
+                                        }`}>
+                                          Prioridad {selAlert.type}
+                                        </span>
+                                        <span className="font-mono text-[9px] text-zinc-500 uppercase">{selAlert.province}</span>
+                                      </div>
+                                      <button 
+                                        onClick={() => setSelectedAlertId(null)}
+                                        className="text-zinc-500 hover:text-white"
+                                      >
+                                        <X size={14} />
+                                      </button>
+                                    </div>
+                                    <h4 className="font-bold text-white uppercase text-xs tracking-tight">{selAlert.title}</h4>
+                                    <p className="text-zinc-400 leading-relaxed text-[11px]">{selAlert.description}</p>
+                                    {selAlert.time && (
+                                      <span className="block text-[8.5px] text-zinc-500 font-mono text-right">{selAlert.time}</span>
+                                    )}
+                                  </div>
+                                );
+                              })()}
                             </>
                           )}
                         </div>

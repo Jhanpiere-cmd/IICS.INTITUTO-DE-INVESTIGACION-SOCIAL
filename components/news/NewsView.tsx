@@ -152,17 +152,57 @@ export const NewsView: React.FC = () => {
   const [updatingDictamen, setUpdatingDictamen] = useState(false);
 
   // --- TAB 4: ALERTAS STATES ---
-  const [alertsList, setAlertsList] = useState<SocioenvironmentalAlert[]>([]);
+  const [alertsSubTab, setAlertsSubTab] = useState<'approved' | 'pending' | 'metrics'>('approved');
+  const [alertsList, setAlertsList] = useState<any[]>([]);
+  const [provinceMetrics, setProvinceMetrics] = useState<any[]>([]);
   const [loadingAlerts, setLoadingAlerts] = useState(true);
   const [showCreateAlert, setShowCreateAlert] = useState(false);
   const [alertForm, setAlertForm] = useState({
     title: '',
     description: '',
     province: 'Cajamarca',
-    type: 'Bajo' as 'Bajo' | 'Medio' | 'Alto'
+    type: 'Bajo' as 'Bajo' | 'Medio' | 'Alto',
+    latitude: '',
+    longitude: ''
   });
   const [uploadingAlert, setUploadingAlert] = useState(false);
   const [showConfirmDeleteAlert, setShowConfirmDeleteAlert] = useState<string | null>(null);
+
+  // Métricas Territoriales Form State
+  const [selectedMetricProvince, setSelectedMetricProvince] = useState<string>('cajamarca');
+  const [metricForm, setMetricForm] = useState({
+    riskScore: 5.0,
+    mencionesRedes: 1000,
+    waterSatisfaction: 50,
+    conflMineria: 30,
+    conflLocal: 20,
+    conflServicios: 20,
+    conflGobernabilidad: 20,
+    conflOtros: 10
+  });
+
+  const updateMetricFormFromData = (data: any) => {
+    const areas = data.conflict_areas || {};
+    setMetricForm({
+      riskScore: Number(data.risk_score || 0),
+      mencionesRedes: Number(data.menciones_redes || 0),
+      waterSatisfaction: Number(data.indicators?.find((i: any) => i.label.includes('Hídrica') || i.label.includes('Hídrico'))?.value?.toString().replace('%', '') || 50),
+      conflMineria: Number(areas['Minería y medio ambiente'] || 0),
+      conflLocal: Number(areas['Desarrollo local'] || 0),
+      conflServicios: Number(areas['Servicios básicos'] || 0),
+      conflGobernabilidad: Number(areas['Gobernabilidad'] || 0),
+      conflOtros: Number(areas['Otros temas'] || 0),
+    });
+  };
+
+  useEffect(() => {
+    if (provinceMetrics.length > 0) {
+      const activeData = provinceMetrics.find(p => p.id === selectedMetricProvince);
+      if (activeData) {
+        updateMetricFormFromData(activeData);
+      }
+    }
+  }, [selectedMetricProvince, provinceMetrics]);
 
   // --- LOAD INITIAL DATA & SYNC FROM LOCATION STATE ---
   useEffect(() => {
@@ -453,6 +493,13 @@ export const NewsView: React.FC = () => {
         .order('created_at', { ascending: false });
       if (error) throw error;
       setAlertsList(data || []);
+
+      const { data: metrics, error: metricsError } = await supabase
+        .from('province_metrics')
+        .select('*')
+        .order('name', { ascending: true });
+      if (metricsError) throw metricsError;
+      setProvinceMetrics(metrics || []);
     } catch (e) {
       console.error('Error al cargar alertas:', e);
       showToast({ message: 'Error al consultar alertas socioambientales', type: 'error' });
@@ -472,7 +519,10 @@ export const NewsView: React.FC = () => {
         title: alertForm.title,
         description: alertForm.description,
         province: alertForm.province,
-        type: alertForm.type
+        type: alertForm.type,
+        status: 'aprobado', // Admins publish straight away
+        latitude: alertForm.latitude ? parseFloat(alertForm.latitude) : null,
+        longitude: alertForm.longitude ? parseFloat(alertForm.longitude) : null
       });
       if (error) throw error;
       showToast({ message: '¡Alerta territorial activada!', type: 'success' });
@@ -480,7 +530,9 @@ export const NewsView: React.FC = () => {
         title: '',
         description: '',
         province: 'Cajamarca',
-        type: 'Bajo'
+        type: 'Bajo',
+        latitude: '',
+        longitude: ''
       });
       setShowCreateAlert(false);
       loadAlerts();
@@ -489,6 +541,36 @@ export const NewsView: React.FC = () => {
       showToast({ message: e.message || 'Error al guardar alerta', type: 'error' });
     } finally {
       setUploadingAlert(false);
+    }
+  };
+
+  const approveAlert = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('alerts')
+        .update({ status: 'aprobado' })
+        .eq('id', id);
+      if (error) throw error;
+      showToast({ message: 'Alerta ciudadana aprobada y publicada en el mapa.', type: 'success' });
+      loadAlerts();
+    } catch (e: any) {
+      console.error('Error al aprobar alerta:', e);
+      showToast({ message: e.message || 'Error al aprobar alerta', type: 'error' });
+    }
+  };
+
+  const rejectAlert = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('alerts')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      showToast({ message: 'Alerta rechazada y descartada.', type: 'success' });
+      loadAlerts();
+    } catch (e: any) {
+      console.error('Error al rechazar alerta:', e);
+      showToast({ message: e.message || 'Error al descartar alerta', type: 'error' });
     }
   };
 
@@ -501,6 +583,55 @@ export const NewsView: React.FC = () => {
     } catch (e: any) {
       console.error('Error al borrar alerta:', e);
       showToast({ message: e.message || 'Error al desactivar', type: 'error' });
+    }
+  };
+
+  const handleUpdateMetrics = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const orig = provinceMetrics.find(p => p.id === selectedMetricProvince);
+    if (!orig) return;
+
+    setUploadingAlert(true);
+    try {
+      let desc: 'Bajo' | 'Moderado' | 'Alto' = 'Bajo';
+      if (metricForm.riskScore >= 7.0) desc = 'Alto';
+      else if (metricForm.riskScore >= 4.0) desc = 'Moderado';
+
+      const indicators = orig.indicators || [];
+      const updatedIndicators = indicators.map((ind: any) => {
+        if (ind.label.includes('Hídrica') || ind.label.includes('Hídrico')) {
+          return { ...ind, value: `${metricForm.waterSatisfaction}%` };
+        }
+        return ind;
+      });
+
+      const conflict_areas = {
+        'Minería y medio ambiente': metricForm.conflMineria,
+        'Desarrollo local': metricForm.conflLocal,
+        'Servicios básicos': metricForm.conflServicios,
+        'Gobernabilidad': metricForm.conflGobernabilidad,
+        'Otros temas': metricForm.conflOtros
+      };
+
+      const { error } = await supabase
+        .from('province_metrics')
+        .update({
+          risk_score: metricForm.riskScore,
+          risk_description: desc,
+          menciones_redes: metricForm.mencionesRedes,
+          indicators: updatedIndicators,
+          conflict_areas
+        })
+        .eq('id', selectedMetricProvince);
+
+      if (error) throw error;
+      showToast({ message: '¡Métricas actualizadas con éxito!', type: 'success' });
+      loadAlerts();
+    } catch (err: any) {
+      console.error('Error updating province metrics:', err);
+      showToast({ message: err.message || 'Error al guardar métricas', type: 'error' });
+    } finally {
+      setUploadingAlert(false);
     }
   };
 
@@ -1217,6 +1348,32 @@ export const NewsView: React.FC = () => {
                     <option value="Medio">Mediana Prioridad</option>
                     <option value="Alto">Alta Prioridad / Crítica</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Latitud (Opcional)</label>
+                  <input
+                    type="number"
+                    step="0.000001"
+                    placeholder="Ej. -7.15"
+                    value={alertForm.latitude}
+                    onChange={(e) => setAlertForm(prev => ({ ...prev, latitude: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono font-bold text-gray-505 uppercase block">Longitud (Opcional)</label>
+                  <input
+                    type="number"
+                    step="0.000001"
+                    placeholder="Ej. -78.51"
+                    value={alertForm.longitude}
+                    onChange={(e) => setAlertForm(prev => ({ ...prev, longitude: e.target.value }))}
+                    className="w-full bg-black border border-gray-855 p-2 text-white outline-none focus:border-exec-blue"
+                  />
                 </div>
               </div>
 
