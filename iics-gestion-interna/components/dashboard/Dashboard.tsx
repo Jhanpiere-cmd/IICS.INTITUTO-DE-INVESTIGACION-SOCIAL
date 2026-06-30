@@ -98,6 +98,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [financialStats, setFinancialStats] = useState({ income: 0, expenses: 0, balance: 0 });
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  // ── Observatorio Stats ──
+  const [conflictsCount, setConflictsCount] = useState(0);
+  const [conflictsCritical, setConflictsCritical] = useState(0);
+  const [transmediaCount, setTransmediaCount] = useState(0);
+  const [provinceMetricsCount, setProvinceMetricsCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -418,6 +423,31 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             setFinancialStats({ income, expenses, balance: income - expenses });
           }
         }
+
+        // ── Conflictos Sociales ──
+        try {
+          const { data: conflictsData } = await supabase
+            .from('social_conflicts')
+            .select('id, intensity');
+          setConflictsCount(conflictsData?.length || 0);
+          setConflictsCritical(conflictsData?.filter((c: any) => c.intensity === 'Crítico' || c.intensity === 'Alto').length || 0);
+        } catch (_) {}
+
+        // ── Videos Transmedia ──
+        try {
+          const { count: tmCount } = await supabase
+            .from('transmedia_videos')
+            .select('id', { count: 'exact', head: true });
+          setTransmediaCount(tmCount || 0);
+        } catch (_) {}
+
+        // ── Métricas Provinciales ──
+        try {
+          const { count: pmCount } = await supabase
+            .from('province_metrics')
+            .select('id', { count: 'exact', head: true });
+          setProvinceMetricsCount(pmCount || 0);
+        } catch (_) {}
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {
@@ -434,6 +464,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'resources' }, () => load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'proposals' }, () => load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'social_conflicts' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transmedia_videos' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'province_metrics' }, () => load())
       .subscribe();
 
     return () => {
@@ -614,6 +647,32 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 iconColor="text-pink-500"
                 change="Nuevos"
                 onClick={() => navigate('/admin/resources')}
+              />
+              {/* ── Observatorio Metrics ── */}
+              <MetricCard
+                title="Conflictos"
+                value={String(conflictsCount).padStart(2, '0')}
+                icon="crisis_alert"
+                iconColor="text-red-400"
+                change={conflictsCritical > 0 ? `${conflictsCritical} críticos` : 'Sin críticos'}
+                changeType={conflictsCritical > 0 ? 'negative' : 'positive'}
+                onClick={() => navigate('/admin/conflicts')}
+              />
+              <MetricCard
+                title="Transmedia"
+                value={String(transmediaCount).padStart(2, '0')}
+                icon="video_library"
+                iconColor="text-exec-blue"
+                change="Videos publicados"
+                onClick={() => navigate('/admin/transmedia')}
+              />
+              <MetricCard
+                title="Prov. IICS"
+                value={`${provinceMetricsCount}/13`}
+                icon="analytics"
+                iconColor="text-yellow-400"
+                change="con métricas BD"
+                onClick={() => navigate('/admin/province-metrics')}
               />
             </div>
 
