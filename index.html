@@ -3,6 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <script>
+      // Global error listener to display runtime crashes directly on screen in production
+      window.onerror = function(message, source, lineno, colno, error) {
+        try {
+          const errorDiv = document.createElement('div');
+          errorDiv.style.position = 'fixed';
+          errorDiv.style.inset = '0';
+          errorDiv.style.zIndex = '999999';
+          errorDiv.style.background = '#0a0505';
+          errorDiv.style.color = '#ff4444';
+          errorDiv.style.fontFamily = 'monospace';
+          errorDiv.style.padding = '32px';
+          errorDiv.style.overflow = 'auto';
+          errorDiv.style.lineHeight = '1.5';
+          errorDiv.innerHTML = `
+            <h1 style="font-size: 22px; border-bottom: 2px solid #551111; padding-bottom: 12px; margin-bottom: 20px; color: #ff6666;">⚠️ UNCAUGHT RUNTIME CRASH DETECTED</h1>
+            <p style="font-size: 15px; font-weight: bold; margin-bottom: 12px;">Message: ${message}</p>
+            <p style="font-size: 13px; color: #aaa; margin-bottom: 4px;">Source: ${source}</p>
+            <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">Position: Line ${lineno}, Col ${colno}</p>
+            <pre style="margin-top: 16px; padding: 16px; background: #1c0e0e; border: 1px solid #552222; font-size: 12px; color: #ffb3b3; overflow-x: auto; white-space: pre-wrap;">${error ? error.stack : 'No stack trace available'}</pre>
+          `;
+          document.body.appendChild(errorDiv);
+        } catch (e) {
+          console.error('Failed to render visual error shim:', e);
+        }
+        return false;
+      };
+
+      window.addEventListener('unhandledrejection', function(event) {
+        try {
+          const errorDiv = document.createElement('div');
+          errorDiv.style.position = 'fixed';
+          errorDiv.style.inset = '0';
+          errorDiv.style.zIndex = '999999';
+          errorDiv.style.background = '#0a0705';
+          errorDiv.style.color = '#ff9933';
+          errorDiv.style.fontFamily = 'monospace';
+          errorDiv.style.padding = '32px';
+          errorDiv.style.overflow = 'auto';
+          errorDiv.style.lineHeight = '1.5';
+          const reasonMsg = event.reason ? (event.reason.message || String(event.reason)) : 'Promise rejected';
+          const stackTrace = event.reason && event.reason.stack ? event.reason.stack : 'No stack trace available';
+          errorDiv.innerHTML = `
+            <h1 style="font-size: 22px; border-bottom: 2px solid #553311; padding-bottom: 12px; margin-bottom: 20px; color: #ffb366;">⚠️ UNHANDLED PROMISE REJECTION</h1>
+            <p style="font-size: 15px; font-weight: bold; margin-bottom: 12px;">Reason: ${reasonMsg}</p>
+            <pre style="margin-top: 16px; padding: 16px; background: #1c140e; border: 1px solid #553311; font-size: 12px; color: #ffe6cc; overflow-x: auto; white-space: pre-wrap;">${stackTrace}</pre>
+          `;
+          document.body.appendChild(errorDiv);
+        } catch (e) {
+          console.error('Failed to render rejection shim:', e);
+        }
+      });
+    </script>
+    <script>
       // Global assignment safety shim for sandboxed frame environments
       (function() {
         const patchWritable = (obj, prop) => {
