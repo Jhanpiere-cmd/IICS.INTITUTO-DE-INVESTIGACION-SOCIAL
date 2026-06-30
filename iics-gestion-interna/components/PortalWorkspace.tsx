@@ -6,6 +6,7 @@ import {
   MapPin, 
   Bell, 
   BookOpen, 
+  BookCopy,
   Settings, 
   ArrowUp, 
   ArrowDown, 
@@ -292,6 +293,18 @@ export default function PortalWorkspace({
     { ts: '02:44:11', svc: 'VECTOR-GIS', msg: 'Generados capas poligonales de pasivos mineros en cuenca Llaucano.' }
   ];
 
+  const getDisplayName = () => {
+    if (user?.fullName) {
+      const parts = user.fullName.trim().split(/\s+/);
+      return parts[0];
+    }
+    if (user?.email) {
+      const prefix = user.email.split('@')[0];
+      return prefix.slice(0, 8);
+    }
+    return 'Usuario';
+  };
+
   return (
     <div className="w-full h-screen bg-[#030304] text-gray-100 flex flex-col font-sans antialiased overflow-hidden">
       
@@ -299,7 +312,7 @@ export default function PortalWorkspace({
       <div className="flex-1 flex flex-col lg:flex-row shadow-2xl relative w-full h-full border-b border-zinc-900 overflow-hidden bg-[#030304]">
         
         {/* SIDEBAR TRAY - Left-side Navigation bar */}
-        <div className="w-full lg:w-16 border-b lg:border-b-0 lg:border-r border-zinc-900 bg-[#030304] flex lg:flex-col items-center justify-between p-2.5 lg:py-5 lg:px-2 select-none shrink-0 overflow-x-auto lg:overflow-x-visible">
+        <div className="w-full lg:w-16 border-b lg:border-b-0 lg:border-r border-zinc-900 bg-[#030304] flex lg:flex-col items-center justify-between p-2.5 lg:py-3.5 lg:px-2 select-none shrink-0 overflow-x-auto lg:overflow-x-visible">
           
           {/* Logo badge / user profile */}
           <div className="hidden lg:flex flex-col items-center gap-1 pb-4 mb-4 border-b border-zinc-900 w-full">
@@ -396,7 +409,7 @@ export default function PortalWorkspace({
               </span>
             </button>
 
-            {/* Tab 6: Academia AFI & Datasets (BookOpen) */}
+            {/* Tab 6: Academia AFI & Datasets (BookCopy) */}
             <button
               onClick={() => setActiveTab('library')}
               className={`group relative flex h-10 w-10 items-center justify-center rounded-none transition-all ${
@@ -406,7 +419,7 @@ export default function PortalWorkspace({
               }`}
               title="Biblioteca y Datasets"
             >
-              <BookOpen className="h-5 w-5" />
+              <BookCopy className="h-5 w-5" />
               <span className="hidden lg:inline-block absolute left-14 z-50 scale-0 group-hover:scale-100 bg-gray-950 border border-gray-800 text-[10.5px] text-zinc-100 px-2.5 py-1.5 rounded-none font-mono font-bold uppercase transition-all shadow-xl whitespace-nowrap">
                 [06] Repositorio Científico
               </span>
@@ -479,10 +492,10 @@ export default function PortalWorkspace({
           </div>
 
           {/* Bottom user card / Logout button */}
-          <div className="flex lg:flex-col lg:w-full items-center gap-4 lg:gap-2 lg:mt-auto pt-4 border-t lg:border-t border-zinc-900">
+          <div className="flex lg:flex-col lg:w-full items-center gap-4 lg:gap-1.5 lg:mt-auto pt-2.5 border-t lg:border-t border-zinc-900">
             
             {/* User Profile Avatar */}
-            <div className="shrink-0 mb-1 lg:mb-2">
+            <div className="shrink-0 mb-1 lg:mb-1.5">
               {avatarUrl ? (
                 <img 
                   src={avatarUrl} 
@@ -497,10 +510,10 @@ export default function PortalWorkspace({
             </div>
 
             <div className="flex flex-col text-right lg:text-center shrink-0">
-              <span className="text-[9px] font-mono text-zinc-500 font-bold block truncate max-w-[120px]" title={user?.email || 'Invitado'}>
-                {user?.email || 'Invitado (Público)'}
+              <span className="text-[10px] font-sans text-zinc-300 font-black block truncate max-w-[56px] notranslate uppercase" translate="no" title={user?.fullName || user?.email || 'Invitado'}>
+                {getDisplayName()}
               </span>
-              <span className="text-[8px] font-black text-cyan-400 bg-cyan-950/40 px-1.5 py-0.5 uppercase border border-cyan-800/20 rounded-none mt-0.5">
+              <span className="text-[8px] font-black text-cyan-400 bg-cyan-950/40 px-1 py-0.5 uppercase border border-cyan-800/20 rounded-none mt-0.5 block truncate max-w-[56px]" title={user?.role || 'Invitado'}>
                 {user?.role || 'Invitado'}
               </span>
             </div>
