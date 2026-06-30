@@ -97,6 +97,7 @@ import { BottomNav } from './components/layout/BottomNav';
 
 import { WhiteboardView } from './components/whiteboard/WhiteboardView';
 import { RadarView } from './components/radar/RadarView';
+import { TransmediaView } from './components/transmedia/TransmediaView';
 
 const Layout: React.FC = () => {
     const location = useLocation();
@@ -130,6 +131,7 @@ const Layout: React.FC = () => {
             case '/birthdays': return 'Gestión de Cumpleaños';
             case '/whiteboard': return 'Pizarra Neural';
             case '/radar': return 'Radar Estratégico';
+            case '/transmedia': return 'Difusión Transmedia';
             default: return 'SGR-ACS';
         }
     };
@@ -176,6 +178,7 @@ const Layout: React.FC = () => {
                         <Route path="/my-certificates" element={<MyCertificates />} />
                         <Route path="/whiteboard" element={<WhiteboardView />} />
                         <Route path="/radar" element={<RadarView />} />
+                        <Route path="/transmedia" element={<TransmediaView />} />
                         <Route path="/api/youtube/callback" element={<YoutubeCallback />} />
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

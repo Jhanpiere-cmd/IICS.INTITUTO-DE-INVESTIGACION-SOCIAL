@@ -114,6 +114,8 @@ export default function PortalWorkspace({
   });
   const [submittingAfi, setSubmittingAfi] = useState(false);
   const [playingDoc, setPlayingDoc] = useState<any | null>(null);
+  const [transmediaVideos, setTransmediaVideos] = useState<any[]>([]);
+  const [loadingTransmedia, setLoadingTransmedia] = useState(true);
   const [loadingVideo, setLoadingVideo] = useState(false);
   const [selectedSentimentTopic, setSelectedSentimentTopic] = useState<'all' | 'mineria' | 'gobernabilidad' | 'cohesion'>('all');
   const [sentimentSearchQuery, setSentimentSearchQuery] = useState('');
@@ -133,23 +135,17 @@ export default function PortalWorkspace({
   }, [user]);
 
   const fetchUserProfile = async () => {
-    if ((user as any)?.user_metadata?.avatar_url) {
-      setAvatarUrl((user as any).user_metadata.avatar_url);
-      return;
-    }
-    if (!user?.id) return;
+    if (!user) return;
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('"avatarUrl"')
+        .select('avatarUrl')
         .eq('id', user.id)
         .single();
       if (error) throw error;
-      if (data?.avatarUrl) {
-        setAvatarUrl(data.avatarUrl);
-      }
-    } catch (e) {
-      console.error('Error loading avatar in portal:', e);
+      setAvatarUrl(data?.avatarUrl || null);
+    } catch (err) {
+      console.error('Error fetching user profile in portal:', err);
     }
   };
 
@@ -194,6 +190,22 @@ export default function PortalWorkspace({
       console.error('Error loading AFI courses in portal:', e);
     } finally {
       setLoadingCourses(false);
+    }
+  };
+
+  const fetchTransmediaVideos = async () => {
+    try {
+      setLoadingTransmedia(true);
+      const { data, error } = await supabase
+        .from('transmedia_videos')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setTransmediaVideos(data || []);
+    } catch (e) {
+      console.error('Error loading transmedia videos in portal:', e);
+    } finally {
+      setLoadingTransmedia(false);
     }
   };
 
@@ -2331,92 +2343,79 @@ export default function PortalWorkspace({
                               <span className="text-xs font-mono text-cyan-400 animate-pulse">Cargando reproductor transmedia...</span>
                             </div>
                           ) : (
-                            <div className="absolute inset-0 flex flex-col justify-center items-center p-8 bg-zinc-950">
-                              <Play className="h-16 w-16 text-cyan-400 opacity-80 hover:opacity-100 transition-opacity mb-4 cursor-pointer" />
-                              <h3 className="text-lg font-bold text-white uppercase tracking-wider">{playingDoc.title}</h3>
-                              <p className="text-xs text-zinc-400 max-w-xl text-center mt-2">{playingDoc.desc}</p>
-                              <p className="text-[10px] text-zinc-550 font-mono mt-4">Autoría: {playingDoc.authors} ({playingDoc.year})</p>
-                            </div>
+                            (() => {
+                              const youtubeRegex = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                              const match = playingDoc.video_url?.match(youtubeRegex);
+                              const embedId = match && match[2].length === 11 ? match[2] : null;
+                              if (embedId) {
+                                return (
+                                  <iframe
+                                    src={`https://www.youtube.com/embed/${embedId}?autoplay=1`}
+                                    className="absolute inset-0 w-full h-full border-0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={playingDoc.title}
+                                  />
+                                );
+                              }
+                              return (
+                                <div className="absolute inset-0 flex flex-col justify-center items-center p-8 bg-zinc-950">
+                                  <Play className="h-16 w-16 text-cyan-400 opacity-80 hover:opacity-100 transition-opacity mb-4 cursor-pointer" />
+                                  <h3 className="text-lg font-bold text-white uppercase tracking-wider">{playingDoc.title}</h3>
+                                  <p className="text-xs text-zinc-400 max-w-xl text-center mt-2">{playingDoc.desc}</p>
+                                  <p className="text-[10px] text-zinc-550 font-mono mt-4">Autoría: {playingDoc.authors} ({playingDoc.year})</p>
+                                </div>
+                              );
+                            })()
                           )}
                         </div>
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {[
-                        {
-                          id: 'doc-agua',
-                          title: 'Hualgayoc: El Latido del Agua',
-                          duration: '18:45',
-                          year: '2026',
-                          tags: ['Socioambiental', 'Recursos Hídricos'],
-                          desc: 'Exploración etnográfica y monitoreo digital en las microcuencas de Hualgayoc. Un registro sonoro y visual sobre la conservación del recurso hídrico.',
-                          thumbnail: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80',
-                          authors: 'Hery Díaz Bueno & Edwar Jahnpiere'
-                        },
-                        {
-                          id: 'doc-rondas',
-                          title: 'Justicia de la Tierra: Rondas Campesinas',
-                          duration: '22:10',
-                          year: '2025',
-                          tags: ['Justicia Comunal', 'Cultura Rural'],
-                          desc: 'Un retrato cinematográfico sobre el funcionamiento de las Rondas Campesinas en Chota. Hermenéutica de la resolución colectiva de disputas.',
-                          thumbnail: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80',
-                          authors: 'Dr. Jaime Abanto Padilla & Equipo IICS'
-                        },
-                        {
-                          id: 'doc-michiquillay',
-                          title: 'Michiquillay: Las Voces de la Faja',
-                          duration: '15:30',
-                          year: '2026',
-                          tags: ['Gobernabilidad', 'Opinión Pública'],
-                          desc: 'Análisis cualitativo audiovisual basado en minería de opinión local y entrevistas comunitarias directas antes de la mesa de diálogo del proyecto.',
-                          thumbnail: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80',
-                          authors: 'M. Cs. Julio Cesar Alcalde Giove'
-                        },
-                        {
-                          id: 'doc-observatorio',
-                          title: 'Sociología de Precisión: Datos para la Vida',
-                          duration: '12:15',
-                          year: '2026',
-                          tags: ['Tecnología', 'Desarrollo Territorial'],
-                          desc: 'Un cortometraje explicativo sobre el funcionamiento del clúster de NLP y los sistemas georreferenciados del IICS.',
-                          thumbnail: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80',
-                          authors: 'Comité Promotor IICS'
-                        }
-                      ].map(doc => (
-                        <div key={doc.id} className="bg-[#030304] border border-zinc-900 overflow-hidden flex flex-col md:flex-row group hover:border-zinc-800 transition-colors">
-                          <div className="md:w-1/3 aspect-video md:aspect-auto relative overflow-hidden bg-zinc-950">
-                            <img src={doc.thumbnail} alt={doc.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-85 transition-opacity duration-300" />
-                            <span className="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 text-[9px] font-mono text-zinc-300">{doc.duration}</span>
-                          </div>
-                          <div className="p-4 flex-1 flex flex-col justify-between text-left">
-                            <div className="space-y-1.5">
-                              <div className="flex flex-wrap gap-1">
-                                {doc.tags.map(t => (
-                                  <span key={t} className="text-[8px] font-mono text-cyan-400 bg-cyan-950/20 border border-cyan-900/10 px-1.5 py-0.2 uppercase">{t}</span>
-                                ))}
+                    {loadingTransmedia ? (
+                      <div className="h-48 flex items-center justify-center">
+                        <span className="text-xs font-mono text-cyan-400 animate-pulse">Cargando videoteca transmedia...</span>
+                      </div>
+                    ) : transmediaVideos.length === 0 ? (
+                      <div className="border border-zinc-900 p-12 text-center text-zinc-550 font-mono text-xs">
+                        No hay documentales ni cápsulas transmedia disponibles en este momento.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {transmediaVideos.map(doc => (
+                          <div key={doc.id} className="bg-[#030304] border border-zinc-900 overflow-hidden flex flex-col md:flex-row group hover:border-zinc-800 transition-colors">
+                            <div className="md:w-1/3 aspect-video md:aspect-auto relative overflow-hidden bg-zinc-950">
+                              <img src={doc.thumbnail_url} alt={doc.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-85 transition-opacity duration-300" />
+                              <span className="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 text-[9px] font-mono text-zinc-300">{doc.duration}</span>
+                            </div>
+                            <div className="p-4 flex-1 flex flex-col justify-between text-left">
+                              <div className="space-y-1.5">
+                                <div className="flex flex-wrap gap-1">
+                                  {doc.tags && doc.tags.map(t => (
+                                    <span key={t} className="text-[8px] font-mono text-cyan-400 bg-cyan-950/20 border border-cyan-900/10 px-1.5 py-0.2 uppercase">{t}</span>
+                                  ))}
+                                </div>
+                                <h4 className="text-xs font-bold text-white uppercase group-hover:text-cyan-400 transition-colors">{doc.title}</h4>
+                                <p className="text-[10px] text-zinc-400 line-clamp-2 leading-relaxed">{doc.desc}</p>
                               </div>
-                              <h4 className="text-xs font-bold text-white uppercase group-hover:text-cyan-400 transition-colors">{doc.title}</h4>
-                              <p className="text-[10px] text-zinc-400 line-clamp-2 leading-relaxed">{doc.desc}</p>
-                            </div>
-                            <div className="flex justify-between items-center text-[9px] font-mono text-zinc-650 pt-3 border-t border-zinc-950 mt-3">
-                              <span>{doc.authors}</span>
-                              <button
-                                onClick={() => {
-                                  setPlayingDoc(doc);
-                                  setLoadingVideo(true);
-                                  setTimeout(() => setLoadingVideo(false), 800);
-                                }}
-                                className="text-cyan-400 hover:text-white flex items-center gap-1 cursor-pointer bg-transparent border-none outline-none font-bold"
-                              >
-                                <Play size={10} /> REPRODUCIR
-                              </button>
+                              <div className="flex justify-between items-center text-[9px] font-mono text-zinc-650 pt-3 border-t border-zinc-950 mt-3">
+                                <span>{doc.authors}</span>
+                                <button
+                                  onClick={() => {
+                                    setPlayingDoc(doc);
+                                    setLoadingVideo(true);
+                                    setTimeout(() => setLoadingVideo(false), 800);
+                                  }}
+                                  className="text-cyan-400 hover:text-white flex items-center gap-1 cursor-pointer bg-transparent border-none outline-none font-bold"
+                                >
+                                  <Play size={10} /> REPRODUCIR
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 

@@ -25,6 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/admin/communications', icon: 'mail', label: 'Correo' },
         { path: '/admin/secretaria', icon: 'folder_managed', label: 'Gestión Documental' },
         { path: '/admin/news', icon: 'article', label: 'Noticias' },
+        { path: '/admin/transmedia', icon: 'video_library', label: 'Difusión Transmedia' },
         { path: '/admin/media', icon: 'movie_edit', label: 'Gestión Audiovisual' },
         { path: '/admin/whatsapp', icon: 'chat', label: 'WhatsApp' },
         { path: '/admin/proposals', icon: 'lightbulb', label: 'Propuestas' },
