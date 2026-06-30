@@ -192,7 +192,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
           {/* Central Logo */}
           <motion.div 
-            initial={{ scale: 12, y: -600, opacity: 0, filter: 'drop-shadow(0 0 0px rgba(0,0,0,0))' }}
+            initial={{ scale: 12, y: -600, opacity: 0, filter: 'drop-shadow(0 0 0px rgba(0,153,255,0))' }}
             animate={
               phase === 'intro'
                 ? { scale: 5, y: 150, opacity: 1, filter: 'drop-shadow(0 0 35px rgba(0, 153, 255, 0.35))' }
@@ -201,11 +201,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                     scale: 1, 
                     y: 0,
                     opacity: 1, 
-                    filter: [
-                      'drop-shadow(0 0 8px rgba(0, 153, 255, 0.1))',
-                      'drop-shadow(0 0 22px rgba(0, 153, 255, 0.35))',
-                      'drop-shadow(0 0 8px rgba(0, 153, 255, 0.1))'
-                    ] 
+                    filter: 'drop-shadow(0 0 16px rgba(0, 153, 255, 0.25))'
                   }
                 : { 
                     scale: 18, 
@@ -218,7 +214,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             transition={
               phase === 'loading'
                 ? { 
-                    filter: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }, 
                     scale: { duration: 0.8, ease: 'easeInOut' }, 
                     y: { duration: 0.8, ease: 'easeInOut' } 
                   }

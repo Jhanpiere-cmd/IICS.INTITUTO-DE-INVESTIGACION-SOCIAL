@@ -80,7 +80,7 @@ export function SmokeyBackground({
   backdropBlurAmount = "sm",
   color = "#0088FF", // ACS Electric Blue
   className = "",
-}: SmokeyBackgroundProps): JSX.Element {
+}: SmokeyBackgroundProps): React.JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
