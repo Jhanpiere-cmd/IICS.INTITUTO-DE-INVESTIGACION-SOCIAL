@@ -44,6 +44,13 @@ interface BirthdayPlan {
   collaborations?: BirthdayCollaboration[];
 }
 
+const parseBirthDate = (dateStr: string | null | undefined): Date => {
+  if (!dateStr) return new Date();
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return new Date(dateStr);
+  return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+};
+
 export const BirthdayManagement: React.FC = () => {
   const { user } = useAuth();
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -73,7 +80,7 @@ export const BirthdayManagement: React.FC = () => {
 
   useEffect(() => {
     if (toast) {
-      const timer = setTimeout(() => setToast(null), 4000);
+      const timer = setTimeout(() => setToast(null), 3000);
       return () => clearTimeout(timer);
     }
   }, [toast]);
@@ -84,7 +91,7 @@ export const BirthdayManagement: React.FC = () => {
       // Fetch profiles with full resolution
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, "fullName", email, role, avatarUrl:avatar_url, bio, birth_date')
+        .select('id, "fullName", email, role, "avatarUrl", bio, birth_date')
         .order('"fullName"');
 
       if (profilesError) throw profilesError;
@@ -110,7 +117,7 @@ export const BirthdayManagement: React.FC = () => {
             *,
             collaborations:birthday_collaborations(
                 *,
-                profile:profiles(id, fullName, avatar_url)
+                profile:profiles(id, "fullName", "avatarUrl")
             )
         `)
         .gte('year', currentYear);
@@ -292,7 +299,7 @@ export const BirthdayManagement: React.FC = () => {
     return profiles
       .filter(p => p.birth_date)
       .map(p => {
-        const bd = parseISO(p.birth_date);
+        const bd = parseBirthDate(p.birth_date);
         const thisYearBd = new Date(getYear(today), bd.getMonth(), bd.getDate());
         
         // If birthday already passed this year, look for next year
@@ -306,7 +313,7 @@ export const BirthdayManagement: React.FC = () => {
   };
 
   const upcoming = getUpcomingBirthdays();
-  const currentMonthUsers = profiles.filter(p => p.birth_date && isSameMonth(parseISO(p.birth_date), new Date()));
+  const currentMonthUsers = profiles.filter(p => p.birth_date && isSameMonth(parseBirthDate(p.birth_date), new Date()));
 
   if (loading) {
     return (
@@ -494,7 +501,7 @@ export const BirthdayManagement: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {profiles.map(p => {
                 const plan = plans.find(pl => pl.profile_id === p.id && pl.year === viewingYear);
-                const bdDate = p.birth_date ? format(parseISO(p.birth_date), "dd 'de' MMMM", { locale: es }) : 'N/D';
+                const bdDate = p.birth_date ? format(parseBirthDate(p.birth_date), "dd 'de' MMMM", { locale: es }) : 'N/D';
                 
                 return (
                     <div 

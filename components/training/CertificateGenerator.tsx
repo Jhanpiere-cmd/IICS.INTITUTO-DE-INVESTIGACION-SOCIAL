@@ -132,8 +132,8 @@ export const CertificateGenerator: React.FC<CertificateGeneratorProps> = ({
                     </div>
 
                     <div className="text-center pt-2">
-                        <h3 className="text-2xl font-bold text-slate-700 uppercase tracking-widest font-sans">Universidad Nacional de Cajamarca</h3>
-                        <h4 className="text-xl font-bold text-slate-600 uppercase tracking-wider font-sans mt-1">Facultad de Ciencias Sociales</h4>
+                        <h3 className="text-2xl font-bold text-slate-700 uppercase tracking-widest font-sans">Instituto de Investigación Científica Social</h3>
+                        <h4 className="text-xl font-bold text-slate-600 uppercase tracking-wider font-sans mt-1">IICS - Observatorio y Laboratorio</h4>
                     </div>
 
                     <div className="w-24 h-24 flex items-center justify-center">

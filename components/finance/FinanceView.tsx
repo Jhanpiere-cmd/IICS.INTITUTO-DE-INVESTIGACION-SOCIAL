@@ -1098,8 +1098,32 @@ export function FinanceView() {
                 )}
             </div>
 
+            {/* View Selector Tabs */}
+            <div className="bg-[#0A0A0A] border border-exec-border p-1 flex items-center gap-1 mb-6 w-full md:w-auto">
+                <button
+                    onClick={() => setView('global_dashboard')}
+                    className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all ${
+                        view === 'global_dashboard' 
+                        ? 'bg-exec-blue text-white shadow-[0_0_15px_rgba(0,136,255,0.3)]' 
+                        : 'text-gray-500 hover:text-white hover:bg-white/5'
+                    }`}
+                >
+                    Dashboard Financiero
+                </button>
+                <button
+                    onClick={() => setView('crm' as any)}
+                    className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all ${
+                        view === 'crm' 
+                        ? 'bg-exec-blue text-white shadow-[0_0_15px_rgba(0,136,255,0.3)]' 
+                        : 'text-gray-500 hover:text-white hover:bg-white/5'
+                    }`}
+                >
+                    CRM de Consultorías (Sostenibilidad)
+                </button>
+            </div>
+
             {
-                view === 'global_dashboard' ? (
+                view === 'global_dashboard' && (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {/* Global Summary Cards */}
                         <div className="flex flex-wrap gap-4 justify-center">
@@ -1488,7 +1512,11 @@ export function FinanceView() {
 
                         </div >
                     </div >
-                ) : (
+                )
+            }
+
+            {
+                view === 'activity_detail' && (
                     // Legacy Activity Detail View (Hidden by default now)
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <button
@@ -1500,20 +1528,18 @@ export function FinanceView() {
                         >
                             <ArrowLeft className="w-4 h-4" /> Volver al Dashboard Global
                         </button>
-                        {/* ... (Keep existing activity detail view logic if needed, or simplify) ... */}
-                        {/* For now, I'll just show a simplified message or the old view if user really wants to drill down. 
-                        But user asked for Global Dashboard. I'll keep the old view logic but accessible via the "Actividades Activas" list.
-                    */}
                         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
                             <h2 className="text-2xl font-bold mb-4">{selectedActivity?.title}</h2>
                             <p className="text-gray-500 mb-6">{selectedActivity?.description}</p>
-                            {/* Re-use the transaction list logic but filtered for this activity? 
-                            Actually, the global dashboard is better. I'll just redirect to global dashboard with a filter? 
-                            No, let's keep it simple. If they click an activity, they see the old view.
-                        */}
                             <p className="text-center text-gray-500">Detalles de actividad disponibles en el Dashboard Global filtrando por fecha.</p>
                         </div>
                     </div>
+                )
+            }
+
+            {
+                view === ('crm' as any) && (
+                    <ConsultingCRM toast={showToast} fetchData={fetchData} />
                 )
             }
 
@@ -1875,6 +1901,313 @@ export function FinanceView() {
                 confirmText="Eliminar Registro"
                 variant="danger"
             />
+        </div>
+    );
+}
+
+interface ConsultingCRMProps {
+    toast: (options: { type: 'success' | 'error' | 'info' | 'warning', title: string, message: string }) => void;
+    fetchData: () => void;
+}
+
+export function ConsultingCRM({ toast, fetchData }: ConsultingCRMProps) {
+    const [proposals, setProposals] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newProposal, setNewProposal] = useState({
+        title: '',
+        client_name: '',
+        value: 0,
+        description: ''
+    });
+
+    useEffect(() => {
+        loadProposals();
+    }, []);
+
+    async function loadProposals() {
+        setLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('consulting_proposals')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            setProposals(data || []);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleCreateProposal = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newProposal.title || !newProposal.client_name || newProposal.value <= 0) {
+            toast({ type: 'warning', title: 'DATOS INCOMPLETOS', message: 'Por favor complete todos los campos obligatorios.' });
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('consulting_proposals')
+                .insert({
+                    title: newProposal.title,
+                    client_name: newProposal.client_name,
+                    value: Number(newProposal.value),
+                    description: newProposal.description,
+                    status: 'Borrador'
+                });
+            if (error) throw error;
+            toast({ type: 'success', title: 'PROPUESTA REGISTRADA', message: 'La propuesta comercial fue agregada como Borrador.' });
+            setShowAddModal(false);
+            setNewProposal({ title: '', client_name: '', value: 0, description: '' });
+            loadProposals();
+        } catch (e) {
+            console.error(e);
+            toast({ type: 'error', title: 'ERROR', message: 'No se pudo crear la propuesta.' });
+        }
+    };
+
+    const handleUpdateStatus = async (id: string, currentStatus: string, newStatus: 'Borrador' | 'En Negociación' | 'Aprobada' | 'Rechazada') => {
+        try {
+            const prop = proposals.find(p => p.id === id);
+            if (!prop) return;
+
+            const { error } = await supabase
+                .from('consulting_proposals')
+                .update({ status: newStatus })
+                .eq('id', id);
+            if (error) throw error;
+
+            toast({ type: 'success', title: 'ESTADO ACTUALIZADO', message: `Propuesta actualizada a: ${newStatus}.` });
+
+            if (newStatus === 'Aprobada' && currentStatus !== 'Aprobada') {
+                const { error: txError } = await supabase
+                    .from('financial_transactions')
+                    .insert({
+                        title: `Consultoría: ${prop.title} - ${prop.client_name}`,
+                        type: 'income',
+                        category: 'Consultoría',
+                        amount: Number(prop.value),
+                        description: `Ingreso automático registrado al aprobarse la propuesta de consultoría. Descripción: ${prop.description || ''}`,
+                        transaction_date: new Date().toISOString().split('T')[0]
+                    });
+                if (!txError) {
+                    toast({ type: 'success', title: 'INGRESO REGISTRADO', message: `Se inyectó un ingreso de S/ ${prop.value} al flujo de caja.` });
+                    fetchData();
+                }
+            }
+
+            loadProposals();
+        } catch (e) {
+            console.error(e);
+            toast({ type: 'error', title: 'ERROR', message: 'No se pudo actualizar el estado.' });
+        }
+    };
+
+    const handleDeleteProposal = async (id: string) => {
+        try {
+            const { error } = await supabase
+                .from('consulting_proposals')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
+            toast({ type: 'success', title: 'ELIMINADO', message: 'Propuesta eliminada permanentemente.' });
+            loadProposals();
+        } catch (e) {
+            console.error(e);
+            toast({ type: 'error', title: 'ERROR', message: 'No se pudo eliminar la propuesta.' });
+        }
+    };
+
+    const columns = [
+        { id: 'Borrador', title: 'Borrador', border: 'border-gray-800', text: 'text-gray-500', bg: 'bg-gray-500/5' },
+        { id: 'En Negociación', title: 'En Negociación', border: 'border-amber-500/20', text: 'text-amber-500', bg: 'bg-amber-500/5' },
+        { id: 'Aprobada', title: 'Aprobada', border: 'border-emerald-500/20', text: 'text-emerald-500', bg: 'bg-emerald-500/5' },
+        { id: 'Rechazada', title: 'Rechazada', border: 'border-red-500/20', text: 'text-red-500', bg: 'bg-red-500/5' }
+    ];
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center border-b border-[#262626] pb-4">
+                <div>
+                    <h2 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
+                        <DollarSign className="w-6 h-6 text-exec-blue" />
+                        CRM de Consultorías Privadas
+                    </h2>
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 mt-1">
+                        Control de propuestas comerciales, valorización de servicios y autosostenibilidad.
+                    </p>
+                </div>
+                <button
+                    onClick={() => setShowAddModal(true)}
+                    className="px-4 py-2 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer"
+                >
+                    <Plus className="w-4 h-4" />
+                    Nueva Propuesta
+                </button>
+            </div>
+
+            {loading ? (
+                <div className="flex justify-center py-12">
+                    <Loader2 className="animate-spin text-exec-blue" size={24} />
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    {columns.map(col => {
+                        const colProps = proposals.filter(p => p.status === col.id);
+                        const colTotal = colProps.reduce((sum, p) => sum + Number(p.value), 0);
+
+                        return (
+                            <div key={col.id} className={`bg-[#0A0A0A] border ${col.border} flex flex-col min-h-[500px]`}>
+                                <div className={`p-4 border-b border-[#1C1C1C] ${col.bg} flex justify-between items-center`}>
+                                    <div>
+                                        <h3 className={`text-xs font-black uppercase tracking-widest ${col.text}`}>{col.title}</h3>
+                                        <p className="text-[9px] text-gray-600 font-bold tracking-widest mt-0.5">{colProps.length} propuestas</p>
+                                    </div>
+                                    <span className="text-xs font-black text-white font-mono">S/ {colTotal.toFixed(2)}</span>
+                                </div>
+
+                                <div className="p-4 space-y-4 flex-1 overflow-y-auto custom-scrollbar">
+                                    {colProps.map(p => (
+                                        <div key={p.id} className="bg-[#0F0F0F] border border-[#1A1A1A] hover:border-gray-800 p-4 space-y-3 transition-colors group">
+                                            <div className="flex justify-between items-start gap-2">
+                                                <h4 className="text-xs font-bold text-white uppercase tracking-wider line-clamp-2">{p.title}</h4>
+                                                <button
+                                                    onClick={() => handleDeleteProposal(p.id)}
+                                                    className="text-gray-600 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 shrink-0 cursor-pointer"
+                                                    title="Eliminar propuesta"
+                                                >
+                                                    <Trash2 size={12} />
+                                                </button>
+                                            </div>
+                                            
+                                            <div className="space-y-1">
+                                                <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Cliente</p>
+                                                <p className="text-xs text-gray-300 font-medium uppercase">{p.client_name}</p>
+                                            </div>
+
+                                            {p.description && (
+                                                <p className="text-[10px] text-gray-500 line-clamp-2 italic">{p.description}</p>
+                                            )}
+
+                                            <div className="flex justify-between items-end pt-3 border-t border-[#1C1C1C]">
+                                                <div>
+                                                    <p className="text-[8px] text-gray-600 font-bold uppercase tracking-widest">Valorización</p>
+                                                    <p className="text-sm font-bold text-white font-mono">S/ {Number(p.value).toFixed(2)}</p>
+                                                </div>
+                                                
+                                                <div className="flex gap-1.5">
+                                                    {p.status !== 'Aprobada' && p.status !== 'Rechazada' && (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(p.id, p.status, 'Aprobada')}
+                                                                className="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-900/30 hover:bg-emerald-900/50 hover:text-white transition-all text-[8px] font-bold uppercase tracking-widest cursor-pointer"
+                                                                title="Marcar como Aprobada"
+                                                            >
+                                                                Aprobar
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(p.id, p.status, 'Rechazada')}
+                                                                className="px-2 py-0.5 bg-red-950 text-red-400 border border-red-900/30 hover:bg-red-900/50 hover:text-white transition-all text-[8px] font-bold uppercase tracking-widest cursor-pointer"
+                                                                title="Marcar como Rechazada"
+                                                            >
+                                                                Rechazar
+                                                            </button>
+                                                        </>
+                                                    )}
+                                                    {p.status === 'Borrador' && (
+                                                        <button
+                                                            onClick={() => handleUpdateStatus(p.id, p.status, 'En Negociación')}
+                                                            className="px-2 py-0.5 bg-amber-950 text-amber-400 border border-amber-900/30 hover:bg-amber-900/50 hover:text-white transition-all text-[8px] font-bold uppercase tracking-widest cursor-pointer"
+                                                        >
+                                                            Negociar
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {colProps.length === 0 && (
+                                        <div className="py-12 text-center text-[10px] text-gray-700 font-bold uppercase tracking-widest border border-dashed border-[#1C1C1C]">
+                                            Vacío
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            {showAddModal && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+                    <div className="bg-[#0D0D0D] border border-exec-border rounded-none w-full max-w-md shadow-2xl overflow-hidden">
+                        <div className="p-6 border-b border-exec-border bg-black flex justify-between items-center">
+                            <h3 className="text-xs font-bold text-white uppercase tracking-[0.2em]">Nueva Propuesta de Consultoría</h3>
+                            <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-white">
+                                <X size={18} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleCreateProposal} className="p-6 space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Título del Proyecto *</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={newProposal.title}
+                                    onChange={e => setNewProposal({ ...newProposal, title: e.target.value })}
+                                    className="w-full bg-[#151515] border border-exec-border text-white text-xs p-3 focus:outline-none focus:border-exec-blue uppercase"
+                                    placeholder="Ej. Estudio de impacto ambiental Michiquillay"
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cliente / Empresa *</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={newProposal.client_name}
+                                    onChange={e => setNewProposal({ ...newProposal, client_name: e.target.value })}
+                                    className="w-full bg-[#151515] border border-exec-border text-white text-xs p-3 focus:outline-none focus:border-exec-blue uppercase"
+                                    placeholder="Ej. Minera Codelco"
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Valorización del Servicio (S/.) *</label>
+                                <input
+                                    type="number"
+                                    required
+                                    min="1"
+                                    value={newProposal.value || ''}
+                                    onChange={e => setNewProposal({ ...newProposal, value: Number(e.target.value) })}
+                                    className="w-full bg-[#151515] border border-exec-border text-white text-xs p-3 focus:outline-none focus:border-exec-blue font-mono"
+                                    placeholder="Ej. 15000"
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Descripción / Alcance</label>
+                                <textarea
+                                    value={newProposal.description}
+                                    onChange={e => setNewProposal({ ...newProposal, description: e.target.value })}
+                                    className="w-full bg-[#151515] border border-exec-border text-white text-xs p-3 h-24 focus:outline-none focus:border-exec-blue"
+                                    placeholder="Detalles clave del servicio contratado..."
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full py-4 bg-exec-blue hover:bg-blue-500 text-white rounded-none text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer"
+                            >
+                                Registrar en CRM
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

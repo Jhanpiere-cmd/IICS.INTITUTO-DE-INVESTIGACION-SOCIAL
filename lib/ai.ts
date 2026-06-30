@@ -2237,7 +2237,7 @@ export const generateAIContentPlan = async (
     config: AIConfig = DEFAULT_AI_CONFIG
 ): Promise<any> => {
     const prompt = `
-    Eres el estratega principal de marketing digital y redes sociales de la Revista de Ciencias Sociales (Revista ACS) de la Universidad Nacional de Cajamarca (UNC).
+    Eres el estratega principal de marketing digital y redes sociales de la Revista de Ciencias Sociales (Revista ACS) del Instituto de Investigación Científica Social (IICS) independiente.
     Tu objetivo es armar una parrilla estratégica de publicaciones para redes sociales (Facebook e Instagram principalmente) entre el ${params.startDate} y el ${params.endDate}.
     
     ESTRATEGIA GENERAL:

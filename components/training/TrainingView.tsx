@@ -4,7 +4,8 @@ import { supabase } from '../../lib/supabase';
 import {
     GraduationCap, LayoutGrid, Edit, BookOpen,
     ArrowLeft, ChevronLeft, ChevronRight, Play, FileText,
-    FileQuestion, ClipboardList, CheckCircle, Sparkles, Trash2, Calendar, UserPlus, Award
+    FileQuestion, ClipboardList, CheckCircle, Sparkles, Trash2, Calendar, UserPlus, Award,
+    Users, Loader2
 } from 'lucide-react';
 
 import { CertificateGenerator } from './CertificateGenerator';
@@ -587,6 +588,17 @@ export function TrainingView() {
                                 )}
 
                                 <button
+                                    onClick={() => setView('applicants' as any)}
+                                    className={`px-4 py-2.5 rounded-none text-xs font-bold uppercase tracking-widest transition-all border flex items-center gap-2 ${view === 'applicants'
+                                        ? 'bg-white border-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                                        : 'bg-[#111] border-[#262626] text-gray-400 hover:text-white hover:border-gray-400 hover:bg-[#1A1A1A]'
+                                        }`}
+                                >
+                                    <Users className="w-4 h-4" />
+                                    <span>Postulantes Externos</span>
+                                </button>
+
+                                <button
                                     onClick={() => setView('management')}
                                     className={`px-4 py-2.5 rounded-none text-xs font-bold uppercase tracking-widest transition-all border flex items-center gap-2 ${view === 'management'
                                         ? 'bg-white border-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]'
@@ -711,6 +723,17 @@ export function TrainingView() {
                                 </div>
                             )}
                         </div>
+                    )
+                }
+
+                {
+                    view === ('applicants' as any) && (
+                        <ApplicantsView 
+                            courses={courses} 
+                            fetchCourses={() => fetchCourses(true)} 
+                            toast={toast} 
+                            confirmAction={confirmAction} 
+                        />
                     )
                 }
 
@@ -904,6 +927,173 @@ export function TrainingView() {
                     )
                 }
             </div>
+        </div>
+    );
+}
+
+interface ApplicantsViewProps {
+    courses: Course[];
+    fetchCourses: () => void;
+    toast: (type: 'success' | 'error' | 'info' | 'warning', message: string) => void;
+    confirmAction: (options: { title: string; message: string; onConfirm: () => void }) => void;
+}
+
+export function ApplicantsView({ courses, fetchCourses, toast, confirmAction }: ApplicantsViewProps) {
+    const [applicants, setApplicants] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
+    useEffect(() => {
+        loadApplicants();
+    }, []);
+
+    async function loadApplicants() {
+        setLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('training_applicants')
+                .select('*, course:courses(title)')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            setApplicants(data || []);
+        } catch (e) {
+            console.error('Error loading applicants:', e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleUpdateStatus = async (id: string, newStatus: 'Approved' | 'Rejected', courseId: string, email: string) => {
+        try {
+            const { error } = await supabase
+                .from('training_applicants')
+                .update({ status: newStatus })
+                .eq('id', id);
+            if (error) throw error;
+
+            if (newStatus === 'Approved') {
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('email', email)
+                    .maybeSingle();
+
+                if (profileData) {
+                    const { error: enrollErr } = await supabase
+                        .from('enrollments')
+                        .insert({
+                            user_id: profileData.id,
+                            course_id: courseId,
+                            status: 'active'
+                        });
+                    if (!enrollErr) {
+                        toast('success', '¡Postulante aprobado y matriculado automáticamente!');
+                    } else {
+                        toast('success', 'Postulante aprobado. Ya tenía una matrícula o hubo un aviso menor.');
+                    }
+                } else {
+                    toast('success', 'Postulante aprobado. Se le notificará por correo para crear su cuenta y acceder.');
+                }
+            } else {
+                toast('info', 'Postulación rechazada y archivada.');
+            }
+            loadApplicants();
+        } catch (e) {
+            console.error(e);
+            toast('error', 'No se pudo actualizar el estado del postulante.');
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center border-b border-[#262626] pb-4">
+                <div>
+                    <h2 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
+                        <Users className="w-6 h-6 text-exec-blue" />
+                        Registro de Postulantes Externos (AFI)
+                    </h2>
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 mt-1">
+                        Solicitudes públicas de inscripción para cursos del instituto.
+                    </p>
+                </div>
+            </div>
+
+            {loading ? (
+                <div className="flex justify-center py-12">
+                    <Loader2 className="animate-spin text-exec-blue" size={24} />
+                </div>
+            ) : applicants.length > 0 ? (
+                <div className="bg-[#0D0D0D] border border-[#262626] overflow-x-auto">
+                    <table className="w-full text-left text-xs text-gray-400">
+                        <thead className="bg-[#151515] text-[10px] uppercase font-bold tracking-widest text-gray-500 border-b border-[#262626]">
+                            <tr>
+                                <th className="px-6 py-4">Postulante</th>
+                                <th className="px-6 py-4">Contacto</th>
+                                <th className="px-6 py-4">Institución</th>
+                                <th className="px-6 py-4">Curso Solicitado</th>
+                                <th className="px-6 py-4 text-center">Estado</th>
+                                <th className="px-6 py-4 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#262626]">
+                            {applicants.map(a => (
+                                <tr key={a.id} className="hover:bg-[#1A1A1A] transition-colors">
+                                    <td className="px-6 py-4 font-bold text-white uppercase">{a.full_name}</td>
+                                    <td className="px-6 py-4">
+                                        <p>{a.email}</p>
+                                        <p className="text-[10px] text-gray-500">{a.phone || 'Sin teléfono'}</p>
+                                    </td>
+                                    <td className="px-6 py-4 truncate max-w-[150px]">{a.institution || 'Particular'}</td>
+                                    <td className="px-6 py-4 text-exec-blue font-bold uppercase">{a.course?.title || 'Curso eliminado'}</td>
+                                    <td className="px-6 py-4 text-center">
+                                        <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest ${
+                                            a.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                                            a.status === 'Rejected' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                                            'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                        }`}>
+                                            {a.status === 'Approved' ? 'Aprobado' : a.status === 'Rejected' ? 'Rechazado' : 'Pendiente'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        {a.status === 'Pending' && (
+                                            <div className="flex gap-2 justify-end">
+                                                <button
+                                                    onClick={() => confirmAction({
+                                                        title: 'APROBAR POSTULANTE',
+                                                        message: `¿Estás seguro de aprobar a ${a.full_name} para el curso?`,
+                                                        onConfirm: () => handleUpdateStatus(a.id, 'Approved', a.course_id, a.email)
+                                                    })}
+                                                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] font-bold uppercase tracking-widest cursor-pointer"
+                                                >
+                                                    Aprobar
+                                                </button>
+                                                <button
+                                                    onClick={() => confirmAction({
+                                                        title: 'RECHAZAR POSTULANTE',
+                                                        message: `¿Estás seguro de rechazar la solicitud de ${a.full_name}?`,
+                                                        onConfirm: () => handleUpdateStatus(a.id, 'Rejected', a.course_id, a.email)
+                                                    })}
+                                                    className="px-2.5 py-1 bg-red-900/20 hover:bg-red-900/50 text-red-400 text-[9px] font-bold uppercase tracking-widest border border-red-900/30 cursor-pointer"
+                                                >
+                                                    Rechazar
+                                                </button>
+                                            </div>
+                                        )}
+                                        {a.status !== 'Pending' && (
+                                            <span className="text-[10px] text-gray-600 font-bold uppercase">Procesado</span>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <div className="text-center py-16 bg-[#0D0D0D] border border-[#262626]">
+                    <Users className="w-8 h-8 text-gray-500 mx-auto mb-4" />
+                    <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-1">Sin solicitudes</h3>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest">No hay postulantes registrados en la plataforma.</p>
+                </div>
+            )}
         </div>
     );
 }

@@ -364,7 +364,7 @@ export const SettingsView: React.FC = () => {
                     </label>
                   </div>
                   <div>
-                    <p className="text-2xl font-black text-white uppercase tracking-tighter">{profile.fullName || 'Sin Nombre'}</p>
+                    <p className="text-2xl font-black text-white uppercase tracking-tighter notranslate" translate="no">{profile.fullName || 'Sin Nombre'}</p>
                     <p className="text-[10px] font-bold text-exec-blue uppercase tracking-[0.2em] mt-2">{profile.role || 'Rol no definido'}</p>
                     {uploading && (
                       <div className="flex items-center gap-2 mt-4 text-[10px] font-bold text-blue-400 uppercase tracking-widest">
@@ -385,7 +385,8 @@ export const SettingsView: React.FC = () => {
                         type="text"
                         value={profile.fullName}
                         onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
-                        className="w-full pl-12 pr-4 py-4 bg-[#151515] border border-[#262626] rounded-none text-sm text-white focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all outline-none"
+                        className="w-full pl-12 pr-4 py-4 bg-[#151515] border border-[#262626] rounded-none text-sm text-white focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all outline-none notranslate"
+                        translate="no"
                         placeholder="Tu nombre completo"
                       />
                     </div>
@@ -823,7 +824,7 @@ export const SettingsView: React.FC = () => {
                     <input id="avatar-mobile" type="file" className="hidden" onChange={handleAvatarUpload} />
                   </div>
                   <div>
-                    <h3 className="text-xs font-black text-white uppercase">{profile.fullName || 'Sin Nombre'}</h3>
+                    <h3 className="text-xs font-black text-white uppercase notranslate" translate="no">{profile.fullName || 'Sin Nombre'}</h3>
                     <p className="text-[9px] text-exec-blue font-bold uppercase tracking-widest">{profile.role}</p>
                   </div>
                 </div>
@@ -831,7 +832,7 @@ export const SettingsView: React.FC = () => {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Nombre</label>
-                    <input type="text" value={profile.fullName} onChange={e => setProfile({...profile, fullName: e.target.value})} className="w-full bg-[#0D0D0D] border border-[#262626] rounded-none p-3 text-[10px] text-white outline-none" />
+                    <input type="text" value={profile.fullName} onChange={e => setProfile({...profile, fullName: e.target.value})} className="w-full bg-[#0D0D0D] border border-[#262626] rounded-none p-3 text-[10px] text-white outline-none notranslate" translate="no" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">WhatsApp</label>

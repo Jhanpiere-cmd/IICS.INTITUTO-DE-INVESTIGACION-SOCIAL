@@ -17,29 +17,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const isActive = (path: string) => location.pathname === path;
 
     const navItems = [
-        { path: '/', icon: 'home', label: 'Inicio' },
-        { path: '/tasks', icon: 'task_alt', label: 'Tareas' },
-        { path: '/calendar', icon: 'calendar_month', label: 'Calendario' },
-        { path: '/meetings', icon: 'groups', label: 'Reuniones' },
-        { path: '/events', icon: 'campaign', label: 'Eventos' },
-        { path: '/communications', icon: 'mail', label: 'Correo' },
-        { path: '/secretaria', icon: 'folder_managed', label: 'Gestión Documental' },
-        { path: '/news', icon: 'article', label: 'Noticias' },
-        { path: '/media', icon: 'movie_edit', label: 'Gestión Audiovisual' },
-        { path: '/whatsapp', icon: 'chat', label: 'WhatsApp' },
-        { path: '/proposals', icon: 'lightbulb', label: 'Propuestas' },
-        { path: '/chat', icon: 'smart_toy', label: 'Asistente IA' },
-        { path: '/surveys', icon: 'poll', label: 'Encuestas' },
-        { path: '/reports', icon: 'bar_chart', label: 'Reportes' },
-        { path: '/benefits', icon: 'card_giftcard', label: 'Beneficios' },
-        { path: '/training', icon: 'school', label: 'Capacitaciones' },
-        { path: '/certificates', icon: 'license', label: 'Certificados' },
-        { path: '/birthdays', icon: 'cake', label: 'Cumpleaños' },
-        { path: '/users', icon: 'group', label: 'Usuarios' },
-        { path: '/alliances', icon: 'handshake', label: 'Alianzas' },
-        { path: '/finance', icon: 'account_balance_wallet', label: 'Gestión Financiera' },
-        { path: '/whiteboard', icon: 'edit_square', label: 'Pizarra Neural' },
-        { path: '/radar', icon: 'radar', label: 'Radar ACS' },
+        { path: '/admin', icon: 'home', label: 'Inicio' },
+        { path: '/admin/tasks', icon: 'task_alt', label: 'Tareas' },
+        { path: '/admin/calendar', icon: 'calendar_month', label: 'Calendario' },
+        { path: '/admin/meetings', icon: 'groups', label: 'Reuniones' },
+        { path: '/admin/events', icon: 'campaign', label: 'Eventos' },
+        { path: '/admin/communications', icon: 'mail', label: 'Correo' },
+        { path: '/admin/secretaria', icon: 'folder_managed', label: 'Gestión Documental' },
+        { path: '/admin/news', icon: 'article', label: 'Noticias' },
+        { path: '/admin/media', icon: 'movie_edit', label: 'Gestión Audiovisual' },
+        { path: '/admin/whatsapp', icon: 'chat', label: 'WhatsApp' },
+        { path: '/admin/proposals', icon: 'lightbulb', label: 'Propuestas' },
+        { path: '/admin/chat', icon: 'smart_toy', label: 'Asistente IA' },
+        { path: '/admin/surveys', icon: 'poll', label: 'Encuestas' },
+        { path: '/admin/reports', icon: 'bar_chart', label: 'Reportes' },
+        { path: '/admin/benefits', icon: 'card_giftcard', label: 'Beneficios' },
+        { path: '/admin/training', icon: 'school', label: 'Capacitaciones' },
+        { path: '/admin/certificates', icon: 'license', label: 'Certificados' },
+        { path: '/admin/birthdays', icon: 'cake', label: 'Cumpleaños' },
+        { path: '/admin/users', icon: 'group', label: 'Usuarios' },
+        { path: '/admin/alliances', icon: 'handshake', label: 'Alianzas' },
+        { path: '/admin/finance', icon: 'account_balance_wallet', label: 'Gestión Financiera' },
+        { path: '/admin/whiteboard', icon: 'edit_square', label: 'Pizarra Neural' },
+        { path: '/admin/radar', icon: 'radar', label: 'Radar ACS' },
     ];
 
     return (
@@ -74,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         className="md:hidden absolute right-4 p-2 text-gray-400 hover:text-white transition-colors"
                         title="Cerrar menú"
                     >
-                        <span className="material-symbols-outlined text-2xl">close</span>
+                        <span className="material-symbols-outlined notranslate text-2xl" translate="no">close</span>
                     </button>
                 </div>
 
@@ -90,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                 : 'text-gray-400 hover:text-white hover:bg-[#111]'
                                 } ${isCollapsed ? 'md:justify-center justify-start md:px-0 px-3 w-10 mx-auto aspect-square' : 'justify-start px-3 gap-3'}`}
                         >
-                            <span className="material-symbols-outlined text-[20px] shrink-0">{item.icon}</span>
+                            <span className="material-symbols-outlined notranslate text-[20px] shrink-0" translate="no">{item.icon}</span>
                             <span className={`whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'md:hidden block' : 'block'}`}>
                                 {item.label}
                             </span>
@@ -102,23 +102,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             {/* Footer - Fixed at bottom */}
             <div className={`border-t border-exec-border bg-[#000000] flex-shrink-0 transition-all duration-300 ${isCollapsed ? 'md:p-2 p-4 md:flex md:flex-col md:items-center block' : 'p-4'}`}>
                 <Link
-                    to="/settings"
+                    to="/admin/settings"
                     title={isCollapsed ? 'Configuración' : undefined}
                     className={`flex items-center py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-[#111] rounded-none transition-all ${isCollapsed ? 'md:justify-center justify-start md:px-0 px-3 w-10 mx-auto aspect-square' : 'px-3 justify-start gap-3'}`}
                 >
-                    <span className="material-symbols-outlined text-[20px] shrink-0">settings</span>
+                    <span className="material-symbols-outlined notranslate text-[20px] shrink-0" translate="no">settings</span>
                     <span className={`whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'md:hidden block' : 'block'}`}>Configuración</span>
                 </Link>
 
                 <button
                     onClick={async () => {
                         await signOut();
-                        navigate('/login');
+                        navigate('/admin/login');
                     }}
                     title={isCollapsed ? 'Cerrar Sesión' : undefined}
                     className={`mt-1 flex items-center py-2.5 text-sm font-medium text-red-500 hover:text-red-400 hover:bg-[#111] rounded-none transition-all text-left ${isCollapsed ? 'md:justify-center justify-start md:px-0 px-3 w-10 mx-auto aspect-square' : 'px-3 justify-start w-full gap-3'}`}
                 >
-                    <span className="material-symbols-outlined text-[20px] shrink-0">logout</span>
+                    <span className="material-symbols-outlined notranslate text-[20px] shrink-0" translate="no">logout</span>
                     <span className={`whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'md:hidden block' : 'block'}`}>Cerrar Sesión</span>
                 </button>
 
@@ -137,7 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     )}
                     {!isCollapsed && (
                         <div className="overflow-hidden transition-all duration-300">
-                            <p className="text-xs font-medium text-white truncate">
+                            <p className="text-xs font-medium text-white truncate notranslate" translate="no">
                                 {user?.fullName || 'Usuario'}
                             </p>
                             <p className="text-[10px] text-gray-500 truncate">

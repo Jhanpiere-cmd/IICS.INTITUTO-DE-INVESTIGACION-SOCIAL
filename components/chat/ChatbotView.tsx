@@ -406,7 +406,7 @@ export const ChatbotView: React.FC = () => {
         supabase.from('eventos_en_vivo').select('*'),
         supabase.from('email_logs').select('*').order('sent_at', { ascending: false }).limit(10),
         supabase.from('email_inbox').select('*').order('received_at', { ascending: false }).limit(10),
-        supabase.from('birthday_collaborations').select('*, profile:profiles(full_name, avatar_url)'),
+        supabase.from('birthday_collaborations').select('*, profile:profiles(full_name:"fullName", avatar_url:"avatarUrl")'),
         supabase.from('resources').select('*'),
         supabase.from('documents').select('*'),
         youtubeService.getChannelStats().catch(() => null),

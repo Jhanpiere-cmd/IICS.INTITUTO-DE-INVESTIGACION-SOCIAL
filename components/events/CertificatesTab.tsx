@@ -448,10 +448,10 @@ export function CertificatesTab({
             pdf.setFont('helvetica', 'bold');
             pdf.setTextColor(10, 37, 64); // #0A2540
             pdf.setFontSize(16.5);
-            pdf.text('UNIVERSIDAD NACIONAL DE CAJAMARCA', pageWidth / 2, sy(48), { align: 'center' });
+            pdf.text('INSTITUTO DE INVESTIGACION CIENTIFICA SOCIAL', pageWidth / 2, sy(48), { align: 'center' });
             pdf.setTextColor(197, 160, 89); // #C5A059
             pdf.setFontSize(11);
-            pdf.text('FACULTAD DE CIENCIAS SOCIALES', pageWidth / 2, sy(60), { align: 'center' });
+            pdf.text('IICS - OBSERVATORIO REGIONAL Y LABORATORIO DE DATOS', pageWidth / 2, sy(60), { align: 'center' });
             
             // Header diamond divider
             drawGoldDiamond(400, 78, 3.5);
@@ -961,10 +961,10 @@ export function CertificatesTab({
             pdf.setFont('helvetica', 'bold');
             pdf.setTextColor(21, 58, 191); // #153ABF
             pdf.setFontSize(16.5);
-            pdf.text('UNIVERSIDAD NACIONAL DE CAJAMARCA', pageWidth / 2, 20, { align: 'center' });
+            pdf.text('INSTITUTO DE INVESTIGACION CIENTIFICA SOCIAL', pageWidth / 2, 20, { align: 'center' });
             pdf.setTextColor(244, 152, 44); // #F4982C
             pdf.setFontSize(12);
-            pdf.text('FACULTAD DE CIENCIAS SOCIALES', pageWidth / 2, 25.5, { align: 'center' });
+            pdf.text('IICS - OBSERVATORIO REGIONAL Y LABORATORIO DE DATOS', pageWidth / 2, 25.5, { align: 'center' });
 
             // CERTIFICADO
             pdf.setFont('times', 'bold');

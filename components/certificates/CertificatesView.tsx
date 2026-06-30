@@ -688,7 +688,7 @@ function RecognitionModal({ onClose, onSave }: { onClose: () => void; onSave: ()
                             <Award className="w-5 h-5 text-exec-blue" />
                             Gestión de Reconocimientos Institucionales
                         </h3>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Universidad Nacional de Cajamarca - Facultad de CC.SS</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Instituto de Investigación Científica Social - IICS</p>
                     </div>
                     <button onClick={onClose} className="p-1 hover:bg-[#1A1A1A] rounded-full">
                         <X className="w-5 h-5 text-gray-500 hover:text-white" />

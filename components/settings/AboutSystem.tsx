@@ -188,7 +188,7 @@ export const AboutSystem: React.FC = () => {
                 Sistema de Desarrollo e Investigación
               </p>
               <p className="text-[10px] font-medium text-gray-500 uppercase tracking-[0.2em] leading-relaxed">
-                Instituto de Investigación Científica Social / Universidad Nacional de Cajamarca <br />
+                Instituto de Investigación Científica Social / IICS Independiente <br />
                 Protocolo de Comunicación y Desarrollo Científico
               </p>
             </div>

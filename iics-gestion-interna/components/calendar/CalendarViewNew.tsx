@@ -133,7 +133,7 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
       // Cargar TODAS las reuniones
       const { data: meetingsData, error: meetingsError } = await supabase
         .from('meetings')
-        .select('id, title, description, scheduled_at, duration_minutes, location, location_link, created_by')
+        .select('id, title, description, scheduled_at, duration_minutes:duration, location, location_link:meeting_link, created_by')
         .order('scheduled_at', { ascending: true });
 
       if (meetingsError) throw meetingsError;
@@ -486,7 +486,7 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
                       }}
                       className="px-3 py-2 bg-white hover:bg-gray-100 text-black border border-exec-border rounded-none text-[10px] font-bold uppercase tracking-widest transition-all shadow-lg flex items-center justify-center gap-2 group whitespace-nowrap"
                     >
-                      <span className="material-symbols-outlined text-exec-blue text-[18px]">smart_toy</span>
+                      <span className="material-symbols-outlined notranslate text-exec-blue text-[18px]" translate="no">smart_toy</span>
                       <span>IA</span>
                     </button>
                     <button
@@ -567,7 +567,7 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
         <section className="flex justify-between items-center bg-[#0A0A0A] border border-[#262626] rounded-none p-4 shadow-subtle mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-none bg-exec-blue/10 border border-exec-blue/20 flex items-center justify-center">
-              <span className="material-symbols-outlined text-exec-blue text-xl">calendar_today</span>
+              <span className="material-symbols-outlined notranslate text-exec-blue text-xl" translate="no">calendar_today</span>
             </div>
             <div>
               <h1 className="text-sm font-semibold text-white uppercase tracking-tight">CALENDARIO <span className="text-exec-blue">ACS</span></h1>
@@ -582,7 +582,7 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
               className="w-10 h-10 flex items-center justify-center bg-white border border-exec-border rounded-none text-black shadow-lg active:scale-95 transition-all"
               title="Asistente IA"
             >
-              <span className="material-symbols-outlined text-exec-blue text-xl">smart_toy</span>
+              <span className="material-symbols-outlined notranslate text-exec-blue text-xl" translate="no">smart_toy</span>
             </button>
             <button 
               onClick={() => {

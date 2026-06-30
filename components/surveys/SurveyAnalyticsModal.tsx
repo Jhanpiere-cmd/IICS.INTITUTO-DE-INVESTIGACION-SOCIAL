@@ -167,6 +167,58 @@ export function SurveyAnalyticsModal({ isOpen, onClose, surveyId }: SurveyAnalyt
         return results;
     }
 
+    const getSentimentAnalysis = () => {
+        let positive = 0;
+        let negative = 0;
+        let neutral = 0;
+        
+        const posWords = ['excelente', 'bueno', 'bien', 'satisfecho', 'gracias', 'feliz', 'contento', 'me gusta', 'buena', 'great', 'good', 'excelencia', 'lo mejor', 'espectacular', 'genial', 'correcto', 'aprobado'];
+        const negWords = ['mal', 'malo', 'pésimo', 'error', 'falla', 'deficiente', 'lento', 'retraso', 'problema', 'queja', 'mucha', 'poca', 'incómodo', 'descontento', 'decepcionado', 'incorrecto'];
+        
+        responses.forEach(r => {
+            let textCombined = '';
+            if (r.answers) {
+                Object.values(r.answers).forEach((val: any) => {
+                    if (typeof val === 'string') {
+                        textCombined += ' ' + val.toLowerCase();
+                    } else if (Array.isArray(val)) {
+                        textCombined += ' ' + val.join(' ').toLowerCase();
+                    }
+                });
+            }
+            
+            let posCount = 0;
+            let negCount = 0;
+            posWords.forEach(w => {
+                if (textCombined.includes(w)) posCount++;
+            });
+            negWords.forEach(w => {
+                if (textCombined.includes(w)) negCount++;
+            });
+            
+            if (posCount > negCount) {
+                positive++;
+            } else if (negCount > posCount) {
+                negative++;
+            } else {
+                neutral++;
+            }
+        });
+        
+        const total = positive + negative + neutral;
+        if (total === 0) return { positive: 0, negative: 0, neutral: 0, positivePct: 0, negativePct: 0, neutralPct: 100 };
+        return {
+            positive,
+            negative,
+            neutral,
+            positivePct: Math.round((positive / total) * 100),
+            negativePct: Math.round((negative / total) * 100),
+            neutralPct: Math.round((neutral / total) * 100),
+        };
+    };
+
+    const sentiment = getSentimentAnalysis();
+
     const exportToPDF = async () => {
         setIsExporting(true);
         try {
@@ -417,7 +469,7 @@ export function SurveyAnalyticsModal({ isOpen, onClose, surveyId }: SurveyAnalyt
                             {activeTab === 'general' ? (
                                 <>
                                     {/* KPI Board */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
                                 <div className="bg-[#0D0D0D] border border-exec-border p-5 flex flex-col items-center justify-center text-center group hover:border-exec-blue transition-colors">
                                     <Users className="text-exec-blue mb-2" size={24} />
                                     <span className="text-[32px] font-black text-white leading-none font-mono">{responses.length}</span>
@@ -429,6 +481,21 @@ export function SurveyAnalyticsModal({ isOpen, onClose, surveyId }: SurveyAnalyt
                                         {responses.length > 0 ? new Date(responses[0].submitted_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '--'}
                                     </span>
                                     <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mt-2 group-hover:text-emerald-500 transition-colors">Última Actividad</span>
+                                </div>
+                                <div className="bg-[#0D0D0D] border border-exec-border p-5 flex flex-col items-start justify-center text-left group hover:border-amber-500 transition-colors">
+                                    <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                                        <Sparkles className="w-3 h-3 text-amber-500" /> Sentimiento (LSD)
+                                    </span>
+                                    <div className="w-full flex items-center justify-between text-[11px] font-bold text-white mb-1.5 font-mono">
+                                        <span className="text-emerald-400">{sentiment.positivePct}% Pos</span>
+                                        <span className="text-gray-400">{sentiment.neutralPct}% Neu</span>
+                                        <span className="text-red-400">{sentiment.negativePct}% Neg</span>
+                                    </div>
+                                    <div className="w-full h-2 bg-gray-800 flex overflow-hidden">
+                                        <div className="bg-emerald-500 h-full" style={{ width: `${sentiment.positivePct}%` }}></div>
+                                        <div className="bg-gray-500 h-full" style={{ width: `${sentiment.neutralPct}%` }}></div>
+                                        <div className="bg-red-500 h-full" style={{ width: `${sentiment.negativePct}%` }}></div>
+                                    </div>
                                 </div>
                                 <div className="bg-[#0D0D0D] border border-exec-border p-5 flex flex-col items-center justify-center text-center">
                                     <button 

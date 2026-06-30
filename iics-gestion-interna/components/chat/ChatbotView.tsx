@@ -406,7 +406,7 @@ export const ChatbotView: React.FC = () => {
         supabase.from('eventos_en_vivo').select('*'),
         supabase.from('email_logs').select('*').order('sent_at', { ascending: false }).limit(10),
         supabase.from('email_inbox').select('*').order('received_at', { ascending: false }).limit(10),
-        supabase.from('birthday_collaborations').select('*, profile:profiles(full_name, avatar_url)'),
+        supabase.from('birthday_collaborations').select('*, profile:profiles(full_name:"fullName", avatar_url:"avatarUrl")'),
         supabase.from('resources').select('*'),
         supabase.from('documents').select('*'),
         youtubeService.getChannelStats().catch(() => null),
@@ -1630,7 +1630,7 @@ ${team.map((m: any) => {
                 user_id: targetUserId,
                 type: 'reconocimiento',
                 certificate_code: `REC-AI-${Date.now().toString().slice(-6)}`,
-                pdf_url: 'https://ififktotbpnseqwqjkyh.supabase.co/storage/v1/object/public/certificates/templates/pending_review.pdf', 
+                pdf_url: `${supabaseUrl}/storage/v1/object/public/certificates/templates/pending_review.pdf`, 
                 metadata: { 
                     title, 
                     description,
@@ -2571,7 +2571,7 @@ ${team.map((m: any) => {
                             {/* Acciones del Logro */}
                             <div className="mt-8 flex justify-center">
                                <button 
-                                 onClick={() => navigate('/certificates')}
+                                 onClick={() => navigate('/admin/certificates')}
                                  className="px-6 py-2 bg-transparent border border-[#0088ff]/50 text-[#0088ff] text-[9px] font-black tracking-[0.2em] uppercase hover:bg-[#0088ff] hover:text-black transition-all flex items-center gap-2 group/btn"
                                >
                                   <ClipboardList size={12} className="group-hover/btn:scale-110" />

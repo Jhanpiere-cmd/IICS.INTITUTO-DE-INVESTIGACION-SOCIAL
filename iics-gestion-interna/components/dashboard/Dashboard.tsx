@@ -15,6 +15,14 @@ import { AvatarGroup } from '../ui/AvatarGroup';
 import { CreateTask } from '../tasks/CreateTask';
 
 
+const parseBirthDate = (dateStr: string | null | undefined): Date => {
+  if (!dateStr) return new Date();
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return new Date(dateStr);
+  return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+};
+
+
 const safeFormatDate = (dateStr: string | null | undefined, formatStr: string = 'd/M/yyyy') => {
   if (!dateStr) return 'Sin fecha';
   try {
@@ -383,7 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             const today = new Date();
             const birthdays = profiles
               .map((p: any) => {
-                const bDate = new Date(p.birth_date);
+                const bDate = parseBirthDate(p.birth_date);
                 if (isNaN(bDate.getTime())) return null;
                 
                 let targetDate = new Date(today.getFullYear(), bDate.getMonth(), bDate.getDate());
@@ -520,7 +528,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               <div className="flex flex-col sm:flex-row sm:items-baseline gap-x-3 gap-y-1">
                 <h1 className="text-lg sm:text-2xl font-semibold text-white tracking-tight leading-tight truncate">
                   <span className="text-gray-400 font-normal">Bienvenido, </span>
-                  <span className="text-white"> {user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span>
+                  <span className="text-white notranslate" translate="no"> {user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span>
                 </h1>
                 <a
                   href="https://revistas.unc.edu.pe/index.php/sociales/index"
@@ -528,12 +536,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-white/5 hover:bg-white/10 text-exec-blue border border-exec-blue/30 rounded-sm text-[9px] font-bold transition-all group/rev whitespace-nowrap"
                 >
-                  <span className="material-symbols-outlined text-[13px]">auto_stories</span>
+                  <span className="material-symbols-outlined notranslate text-[13px]" translate="no">auto_stories</span>
                   REVISTA OFICIAL
-                  <span className="material-symbols-outlined text-[11px] group-hover/rev:translate-x-0.5 transition-transform">open_in_new</span>
+                  <span className="material-symbols-outlined notranslate text-[11px] group-hover/rev:translate-x-0.5 transition-transform" translate="no">open_in_new</span>
                 </a>
               </div>
-              <p className="text-[10px] sm:text-xs font-medium text-gray-500 truncate mt-0.5">
+              <p className="text-[10px] sm:text-xs font-medium text-gray-500 truncate mt-0.5 notranslate" translate="no">
                 {user?.fullName}
               </p>
             </div>
@@ -545,7 +553,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
           <div className="flex items-center gap-2 sm:gap-4">
             <button
-              onClick={() => navigate('/reports')}
+              onClick={() => navigate('/admin/reports')}
               className="px-4 py-2.5 bg-white hover:bg-gray-100 text-black rounded-sm text-sm font-semibold transition-all shadow-lg flex items-center gap-2"
             >
               <Icons.FileText className="w-4 h-4 text-exec-blue" />
@@ -581,7 +589,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 iconColor="text-exec-blue"
                 change="+12 hoy"
                 changeType="positive"
-                onClick={() => navigate('/tasks', { state: { tab: 'my-tasks', status: 'Pendiente' } })}
+                onClick={() => navigate('/admin/tasks', { state: { tab: 'my-tasks', status: 'Pendiente' } })}
               />
               <MetricCard
                 title="Completadas"
@@ -589,7 +597,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 icon="check_circle"
                 iconColor="text-green-500"
                 change="Mensual"
-                onClick={() => navigate('/tasks', { state: { tab: 'completed' } })}
+                onClick={() => navigate('/admin/tasks', { state: { tab: 'completed' } })}
               />
               <MetricCard
                 title="Reuniones"
@@ -597,7 +605,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 icon="groups"
                 iconColor="text-purple-500"
                 change="Próximas"
-                onClick={() => navigate('/meetings')}
+                onClick={() => navigate('/admin/meetings')}
               />
               <MetricCard
                 title="Recursos"
@@ -605,7 +613,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 icon="folder_open"
                 iconColor="text-pink-500"
                 change="Nuevos"
-                onClick={() => navigate('/resources')}
+                onClick={() => navigate('/admin/resources')}
               />
             </div>
 
@@ -618,7 +626,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 icon="trending_up"
                 iconColor="text-exec-green"
                 variant="horizontal"
-                onClick={() => navigate('/finance')}
+                onClick={() => navigate('/admin/finance')}
               />
               <MetricCard
                 title="Saldo"
@@ -626,7 +634,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 icon="account_balance_wallet"
                 iconColor="text-exec-blue"
                 variant="horizontal"
-                onClick={() => navigate('/finance')}
+                onClick={() => navigate('/admin/finance')}
               />
 
               {/* Row 2/3/4 - Asymmetric Pair */}
@@ -638,7 +646,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   iconColor="text-exec-blue"
                   variant="vertical-tall"
                   change="11 hoy"
-                  onClick={() => navigate('/tasks', { state: { tab: 'my-tasks', status: 'Pendiente' } })}
+                  onClick={() => navigate('/admin/tasks', { state: { tab: 'my-tasks', status: 'Pendiente' } })}
                 />
               </div>
 
@@ -650,7 +658,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   icon="trending_down"
                   iconColor="text-exec-red"
                   variant="horizontal"
-                  onClick={() => navigate('/finance')}
+                  onClick={() => navigate('/admin/finance')}
                 />
                 <MetricCard
                   title="Completadas"
@@ -658,7 +666,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   icon="check_circle"
                   iconColor="text-green-500"
                   variant="horizontal"
-                  onClick={() => navigate('/tasks', { state: { tab: 'completed' } })}
+                  onClick={() => navigate('/admin/tasks', { state: { tab: 'completed' } })}
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <MetricCard
@@ -667,7 +675,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                     icon="groups"
                     iconColor="text-purple-500"
                     variant="mini"
-                    onClick={() => navigate('/meetings')}
+                    onClick={() => navigate('/admin/meetings')}
                   />
                   <MetricCard
                     title="Recurso"
@@ -675,7 +683,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                     icon="folder_open"
                     iconColor="text-pink-500"
                     variant="mini"
-                    onClick={() => navigate('/resources')}
+                    onClick={() => navigate('/admin/resources')}
                   />
                 </div>
               </div>
@@ -685,7 +693,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           {/* Meta Social Metrics - NEW */}
           <div className="space-y-4 mt-6">
             <h3 className="text-lg font-semibold text-white tracking-tight flex items-center gap-3">
-              <span className="material-symbols-outlined text-exec-blue text-xl">analytics</span>
+              <span className="material-symbols-outlined notranslate text-exec-blue text-xl" translate="no">analytics</span>
               Redes Sociales
             </h3>
             <MetaStats mode="premium" />
@@ -709,7 +717,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                     <div className="flex items-end gap-2">
                       <span className="text-3xl sm:text-4xl font-light text-white">{completionRate}%</span>
                       <span className="text-[10px] sm:text-sm text-green-500 mb-1 sm:mb-1.5 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[12px] sm:text-[14px]">arrow_upward</span> +5%
+                        <span className="material-symbols-outlined notranslate text-[12px] sm:text-[14px]" translate="no">arrow_upward</span> +5%
                       </span>
                     </div>
                     <div className="w-full bg-[#262626] h-2 rounded-sm mt-4 overflow-hidden">
@@ -786,7 +794,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-semibold text-white">Distribución por Cargo</h3>
                 <button className="text-gray-500 hover:text-white">
-                  <span className="material-symbols-outlined text-lg">more_horiz</span>
+                  <span className="material-symbols-outlined notranslate text-lg" translate="no">more_horiz</span>
                 </button>
               </div>
               <div className="flex-1 flex items-center justify-center">
@@ -909,9 +917,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           <div className="exec-card p-6 min-h-[420px] flex flex-col bg-[#0A0A0A]">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-sm font-semibold text-white">Tareas Recientes</h3>
-              <button onClick={() => navigate('/tasks')} className="text-exec-blue text-sm font-medium hover:underline flex items-center gap-1">
+              <button onClick={() => navigate('/admin/tasks')} className="text-exec-blue text-sm font-medium hover:underline flex items-center gap-1">
                 Ver todas
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                <span className="material-symbols-outlined notranslate text-sm" translate="no">arrow_forward</span>
               </button>
             </div>
             <div className="flex-1 overflow-y-auto space-y-3">
@@ -929,7 +937,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                     className="group flex items-center space-x-4 p-3 rounded-sm hover:bg-[#171717] transition-all cursor-pointer border border-transparent hover:border-exec-border"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate('/tasks', { state: { tab: task.assigned_to === user?.id ? 'my-tasks' : 'other-tasks' } });
+                      navigate('/admin/tasks', { state: { tab: task.assigned_to === user?.id ? 'my-tasks' : 'other-tasks' } });
                     }}
                   >
                     <AvatarGroup 
@@ -947,7 +955,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                           <span className="font-medium text-gray-400 max-w-full sm:max-w-none">{task.assigned_to_user.fullName}</span>
                         )}
                         {task.collaborators && task.collaborators.length > 0 && (
-                          <span className="material-symbols-outlined text-[12px] text-exec-blue" title="Tarea Grupal">group</span>
+                          <span className="material-symbols-outlined notranslate text-[12px] text-exec-blue" translate="no" title="Tarea Grupal">group</span>
                         )}
                         <span className="hidden sm:inline">•</span>
                         {task.due_date && new Date(task.due_date) < new Date() ? (
@@ -972,7 +980,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Header */}
             <div className="p-6 border-b border-exec-border bg-[#111111]">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                <span className="material-symbols-outlined text-gray-400">campaign</span>
+                <span className="material-symbols-outlined notranslate text-gray-400" translate="no">campaign</span>
                 Actividad del Sistema
               </h3>
             </div>
@@ -984,10 +992,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 <div className="p-5 border-b border-exec-border">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-xs font-semibold uppercase text-gray-400 tracking-wider">Próximas Reuniones</p>
-                    <button onClick={() => navigate('/meetings')} className="text-exec-blue text-xs font-medium hover:underline">Ver todas</button>
+                    <button onClick={() => navigate('/admin/meetings')} className="text-exec-blue text-xs font-medium hover:underline">Ver todas</button>
                   </div>
                   {upcomingMeetings.slice(0, 3).map(m => (
-                    <div key={m.id} className="flex gap-3 mb-3 last:mb-0 cursor-pointer hover:bg-[#171717] p-2 rounded-sm transition-colors" onClick={() => navigate('/meetings')}>
+                    <div key={m.id} className="flex gap-3 mb-3 last:mb-0 cursor-pointer hover:bg-[#171717] p-2 rounded-sm transition-colors" onClick={() => navigate('/admin/meetings')}>
                       <div className="flex-shrink-0 w-10 sm:w-12 text-center bg-exec-blue/10 border border-exec-blue/20 rounded-sm p-1">
                         <p className="text-[9px] sm:text-[10px] font-semibold text-exec-blue uppercase">{new Date(m.scheduled_at).toLocaleString('es-ES', { month: 'short' })}</p>
                         <p className="text-base sm:text-lg font-light text-white">{new Date(m.scheduled_at).getDate()}</p>
@@ -1009,10 +1017,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 <div className="p-5 border-b border-exec-border">
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-xs font-semibold uppercase text-gray-400 tracking-wider">Noticias Recientes</p>
-                    <button onClick={() => navigate('/news')} className="text-exec-blue text-xs font-medium hover:underline">Ver todas</button>
+                    <button onClick={() => navigate('/admin/news')} className="text-exec-blue text-xs font-medium hover:underline">Ver todas</button>
                   </div>
                   {news.slice(0, 3).map(item => (
-                    <div key={item.id} className="mb-4 last:mb-0 cursor-pointer hover:bg-[#171717] p-2 rounded-sm transition-colors" onClick={() => navigate('/news')}>
+                    <div key={item.id} className="mb-4 last:mb-0 cursor-pointer hover:bg-[#171717] p-2 rounded-sm transition-colors" onClick={() => navigate('/admin/news')}>
                       <div className="flex justify-between items-start gap-2 mb-1">
                         <p className="font-medium text-sm text-white line-clamp-2 flex-1 min-w-0">{item.title}</p>
                         <span className="text-[10px] text-gray-500 whitespace-nowrap flex-shrink-0">{item.published_at ? new Date(item.published_at).toLocaleDateString() : 'Hoy'}</span>
@@ -1042,11 +1050,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                     <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 flex items-center gap-2">
                        <Cake className="w-3 h-3" /> Próximos Cumpleaños
                     </p>
-                    <button onClick={() => navigate('/birthdays')} className="text-exec-blue text-xs font-medium hover:underline">Ver todos</button>
+                    <button onClick={() => navigate('/admin/birthdays')} className="text-exec-blue text-xs font-medium hover:underline">Ver todos</button>
                   </div>
                   <div className="space-y-3 sm:space-y-4">
                     {upcomingBirthdays.map(bd => (
-                      <div key={bd.id} className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/birthdays')}>
+                      <div key={bd.id} className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/admin/birthdays')}>
                         <div className="relative">
                           <img 
                             src={bd.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(bd.fullName)}&background=random`} 
@@ -1095,7 +1103,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           <section data-purpose="user-greeting">
             <div className="flex items-center gap-2">
               <Icons.Home className="h-5 w-5 text-exec-blue" />
-              <h1 className="text-xl font-bold">Bienvenido, <span className="text-exec-blue">{user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span></h1>
+              <h1 className="text-xl font-bold">Bienvenido, <span className="text-exec-blue notranslate" translate="no">{user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span></h1>
             </div>
             <p className="text-[10px] text-gray-500">Resumen de actividad y métricas clave.</p>
           </section>
@@ -1136,14 +1144,14 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           {/* BEGIN: Quick Actions */}
           <section className="flex gap-2">
             <button 
-              onClick={() => navigate('/reports')}
+              onClick={() => navigate('/admin/reports')}
               className="flex-1 bg-white text-black rounded-sm py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-black shadow-lg active:scale-95 transition-all hover:bg-gray-100"
             >
               <Icons.FileText className="h-3.5 w-3.5 text-exec-blue" />
               Exportar Reporte
             </button>
             <button 
-              onClick={() => navigate('/tasks')}
+              onClick={() => navigate('/admin/tasks')}
               className="flex-1 bg-exec-blue text-white rounded-sm py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-black shadow-lg shadow-blue-500/10 active:scale-95 transition-all hover:bg-blue-600"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -1156,7 +1164,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Pendientes */}
             <div 
               className="bg-[#0A0A0A] border border-exec-border rounded-sm p-3 relative shadow-sm overflow-hidden group active:bg-[#111] transition-all"
-              onClick={() => navigate('/tasks')}
+              onClick={() => navigate('/admin/tasks')}
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-[10px] font-black text-gray-500 tracking-widest uppercase">PENDIENTES</span>
@@ -1165,7 +1173,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               <div className="flex items-baseline gap-2">
                 {pendingTasksDisplay}
                 <div className="text-[9px] text-exec-green font-bold flex items-center">
-                  <span className="material-symbols-outlined text-[12px]">arrow_drop_up</span>
+                  <span className="material-symbols-outlined notranslate text-[12px]" translate="no">arrow_drop_up</span>
                   +12
                 </div>
               </div>
@@ -1174,7 +1182,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Completadas */}
             <div 
               className="bg-[#0A0A0A] border border-exec-border rounded-sm p-3 relative shadow-sm active:bg-[#111] transition-all"
-              onClick={() => navigate('/tasks', { state: { tab: 'completed' } })}
+              onClick={() => navigate('/admin/tasks', { state: { tab: 'completed' } })}
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-[10px] font-black text-gray-500 tracking-widest uppercase">COMPLETADAS</span>
@@ -1189,7 +1197,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Reuniones */}
             <div 
               className="bg-[#0A0A0A] border border-exec-border rounded-sm p-3 relative shadow-sm active:bg-[#111] transition-all"
-              onClick={() => navigate('/meetings')}
+              onClick={() => navigate('/admin/meetings')}
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-[10px] font-black text-gray-500 tracking-widest uppercase">REUNIONES</span>
@@ -1204,7 +1212,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Recursos */}
             <div 
               className="bg-[#0A0A0A] border border-exec-border rounded-sm p-3 relative shadow-sm active:bg-[#111] transition-all"
-              onClick={() => navigate('/resources')}
+              onClick={() => navigate('/admin/resources')}
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-[10px] font-black text-gray-500 tracking-widest uppercase">RECURSOS</span>
@@ -1229,11 +1237,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           <section className="bg-[#0A0A0A] border border-exec-border rounded-sm p-3 space-y-4 shadow-sm" data-purpose="news-list">
             <div className="flex justify-between items-center pb-2 border-b border-exec-border">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-exec-blue text-lg">campaign</span>
+                <span className="material-symbols-outlined notranslate text-exec-blue text-lg" translate="no">campaign</span>
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Actividad</h2>
               </div>
               <button 
-                onClick={() => navigate('/news')}
+                onClick={() => navigate('/admin/news')}
                 className="text-exec-blue text-[9px] font-black uppercase tracking-widest hover:bg-exec-blue/10 px-2 py-1 rounded-sm border border-exec-blue/20"
               >
                 Ver todas
@@ -1244,7 +1252,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 <div 
                   key={item.id} 
                   className={`space-y-1.5 ${idx !== 2 ? 'border-b border-exec-border' : ''} pb-3 last:pb-0 active:bg-[#111] rounded-sm p-1 transition-all`}
-                  onClick={() => navigate('/news')}
+                  onClick={() => navigate('/admin/news')}
                 >
                   <div className="flex justify-between items-start gap-3">
                     <h3 className="text-[11px] font-bold text-gray-200 flex-1 leading-snug uppercase tracking-tight">{item.title}</h3>
@@ -1268,7 +1276,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Tareas Recientes</h2>
               </div>
               <button 
-                onClick={() => navigate('/tasks')}
+                onClick={() => navigate('/admin/tasks')}
                 className="text-exec-blue text-[9px] font-black uppercase tracking-widest hover:bg-exec-blue/10 px-2 py-1 rounded-sm border border-exec-blue/20"
               >
                 Ver todas
@@ -1287,7 +1295,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   <div 
                     key={task.id} 
                     className="flex items-center gap-3 p-2 bg-[#0A0A0A] border border-exec-border/30 rounded-none active:bg-[#111] transition-all hover:border-exec-blue/20 group"
-                    onClick={() => navigate('/tasks')}
+                    onClick={() => navigate('/admin/tasks')}
                   >
                     <div className="relative flex-shrink-0">
                       <AvatarGroup 
@@ -1303,7 +1311,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <p className="text-[10px] font-bold text-gray-200 truncate group-hover:text-exec-blue transition-colors">{task.title}</p>
                         {task.collaborators && task.collaborators.length > 0 && (
-                          <span className="material-symbols-outlined text-[12px] text-exec-blue" title="Tarea Grupal">group</span>
+                          <span className="material-symbols-outlined notranslate text-[12px] text-exec-blue" translate="no" title="Tarea Grupal">group</span>
                         )}
                       </div>
                       <p className="text-[8px] text-gray-500 font-black uppercase tracking-tighter">
@@ -1336,7 +1344,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   <h2 className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Próximos Cumpleaños</h2>
                 </div>
                 <button 
-                  onClick={() => navigate('/birthdays')}
+                  onClick={() => navigate('/admin/birthdays')}
                   className="text-exec-blue text-[9px] font-black uppercase tracking-widest hover:bg-exec-blue/10 px-2 py-1 rounded-sm border border-exec-blue/20"
                 >
                   Ver todos

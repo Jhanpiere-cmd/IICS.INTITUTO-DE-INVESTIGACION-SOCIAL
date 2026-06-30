@@ -133,7 +133,7 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
       // Cargar TODAS las reuniones
       const { data: meetingsData, error: meetingsError } = await supabase
         .from('meetings')
-        .select('id, title, description, scheduled_at, duration_minutes, location, location_link, created_by')
+        .select('id, title, description, scheduled_at, duration_minutes:duration, location, location_link:meeting_link, created_by')
         .order('scheduled_at', { ascending: true });
 
       if (meetingsError) throw meetingsError;

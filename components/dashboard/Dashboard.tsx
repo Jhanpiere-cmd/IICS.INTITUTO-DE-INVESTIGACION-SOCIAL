@@ -15,6 +15,14 @@ import { AvatarGroup } from '../ui/AvatarGroup';
 import { CreateTask } from '../tasks/CreateTask';
 
 
+const parseBirthDate = (dateStr: string | null | undefined): Date => {
+  if (!dateStr) return new Date();
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return new Date(dateStr);
+  return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+};
+
+
 const safeFormatDate = (dateStr: string | null | undefined, formatStr: string = 'd/M/yyyy') => {
   if (!dateStr) return 'Sin fecha';
   try {
@@ -383,7 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             const today = new Date();
             const birthdays = profiles
               .map((p: any) => {
-                const bDate = new Date(p.birth_date);
+                const bDate = parseBirthDate(p.birth_date);
                 if (isNaN(bDate.getTime())) return null;
                 
                 let targetDate = new Date(today.getFullYear(), bDate.getMonth(), bDate.getDate());
@@ -520,7 +528,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               <div className="flex flex-col sm:flex-row sm:items-baseline gap-x-3 gap-y-1">
                 <h1 className="text-lg sm:text-2xl font-semibold text-white tracking-tight leading-tight truncate">
                   <span className="text-gray-400 font-normal">Bienvenido, </span>
-                  <span className="text-white"> {user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span>
+                  <span className="text-white notranslate" translate="no"> {user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span>
                 </h1>
                 <a
                   href="https://revistas.unc.edu.pe/index.php/sociales/index"
@@ -533,7 +541,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   <span className="material-symbols-outlined notranslate text-[11px] group-hover/rev:translate-x-0.5 transition-transform" translate="no">open_in_new</span>
                 </a>
               </div>
-              <p className="text-[10px] sm:text-xs font-medium text-gray-500 truncate mt-0.5">
+              <p className="text-[10px] sm:text-xs font-medium text-gray-500 truncate mt-0.5 notranslate" translate="no">
                 {user?.fullName}
               </p>
             </div>
@@ -1095,7 +1103,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           <section data-purpose="user-greeting">
             <div className="flex items-center gap-2">
               <Icons.Home className="h-5 w-5 text-exec-blue" />
-              <h1 className="text-xl font-bold">Bienvenido, <span className="text-exec-blue">{user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span></h1>
+              <h1 className="text-xl font-bold">Bienvenido, <span className="text-exec-blue notranslate" translate="no">{user?.fullName?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario'}</span></h1>
             </div>
             <p className="text-[10px] text-gray-500">Resumen de actividad y métricas clave.</p>
           </section>

@@ -211,10 +211,10 @@ export function CertificatePreviewCard({
                         {/* Encabezado oficial */}
                         <div style={{ position: 'absolute', top: 32, left: 110, right: 110, textAlign: 'center' }}>
                             <p style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '800', fontSize: 16, color: '#0A2540', letterSpacing: '0.8px', margin: 0 }}>
-                                UNIVERSIDAD NACIONAL DE CAJAMARCA
+                                INSTITUTO DE INVESTIGACION CIENTIFICA SOCIAL
                             </p>
                             <p style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: '600', fontSize: 11, color: '#C5A059', letterSpacing: '1px', margin: '2px 0 0' }}>
-                                FACULTAD DE CIENCIAS SOCIALES
+                                IICS - OBSERVATORIO REGIONAL Y LABORATORIO DE DATOS
                             </p>
                         </div>
 
@@ -473,10 +473,10 @@ export function CertificatePreviewCard({
                         {/* Cabecera institucional */}
                         <div style={{ position: 'absolute', top: 36, left: 110, right: 110, textAlign: 'center' }}>
                             <p style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'bold', fontSize: 15, color: '#153ABF', letterSpacing: 0.5, margin: 0 }}>
-                                UNIVERSIDAD NACIONAL DE CAJAMARCA
+                                INSTITUTO DE INVESTIGACION CIENTIFICA SOCIAL
                             </p>
                             <p style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'semibold', fontSize: 11, color: '#F4982C', letterSpacing: 1, margin: '2px 0 0' }}>
-                                FACULTAD DE CIENCIAS SOCIALES
+                                IICS - OBSERVATORIO REGIONAL Y LABORATORIO DE DATOS
                             </p>
                         </div>
 

@@ -137,7 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     )}
                     {!isCollapsed && (
                         <div className="overflow-hidden transition-all duration-300">
-                            <p className="text-xs font-medium text-white truncate">
+                            <p className="text-xs font-medium text-white truncate notranslate" translate="no">
                                 {user?.fullName || 'Usuario'}
                             </p>
                             <p className="text-[10px] text-gray-500 truncate">
