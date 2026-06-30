@@ -5,7 +5,7 @@ const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || '';
 
 // Inicializar el cliente oficial de OpenAI
 const client = new OpenAI({
-  apiKey: OPENAI_API_KEY,
+  apiKey: OPENAI_API_KEY || 'dummy-key',
   dangerouslyAllowBrowser: true
 });
 
