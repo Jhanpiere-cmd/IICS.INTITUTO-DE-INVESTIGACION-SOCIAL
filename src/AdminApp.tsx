@@ -45,6 +45,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { WhiteboardView } from '@/components/whiteboard/WhiteboardView';
 import { RadarView } from '@/components/radar/RadarView';
 import { TransmediaView } from '@/components/transmedia/TransmediaView';
+import { ConflictsView } from '@/components/conflicts/ConflictsView';
 
 // ErrorBoundary Global
 class AppErrorBoundary extends React.Component<
@@ -145,6 +146,7 @@ const Layout: React.FC = () => {
                         <Route path="whiteboard" element={<WhiteboardView />} />
                         <Route path="radar" element={<RadarView />} />
                         <Route path="transmedia" element={<TransmediaView />} />
+                        <Route path="conflicts" element={<ConflictsView />} />
                         <Route path="api/youtube/callback" element={<YoutubeCallback />} />
                         <Route path="*" element={<Navigate to="/admin" replace />} />
                     </Routes>

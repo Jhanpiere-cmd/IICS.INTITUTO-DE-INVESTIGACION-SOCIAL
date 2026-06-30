@@ -117,6 +117,8 @@ export default function PortalWorkspace({
   const [transmediaVideos, setTransmediaVideos] = useState<any[]>([]);
   const [loadingTransmedia, setLoadingTransmedia] = useState(true);
   const [loadingVideo, setLoadingVideo] = useState(false);
+  const [socialConflicts, setSocialConflicts] = useState<any[]>([]);
+  const [loadingConflicts, setLoadingConflicts] = useState(true);
   const [selectedSentimentTopic, setSelectedSentimentTopic] = useState<'all' | 'mineria' | 'gobernabilidad' | 'cohesion'>('all');
   const [sentimentSearchQuery, setSentimentSearchQuery] = useState('');
 
@@ -136,6 +138,10 @@ export default function PortalWorkspace({
 
   useEffect(() => {
     fetchTransmediaVideos();
+  }, []);
+
+  useEffect(() => {
+    fetchSocialConflicts();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -195,6 +201,46 @@ export default function PortalWorkspace({
     } finally {
       setLoadingCourses(false);
     }
+  };
+
+  const fetchSocialConflicts = async () => {
+    try {
+      setLoadingConflicts(true);
+      const { data, error } = await supabase
+        .from('social_conflicts')
+        .select('*')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setSocialConflicts(data || []);
+    } catch (e) {
+      console.error('Error loading social conflicts in portal:', e);
+    } finally {
+      setLoadingConflicts(false);
+    }
+  };
+
+  // Convert a social conflict's lat/lon (or province) to SVG coordinates
+  const getConflictSvgCoords = (conflict: any) => {
+    if (conflict.latitude !== null && conflict.latitude !== undefined &&
+        conflict.longitude !== null && conflict.longitude !== undefined) {
+      const minLon = -79.5;
+      const maxLon = -77.5;
+      const minLat = -4.5;
+      const maxLat = -7.7;
+      const x = 50 + ((conflict.longitude - minLon) / (maxLon - minLon)) * 400;
+      const y = 50 + ((conflict.latitude - minLat) / (maxLat - minLat)) * 600;
+      return { x, y };
+    }
+    const prov = provinces.find(p => p.name.toLowerCase() === (conflict.province || '').toLowerCase());
+    if (prov) {
+      const seed = conflict.id ? conflict.id.charCodeAt(0) + conflict.id.charCodeAt(1) : 1;
+      return {
+        x: prov.coordinates.x + (Math.sin(seed * 11) * 18),
+        y: prov.coordinates.y + (Math.cos(seed * 11) * 18)
+      };
+    }
+    return null;
   };
 
   const fetchTransmediaVideos = async () => {
@@ -678,7 +724,7 @@ export default function PortalWorkspace({
                           
                           <div className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-900/10 px-2.5 py-1 rounded-none">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>12% tendencia</span>
+                            <span>{socialConflicts.length} evento{socialConflicts.length !== 1 ? 's' : ''} activo{socialConflicts.length !== 1 ? 's' : ''}</span>
                           </div>
                         </div>
 
@@ -1791,6 +1837,50 @@ export default function PortalWorkspace({
                                     </g>
                                   );
                                 })}
+                                {/* ═══ SOCIAL CONFLICT PINS OVERLAY (real data) ═══ */}
+                                {socialConflicts.map((conflict) => {
+                                  const coords = getConflictSvgCoords(conflict);
+                                  if (!coords) return null;
+                                  const intensityColor =
+                                    conflict.intensity === 'Crítico' ? '#ef4444' :
+                                    conflict.intensity === 'Alto'    ? '#f97316' :
+                                    conflict.intensity === 'Medio'   ? '#f59e0b' :
+                                                                       '#06b6d4';
+                                  return (
+                                    <g key={`conflict-${conflict.id}`} className="cursor-default">
+                                      <circle
+                                        cx={coords.x}
+                                        cy={coords.y}
+                                        r={conflict.intensity === 'Crítico' ? 11 : 8}
+                                        fill="none"
+                                        stroke={intensityColor}
+                                        strokeWidth="1.5"
+                                        className={conflict.intensity === 'Crítico' ? 'animate-pulse' : ''}
+                                        opacity="0.8"
+                                      />
+                                      <circle
+                                        cx={coords.x}
+                                        cy={coords.y}
+                                        r={conflict.intensity === 'Crítico' ? 4 : 3}
+                                        fill={intensityColor}
+                                        stroke="#000"
+                                        strokeWidth="1"
+                                      />
+                                      <text
+                                        x={coords.x + 13}
+                                        y={coords.y + 3}
+                                        fill={intensityColor}
+                                        fontSize="7"
+                                        fontWeight="bold"
+                                        fontFamily="monospace"
+                                        className="select-none pointer-events-none uppercase"
+                                      >
+                                        {conflict.type?.slice(0,4)}
+                                      </text>
+                                    </g>
+                                  );
+                                })}
+
                               </svg>
 
                               {/* Water depth background aura */}
