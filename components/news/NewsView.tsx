@@ -448,7 +448,7 @@ export const NewsView: React.FC = () => {
     setLoadingAlerts(true);
     try {
       const { data, error } = await supabase
-        .from('socioenvironmental_alerts')
+        .from('alerts')
         .select('*')
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -468,7 +468,7 @@ export const NewsView: React.FC = () => {
     }
     setUploadingAlert(true);
     try {
-      const { error } = await supabase.from('socioenvironmental_alerts').insert({
+      const { error } = await supabase.from('alerts').insert({
         title: alertForm.title,
         description: alertForm.description,
         province: alertForm.province,
@@ -494,7 +494,7 @@ export const NewsView: React.FC = () => {
 
   const deleteAlert = async (id: string) => {
     try {
-      const { error } = await supabase.from('socioenvironmental_alerts').delete().eq('id', id);
+      const { error } = await supabase.from('alerts').delete().eq('id', id);
       if (error) throw error;
       showToast({ message: 'Alerta desactivada con éxito.', type: 'success' });
       loadAlerts();

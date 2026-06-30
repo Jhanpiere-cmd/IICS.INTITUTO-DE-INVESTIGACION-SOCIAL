@@ -3,6 +3,7 @@ import { AnimatePresence } from 'motion/react';
 import { Routes, Route } from 'react-router-dom';
 import AdminApp from '@/src/AdminApp';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import Header from './components/Header';
 import Preloader from './components/ui/Preloader';
 import Hero from './components/Hero';
@@ -26,6 +27,39 @@ function LandingPage() {
   const [provinces, setProvinces] = useState<ProvinceData[]>(provincesData);
   const [alerts, setAlerts] = useState<Alert[]>(alertsData);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>('cajamarca');
+
+  // Load alerts from Supabase dynamically on mount
+  useEffect(() => {
+    const fetchDbAlerts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('alerts')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data && data.length > 0) {
+          const dbAlerts: Alert[] = data.map((d: any) => ({
+            id: d.id,
+            title: d.title,
+            province: d.province,
+            time: d.created_at ? new Date(d.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : 'Reciente',
+            type: d.type as 'Bajo' | 'Medio' | 'Alto',
+            description: d.description
+          }));
+          
+          setAlerts(prev => {
+            // Keep unique alerts prioritized by database
+            const dbTitles = new Set(dbAlerts.map(a => a.title.toLowerCase()));
+            const uniquePrev = prev.filter(a => !dbTitles.has(a.title.toLowerCase()));
+            return [...dbAlerts, ...uniquePrev];
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching database alerts:', err);
+      }
+    };
+    fetchDbAlerts();
+  }, []);
 
   // Modal Control States
   const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | 'academia' | null>(null);
