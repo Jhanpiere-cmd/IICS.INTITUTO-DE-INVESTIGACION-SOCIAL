@@ -39,8 +39,13 @@ function LandingPage() {
   const { user, signOut } = useAuth();
   const isLoggedIn = !!user;
 
-  // Initial Preloader State
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  // Initial Preloader State (Bypassed on mobile viewports < 1024px to prevent screen freeze)
+  const [isInitialLoading, setIsInitialLoading] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024;
+    }
+    return true;
+  });
 
   // Handlers for Citizen submission in portal
   const handleAddProposedAlert = (newAlert: Alert) => {
