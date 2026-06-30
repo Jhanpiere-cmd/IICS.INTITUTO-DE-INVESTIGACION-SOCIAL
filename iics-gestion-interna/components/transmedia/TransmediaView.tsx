@@ -364,7 +364,9 @@ export const TransmediaView: React.FC = () => {
             </div>
           ))}
         </div>
-       {/* ═══ MODAL CREAR / EDITAR ═══ */}
+      )}
+
+      {/* ═══ MODAL CREAR / EDITAR ═══ */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-[#0A0A0A] border border-exec-border w-full max-w-xl max-h-[90vh] overflow-y-auto flex flex-col">
