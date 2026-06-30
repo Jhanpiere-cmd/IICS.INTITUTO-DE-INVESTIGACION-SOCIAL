@@ -134,6 +134,10 @@ export default function PortalWorkspace({
     fetchUserProfile();
   }, [user]);
 
+  useEffect(() => {
+    fetchTransmediaVideos();
+  }, []);
+
   const fetchUserProfile = async () => {
     if (!user) return;
     try {
