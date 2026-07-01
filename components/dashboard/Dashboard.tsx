@@ -105,6 +105,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [provinceMetricsCount, setProvinceMetricsCount] = useState(0);
   const [socialListeningCount, setSocialListeningCount] = useState(0);
   const [socialNegativeCount, setSocialNegativeCount] = useState(0);
+  const [statIndicatorsCount, setStatIndicatorsCount] = useState(0);
+  const [datasetsCount, setDatasetsCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -459,6 +461,18 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           setSocialListeningCount(slData?.length || 0);
           setSocialNegativeCount(slData?.filter((p: any) => p.sentiment === 'negative').length || 0);
         } catch (_) {}
+
+        // ── Ingesta de Datos ──
+        try {
+          const { count: siCount } = await supabase
+            .from('statistical_indicators')
+            .select('id', { count: 'exact', head: true });
+          setStatIndicatorsCount(siCount || 0);
+          const { count: dsCount } = await supabase
+            .from('research_datasets')
+            .select('id', { count: 'exact', head: true });
+          setDatasetsCount(dsCount || 0);
+        } catch (_) {}
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {
@@ -694,6 +708,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 change={socialNegativeCount > 0 ? `${socialNegativeCount} negativos` : 'Sin negativos'}
                 changeType={socialNegativeCount > 0 ? 'negative' : 'positive'}
                 onClick={() => navigate('/admin/social-listening')}
+              />
+              <MetricCard
+                title="Datos & Encuestas"
+                value={String(statIndicatorsCount + datasetsCount).padStart(2, '0')}
+                icon="dataset"
+                iconColor="text-cyan-400"
+                change={`${statIndicatorsCount} indicadores · ${datasetsCount} datasets`}
+                changeType="positive"
+                onClick={() => navigate('/admin/data-ingestion')}
               />
             </div>
 

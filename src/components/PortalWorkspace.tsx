@@ -71,7 +71,7 @@ export default function PortalWorkspace({
 }: PortalWorkspaceProps) {
   // Navigation
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'home' | 'provinces' | 'analytics' | 'map' | 'alerts' | 'library' | 'media' | 'afi' | 'consulting' | 'settings'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'provinces' | 'analytics' | 'map' | 'alerts' | 'library' | 'media' | 'afi' | 'consulting' | 'data' | 'settings'>('home');
   const [currentAlertIndex, setCurrentAlertIndex] = useState(0);
   const [mapMode, setMapMode] = useState<'vector' | 'heatmap' | 'satellite'>('heatmap');
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
@@ -120,6 +120,8 @@ export default function PortalWorkspace({
   const [socialConflicts, setSocialConflicts] = useState<any[]>([]);
   const [loadingConflicts, setLoadingConflicts] = useState(true);
   const [socialPosts, setSocialPosts] = useState<any[]>([]);
+  const [statIndicators, setStatIndicators] = useState<any[]>([]);
+  const [researchDatasets, setResearchDatasets] = useState<any[]>([]);
   const [selectedSentimentTopic, setSelectedSentimentTopic] = useState<'all' | 'mineria' | 'gobernabilidad' | 'cohesion'>('all');
   const [sentimentSearchQuery, setSentimentSearchQuery] = useState('');
 
@@ -141,13 +143,10 @@ export default function PortalWorkspace({
     fetchTransmediaVideos();
   }, []);
 
-  useEffect(() => {
-    fetchSocialConflicts();
-  }, []);
-
-  useEffect(() => {
-    fetchSocialPosts();
-  }, []);
+  useEffect(() => { fetchSocialConflicts(); }, []);
+  useEffect(() => { fetchSocialPosts(); }, []);
+  useEffect(() => { fetchStatIndicators(); }, []);
+  useEffect(() => { fetchResearchDatasets(); }, []);
 
   const fetchUserProfile = async () => {
     if (!user) return;
@@ -246,6 +245,30 @@ export default function PortalWorkspace({
       };
     }
     return null;
+  };
+
+  const fetchStatIndicators = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('statistical_indicators')
+        .select('*')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setStatIndicators(data || []);
+    } catch (e) { console.error('Error loading statistical_indicators:', e); }
+  };
+
+  const fetchResearchDatasets = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('research_datasets')
+        .select('*')
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setResearchDatasets(data || []);
+    } catch (e) { console.error('Error loading research_datasets:', e); }
   };
 
   const fetchSocialPosts = async () => {
@@ -591,6 +614,22 @@ export default function PortalWorkspace({
               </span>
             </button>
 
+            {/* Tab: Datos & Encuestas (Database) */}
+            <button
+              onClick={() => setActiveTab('data')}
+              className={`group relative flex h-10 w-10 items-center justify-center rounded-none transition-all ${
+                activeTab === 'data'
+                  ? 'bg-cyan-950/30 text-cyan-400 border border-cyan-800/20 shadow-[0_0_12px_rgba(0,240,255,0.1)]'
+                  : 'text-gray-400 hover:text-white border border-transparent hover:bg-zinc-950'
+              }`}
+              title="Datos & Encuestas"
+            >
+              <span className="material-symbols-outlined notranslate text-[20px]" translate="no">dataset</span>
+              <span className="hidden lg:inline-block absolute left-14 z-50 scale-0 group-hover:scale-100 bg-gray-950 border border-gray-800 text-[10.5px] text-zinc-100 px-2.5 py-1.5 rounded-none font-mono font-bold uppercase transition-all shadow-xl whitespace-nowrap">
+                [10] Datos & Encuestas
+              </span>
+            </button>
+
             {/* Tab: Configuración (Settings) */}
             <button
               onClick={() => setActiveTab('settings')}
@@ -603,7 +642,7 @@ export default function PortalWorkspace({
             >
               <Settings className="h-5 w-5" />
               <span className="hidden lg:inline-block absolute left-14 z-50 scale-0 group-hover:scale-100 bg-gray-950 border border-gray-800 text-[10.5px] text-zinc-100 px-2.5 py-1.5 rounded-none font-mono font-bold uppercase transition-all shadow-xl whitespace-nowrap">
-                [10] Configuración Central
+                [11] Configuración Central
               </span>
             </button>
 
@@ -668,6 +707,9 @@ export default function PortalWorkspace({
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-zinc-900 p-4 gap-3 bg-black text-left">
             <div className="space-y-1">
               <h1 className="text-sm sm:text-base font-black text-white font-sans uppercase tracking-tight flex items-center gap-2">
+                <nav className="text-[10px] text-zinc-600 font-mono tracking-widest uppercase mb-1">
+                  IICS / {activeTab}
+                </nav>
                 {activeTab === 'home' ? (
                   <span className="text-[#0099ff] font-mono tracking-widest font-black text-sm sm:text-base">MONITOR REGIONAL (IICS)</span>
                 ) : (
@@ -682,6 +724,7 @@ export default function PortalWorkspace({
                       {activeTab === 'media' && 'DIFUSIÓN TRANSMEDIA Y VIDEOTECA'}
                       {activeTab === 'afi' && 'ACADEMIA DE FORMACIÓN (AFI)'}
                       {activeTab === 'consulting' && 'SERVICIOS DE CONSULTORÍA Y SOSTENIBILIDAD'}
+                      {activeTab === 'data' && 'BASE DE DATOS & ENCUESTAS — OBSERVATORIO IICS'}
                       {activeTab === 'settings' && 'CONFIGURACIÓN CENTRAL'}
                     </span>
                   </span>
@@ -2333,62 +2376,6 @@ export default function PortalWorkspace({
                             </div>
                           )}
 
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {[
-                              {
-                                id: 'data-conflictos',
-                                filename: 'IICS_social_conflict_indicators_2026_Q1.xlsx',
-                                description: 'Indicadores agregados mensuales de tensiones socioambientales, mesas de negociación y acuerdos ronderos.',
-                                size: '4.2 MB',
-                                type: 'Excel (.xlsx)',
-                                integrity: 'SHA256: 8f9e2b1c4a037b5e82496cdfd8aa77bf'
-                              },
-                              {
-                                id: 'data-gis',
-                                filename: 'Cajamarca_GIS_Hydrologic_Mining_Vulnerability_v2.zip',
-                                description: 'Capas vectoriales georreferenciadas (Shapefiles/QGIS) con pasivos ambientales, zonas de moliendas y cuencas.',
-                                size: '18.5 MB',
-                                type: 'Capas GIS (.zip)',
-                                integrity: 'SHA256: d5a49e2fc8e331b0aef773641bcaa605'
-                              },
-                              {
-                                id: 'data-encuestas',
-                                filename: 'Cohesion_Social_Cajamarca_SPSS_data.sav',
-                                description: 'Resultado totalizador de encuestas sobre cohesión agraria y confianza institucional aplicada a 1,100 familias.',
-                                size: '1.1 MB',
-                                type: 'SPSS Dataset (.sav)',
-                                integrity: 'SHA256: 1a9c0d4bb8e2bc7715f3e9ca29037df8'
-                              }
-                            ].map((ds) => {
-                              const isDownloading = downloadingId === ds.id;
-
-                              return (
-                                <div key={ds.id} className="bg-[#030304] border border-zinc-900 p-4 flex flex-col justify-between min-h-[220px]">
-                                  <div className="space-y-1.5 text-left">
-                                    <div className="flex items-center justify-between text-[10px] font-mono">
-                                      <span className="text-cyan-400 font-extrabold block">{ds.type}</span>
-                                      <span className="text-zinc-500 block">{ds.size}</span>
-                                    </div>
-                                    <h5 className="text-xs font-bold text-white font-mono break-all leading-snug">{ds.filename}</h5>
-                                    <p className="text-[11px] text-zinc-400 leading-normal">{ds.description}</p>
-                                    
-                                    <div className="flex items-center justify-between bg-black border border-zinc-950 p-2 text-[9px] font-mono text-zinc-650">
-                                      <span className="truncate w-10/12 block text-left">{ds.integrity}</span>
-                                      <button
-                                        onClick={() => {
-                                          navigator.clipboard.writeText(ds.integrity);
-                                          alert('Verificación hash SHA-256 copiada al portapapeles.');
-                                        }}
-                                        className="text-cyan-500 hover:text-white cursor-pointer bg-transparent border-none outline-none"
-                                        title="Copiar Hash"
-                                      >
-                                        <Copy className="h-3.5 w-3.5" />
-                                      </button>
-                                    </div>
-                                  </div>
-
-                                  <div className="mt-4 pt-3 border-t border-zinc-950">
-                                    {isDownloading ? (
                                       <div className="space-y-1.5 font-mono text-[9px]">
                                         <div className="flex justify-between text-cyan-400">
                                           <span>Descargando desde Clúster...</span>
@@ -2833,8 +2820,146 @@ export default function PortalWorkspace({
                   </div>
                 )}
 
+                {/* VIEW: DATOS & ENCUESTAS */}
+                {activeTab === 'data' && (
+                  <div className="space-y-8 text-left">
+                    <div className="space-y-1">
+                      <span className="text-[9px] font-mono tracking-widest text-cyan-400 font-bold uppercase bg-cyan-950/20 border border-cyan-800/10 px-2.5 py-0.5">Repositorio IICS</span>
+                      <h2 className="text-base font-black text-white uppercase mt-1.5 font-sans">Indicadores Estadísticos & Datasets</h2>
+                      <p className="text-xs text-zinc-400">Datos secundarios cargados desde INEI, MINEM, Defensoría del Pueblo y ANA-SENAMHI. Encuestas de percepción y repositorio de datasets de campo del IICS.</p>
+                    </div>
+
+                    {/* ── A: Indicadores por Fuente ─────────────────── */}
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest border-b border-zinc-900 pb-2">
+                        A — Indicadores Estadísticos Externos
+                      </h3>
+                      {statIndicators.length === 0 ? (
+                        <div className="py-10 text-center border border-dashed border-zinc-900">
+                          <span className="material-symbols-outlined notranslate text-zinc-700 text-4xl block mb-2" translate="no">analytics</span>
+                          <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Sin indicadores cargados aún — usa el módulo "Ingesta de Datos" del admin.</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {/* Stats row */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[
+                              { label: 'Total Indicadores', value: statIndicators.length, color: 'text-cyan-400' },
+                              { label: 'Fuentes', value: [...new Set(statIndicators.map((i:any) => i.fuente))].length, color: 'text-emerald-400' },
+                              { label: 'Provincias', value: [...new Set(statIndicators.map((i:any) => i.provincia))].length, color: 'text-yellow-400' },
+                              { label: 'Periodos', value: [...new Set(statIndicators.map((i:any) => i.periodo))].length, color: 'text-purple-400' },
+                            ].map(s => (
+                              <div key={s.label} className="bg-black border border-zinc-900 p-3">
+                                <p className="text-[9px] text-zinc-600 font-mono uppercase tracking-widest">{s.label}</p>
+                                <p className={`text-2xl font-light mt-1 ${s.color}`}>{s.value}</p>
+                              </div>
+                            ))}
+                          </div>
+                          {/* Table */}
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                              <thead>
+                                <tr className="border-b border-zinc-900">
+                                  {['Provincia','Fuente','Categoría','Indicador','Valor','Período'].map(h => (
+                                    <th key={h} className="pb-2 text-[9px] font-black text-zinc-600 uppercase tracking-widest pr-4">{h}</th>
+                                  ))}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {statIndicators.map((item: any) => (
+                                  <tr key={item.id} className="border-b border-zinc-950 hover:bg-white/[0.01] transition-colors">
+                                    <td className="py-2 pr-4 text-[11px] text-cyan-400 font-bold">{item.provincia}</td>
+                                    <td className="py-2 pr-4 text-[11px] text-zinc-300 font-mono">{item.fuente}</td>
+                                    <td className="py-2 pr-4">
+                                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-400">{item.categoria}</span>
+                                    </td>
+                                    <td className="py-2 pr-4 text-[11px] text-white max-w-[200px] truncate">{item.indicador}</td>
+                                    <td className="py-2 pr-4 text-[11px] text-emerald-400 font-bold font-mono">{item.valor} {item.unidad}</td>
+                                    <td className="py-2 pr-4 text-[11px] text-zinc-500 font-mono">{item.periodo}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <p className="text-[9px] font-mono text-zinc-700 uppercase tracking-wide text-right">
+                            {statIndicators.length} registros — IICS BD — Actualizado en tiempo real
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── B: Datasets del Repositorio ───────────────── */}
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest border-b border-zinc-900 pb-2">
+                        B — Repositorio de Datasets de Campo
+                      </h3>
+                      {researchDatasets.length === 0 ? (
+                        <div className="py-10 text-center border border-dashed border-zinc-900">
+                          <span className="material-symbols-outlined notranslate text-zinc-700 text-4xl block mb-2" translate="no">folder_open</span>
+                          <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Sin datasets registrados — usa el módulo "Ingesta de Datos" del admin.</p>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {researchDatasets.map((ds: any) => (
+                            <div key={ds.id} className="bg-[#030304] border border-zinc-900 p-4 flex flex-col justify-between min-h-[200px] hover:border-zinc-800 transition-all">
+                              <div className="space-y-1.5 text-left">
+                                <div className="flex items-center justify-between text-[10px] font-mono">
+                                  <span className="text-cyan-400 font-extrabold block uppercase">{ds.categoria}</span>
+                                  <span className="text-zinc-500 block">{ds.size_mb ? `${ds.size_mb} MB` : '—'}</span>
+                                </div>
+                                <h5 className="text-xs font-bold text-white font-mono break-all leading-snug">{ds.filename}</h5>
+                                <p className="text-[11px] text-zinc-400 leading-normal line-clamp-2">{ds.descripcion}</p>
+                                {ds.hash_sha256 && (
+                                  <div className="flex items-center gap-1 bg-black border border-zinc-950 p-2 text-[9px] font-mono text-zinc-600">
+                                    <span className="truncate flex-1">SHA256: {ds.hash_sha256.slice(0,20)}…</span>
+                                    <button onClick={() => navigator.clipboard.writeText(ds.hash_sha256)}
+                                      className="text-cyan-600 hover:text-white cursor-pointer bg-transparent border-none outline-none flex-shrink-0" title="Copiar Hash">
+                                      <Copy className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="mt-4 pt-3 border-t border-zinc-950">
+                                {ds.download_url ? (
+                                  <a href={ds.download_url} target="_blank" rel="noopener noreferrer"
+                                    className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-wider transition-all">
+                                    <Download className="h-3.5 w-3.5" /> Descargar Dataset
+                                  </a>
+                                ) : (
+                                  <button disabled className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-zinc-950 border border-zinc-900 text-[10px] font-mono font-bold text-zinc-700 uppercase cursor-not-allowed">
+                                    <Download className="h-3.5 w-3.5" /> Sin URL de descarga
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── C: Encuestas Publicadas ────────────────────── */}
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest border-b border-zinc-900 pb-2">
+                        C — Encuestas de Percepción Ciudadana
+                      </h3>
+                      <div className="bg-zinc-950/50 border border-zinc-900 p-5 flex flex-col md:flex-row items-start md:items-center gap-4">
+                        <span className="material-symbols-outlined notranslate text-yellow-400 text-3xl flex-shrink-0" translate="no">poll</span>
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-white uppercase tracking-wider">Encuestas de campo IICS</p>
+                          <p className="text-[11px] text-zinc-400 leading-relaxed">
+                            Las encuestas de percepción ciudadana sobre confianza institucional, cohesión agraria, riesgo ambiental
+                            y malestar social territorial son gestionadas desde el módulo <span className="text-white font-mono">Encuestas</span> del sistema interno.
+                            Sus resultados agregados estarán visibles aquí una vez publicados.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* VIEW 7: SYSTEM AUDIT & PARAMETERS (SETTINGS) */}
                 {activeTab === 'settings' && (
+
                   <div className="space-y-6 text-left">
                     <div className="space-y-1">
                       <span className="text-[9px] font-mono tracking-widest text-[#0099ff] font-bold uppercase bg-cyan-950/20 border border-cyan-800/10 px-2.5 py-0.5">Parámetros Centrales</span>
