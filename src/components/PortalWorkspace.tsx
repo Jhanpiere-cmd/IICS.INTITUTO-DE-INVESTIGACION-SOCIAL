@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useMemo } from 'react';
 import { 
   Home, 
   Landmark, 
@@ -22,6 +22,7 @@ import {
   Send, 
   Check, 
   FileDown, 
+  Download,
   Copy, 
   PlusCircle, 
   UploadCloud, 
@@ -334,9 +335,132 @@ export default function PortalWorkspace({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<'name' | 'riskScore' | 'mencionesRedes'>('riskScore');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [selectedTimeframe, setSelectedTimeframe] = useState<'24h' | '7d' | '30d' | '90d'>('7d');
 
-  // Selected province complete structure
+  const timeframeOptions = [
+    { id: '24h', label: 'Últimas 24 horas' },
+    { id: '7d', label: 'Últimos 7 días' },
+    { id: '30d', label: 'Últimos 30 días' },
+    { id: '90d', label: 'Último trimestre' },
+  ];
+
+  const [mapZoomLevel, setMapZoomLevel] = useState(11);
+  const [mapFullscreen, setMapFullscreen] = useState(false);
+  const [mapColorMode, setMapColorMode] = useState<'riskScore' | 'mencionesRedes'>('riskScore');
+
+  const getTimeframeStart = (period: '24h' | '7d' | '30d' | '90d') => {
+    const now = new Date();
+    const start = new Date(now);
+    if (period === '24h') start.setDate(now.getDate() - 1);
+    if (period === '7d') start.setDate(now.getDate() - 7);
+    if (period === '30d') start.setMonth(now.getMonth() - 1);
+    if (period === '90d') start.setMonth(now.getMonth() - 3);
+    return start;
+  };
+
+  const parsePostDate = (post: any) => {
+    if (!post?.published_at) return null;
+    const date = new Date(post.published_at);
+    return Number.isNaN(date.getTime()) ? null : date;
+  };
+
   const selectedProvince = provinces.find((p) => p.id === selectedProvinceId) || provinces[0];
+  const selectedProvinceSocialPosts = socialPosts.filter((post: any) =>
+    post.province?.toLowerCase() === selectedProvince.name.toLowerCase()
+  );
+
+  const selectedProvinceIndicators = useMemo(() => {
+    return statIndicators.filter((item: any) =>
+      item.provincia?.toLowerCase() === selectedProvince.name.toLowerCase()
+    );
+  }, [statIndicators, selectedProvince.name]);
+
+  const getProvinceColor = (prov: ProvinceData) => {
+    if (mapColorMode === 'riskScore') {
+      return prov.riskScore >= 7
+        ? '#ef4444'
+        : prov.riskScore >= 4
+        ? '#f59e0b'
+        : '#06b6d4';
+    }
+    const mentions = prov.mencionesRedes || 0;
+    if (mentions >= 2200) return '#a855f7';
+    if (mentions >= 1200) return '#38bdf8';
+    return '#22c55e';
+  };
+
+  const getProvinceHeatRadius = (prov: ProvinceData) => {
+    if (mapColorMode === 'riskScore') {
+      return prov.riskScore * 13 + 22;
+    }
+    const normalized = Math.min(1, (prov.mencionesRedes || 0) / 2500);
+    return 20 + normalized * 38;
+  };
+
+  const timeframeStart = getTimeframeStart(selectedTimeframe);
+  const timeframePosts = selectedProvinceSocialPosts.filter((post: any) => {
+    const date = parsePostDate(post);
+    return date ? date >= timeframeStart : false;
+  });
+
+  const topicPosts = socialPosts.filter((post: any) => {
+    const date = parsePostDate(post);
+    return (
+      (selectedSentimentTopic === 'all' || post.topic === selectedSentimentTopic) &&
+      date && date >= timeframeStart
+    );
+  });
+
+  const monthlyLabels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const { trendDataset, trendPath, tensionPath, mentionMax } = useMemo(() => {
+    const trendMonths = Array.from({ length: 6 }, (_, index) => {
+      const date = new Date();
+      date.setMonth(date.getMonth() - (5 - index));
+      return { year: date.getFullYear(), month: date.getMonth(), label: monthlyLabels[date.getMonth()] };
+    });
+
+    const dataset = trendMonths.map((month, index) => {
+      const monthPosts = selectedProvinceSocialPosts.filter((post: any) => {
+        const date = parsePostDate(post);
+        return date && date.getFullYear() === month.year && date.getMonth() === month.month;
+      }).length;
+
+      const mentionScale = selectedProvince.mencionesRedes || 1;
+      const mentions = monthPosts > 0 ? monthPosts * 720 : Math.round(mentionScale * (0.15 + index * 0.1));
+      const tension = monthPosts > 0
+        ? Math.min(10, 3 + monthPosts * 0.6)
+        : Math.min(10, selectedProvince.riskScore * (0.85 + index * 0.03));
+
+      return {
+        ...month,
+        mentions,
+        tension
+      };
+    });
+
+    const mMax = Math.max(...dataset.map((item) => item.mentions), 1);
+    const chartWidth = 600;
+    const chartHeight = 220;
+    const chartPadding = 48;
+
+    const tPath = dataset
+      .map((point, idx) => {
+        const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / (dataset.length - 1));
+        const y = chartHeight - chartPadding - (point.mentions / mMax) * (chartHeight - chartPadding * 2);
+        return `${x},${y}`;
+      })
+      .join(' ');
+
+    const tensPath = dataset
+      .map((point, idx) => {
+        const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / (dataset.length - 1));
+        const y = chartHeight - chartPadding - (point.tension / 10) * (chartHeight - chartPadding * 2);
+        return `${x},${y}`;
+      })
+      .join(' ');
+
+    return { trendDataset: dataset, trendPath: tPath, tensionPath: tensPath, mentionMax: mMax };
+  }, [selectedProvinceId, provinces, socialPosts, selectedTimeframe]);
 
   // Rotate custom notices on the mini ticker automatically
   useEffect(() => {
@@ -446,9 +570,48 @@ export default function PortalWorkspace({
     return 'Usuario';
   };
 
+  // Top-bar logout helper (works with sync or async onLogout)
+  const handleTopLogout = () => {
+    // open internal modal instead of browser confirm
+    setShowLogoutModal(true);
+  };
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [logoutProcessing, setLogoutProcessing] = useState(false);
+
+  const confirmLogout = async () => {
+    try {
+      setLogoutProcessing(true);
+      const maybePromise: any = onLogout();
+      if (maybePromise && typeof maybePromise.then === 'function') {
+        await maybePromise;
+      }
+    } catch (e) {
+      console.error('Error during logout:', e);
+    } finally {
+      setLogoutProcessing(false);
+      setShowLogoutModal(false);
+      window.location.href = '/';
+    }
+  };
+
   return (
     <div className="w-full h-screen bg-[#030304] text-gray-100 flex flex-col font-sans antialiased overflow-hidden">
       
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+          <div className="relative bg-[#0b0b0d] border border-zinc-800 rounded-none p-5 w-full max-w-md text-zinc-100 shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-70">
+            <h3 className="text-base font-black text-white mb-2">Cerrar sesión</h3>
+            <p className="text-sm text-zinc-300 mb-4">¿Cerrar sesión y volver a la página principal?</p>
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setShowLogoutModal(false)} className="px-3 py-1.5 bg-transparent border border-zinc-700 text-zinc-300 hover:text-white">Cancelar</button>
+              <button onClick={confirmLogout} disabled={logoutProcessing} className="px-3 py-1.5 bg-[#0099ff] text-white font-bold">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Workspace Inner App Frame */}
       <div className="flex-1 flex flex-col lg:flex-row shadow-2xl relative w-full h-full border-b border-zinc-900 overflow-hidden bg-[#030304]">
         
@@ -686,12 +849,8 @@ export default function PortalWorkspace({
             )}
 
             <button
-              onClick={() => {
-                if (window.confirm('¿Está seguro que desea cerrar la sesión actual en el Portal Científico IICS?')) {
-                  onLogout();
-                }
-              }}
-              className="flex h-10 w-10 items-center justify-center rounded-none text-zinc-500 hover:text-red-400 hover:bg-red-950/20 transition-colors border border-transparent hover:border-red-900/10 cursor-pointer"
+              onClick={() => setShowLogoutModal(true)}
+              className="flex h-10 w-10 items-center justify-center rounded-none text-white bg-[#0099ff] hover:bg-[#007acc] transition-colors border border-transparent cursor-pointer"
               title="Cerrar Sesión Activa"
             >
               <LogOut className="h-5 w-5" />
@@ -745,6 +904,16 @@ export default function PortalWorkspace({
                   </option>
                 ))}
               </select>
+              {/* Top logout button (always visible) */}
+              <button
+                onClick={handleTopLogout}
+                className="ml-2 inline-flex items-center gap-2 px-3 py-1.5 text-xs font-black uppercase tracking-wider rounded-none bg-[#0099ff] text-white hover:bg-[#007acc] border border-transparent transition-colors"
+                title="Cerrar sesión y volver a la landing"
+                id="btn-top-logout"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Cerrar sesión</span>
+              </button>
             </div>
           </div>
 
@@ -1321,22 +1490,95 @@ export default function PortalWorkspace({
                     </div>
 
                     {/* Detailed dossier layout */}
-                    <div className="bg-black border border-zinc-900 p-5 rounded-none flex flex-col md:flex-row justify-between items-start gap-6 select-none">
-                      <div className="space-y-2.5 text-left md:max-w-xl">
-                        <span className="block text-[8px] font-mono text-zinc-500 tracking-widest uppercase">Dossier Analítico de</span>
-                        <h4 className="text-lg font-black text-white font-mono uppercase tracking-tight leading-none">{selectedProvince.name}</h4>
-                        <p className="text-xs text-zinc-350 leading-relaxed font-sans">
-                          Inspección de las variables demográficas y territoriales. La captación hídrica y los pasivos acumulados representan desafíos clave. El IICS ejerce escucha activa las 24 horas sobre este polo comitente.
-                        </p>
+                    <div className="bg-black border border-zinc-900 p-5 rounded-none grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 select-none">
+                      <div className="bg-zinc-950 border border-zinc-900 overflow-hidden">
+                        {selectedProvince.photoUrl ? (
+                          <img
+                            src={selectedProvince.photoUrl}
+                            alt={`Foto de ${selectedProvince.name}`}
+                            className="w-full h-56 object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-56 bg-zinc-900 grid place-items-center text-zinc-500 text-sm uppercase tracking-[0.22em]">
+                            Foto provincial no disponible
+                          </div>
+                        )}
+
+                        <div className="p-4 space-y-4">
+                          <div>
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Filtro Temporal</span>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {timeframeOptions.map((option) => (
+                                <button
+                                  key={option.id}
+                                  type="button"
+                                  onClick={() => setSelectedTimeframe(option.id as any)}
+                                  className={`text-[11px] border px-3 py-2 rounded-none font-mono transition-colors ${
+                                    selectedTimeframe === option.id
+                                      ? 'bg-cyan-500 text-slate-950 border-cyan-500'
+                                      : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:border-cyan-500 hover:text-white'
+                                  }`}
+                                >
+                                  {option.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Contexto de Fuentes</span>
+                            {selectedProvince.dataSources && selectedProvince.dataSources.length > 0 ? (
+                              <div className="flex flex-wrap gap-2">
+                                {selectedProvince.dataSources.map((source) => (
+                                  <span key={source} className="text-[10px] font-mono text-zinc-200 bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-none">
+                                    {source}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-[11px] text-zinc-500">No hay fuentes registradas para esta provincia.</p>
+                            )}
+                          </div>
+
+                          <div className="space-y-1">
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Resumen del período</span>
+                            <p className="text-xs leading-relaxed text-zinc-400">
+                              Visualización adaptada a <span className="text-white font-semibold">{timeframeOptions.find((opt) => opt.id === selectedTimeframe)?.label}</span>. Los indicadores se muestran como punto de partida para comparar riesgo, alertas y cohesión local.
+                            </p>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full md:w-auto">
-                        {selectedProvince.indicators.map((ind) => (
-                          <div key={ind.label} className="bg-zinc-950 border border-zinc-900 p-3 min-w-[140px] text-left">
-                            <span className="block text-[9px] font-mono text-zinc-500 uppercase tracking-wider">{ind.label}</span>
-                            <span className="text-white font-extrabold font-mono text-sm block mt-1">{ind.value}</span>
+                      <div className="space-y-5 text-left">
+                        <div className="space-y-2.5">
+                          <span className="block text-[8px] font-mono text-zinc-500 tracking-widest uppercase">Dossier Analítico de</span>
+                          <h4 className="text-lg font-black text-white font-mono uppercase tracking-tight leading-none">{selectedProvince.name}</h4>
+                          <p className="text-xs text-zinc-350 leading-relaxed font-sans">
+                            Inspección de las variables demográficas y territoriales. La captación hídrica y los pasivos acumulados representan desafíos clave. El IICS ejerce escucha activa las 24 horas sobre este polo comitente.
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                          {selectedProvince.indicators.map((ind) => (
+                            <div key={ind.label} className="bg-zinc-950 border border-zinc-900 p-3 text-left">
+                              <span className="block text-[9px] font-mono text-zinc-500 uppercase tracking-wider">{ind.label}</span>
+                              <span className="text-white font-extrabold font-mono text-sm block mt-1">{ind.value}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <div className="bg-zinc-950 border border-zinc-900 p-4 text-sm text-zinc-300">
+                            <span className="block text-[9px] font-mono uppercase tracking-widest text-zinc-500">Nivel de Riesgo</span>
+                            <p className="mt-2 text-white font-black text-2xl">{selectedProvince.riskScore.toFixed(1)} / 10</p>
+                            <p className="mt-1 text-xs text-zinc-400">Riesgo {selectedProvince.riskDescription}</p>
                           </div>
-                        ))}
+                          <div className="bg-zinc-950 border border-zinc-900 p-4 text-sm text-zinc-300">
+                            <span className="block text-[9px] font-mono uppercase tracking-widest text-zinc-500">Alertas Locales</span>
+                            <p className="mt-2 text-white font-black text-2xl">{selectedProvince.alertCount}</p>
+                            <p className="mt-1 text-xs text-zinc-400">alerta(s) activas en el período seleccionado</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -1507,12 +1749,9 @@ export default function PortalWorkspace({
                           {/* Dynamic Sentiments Distribution from social_listening DB */}
                           <div className="space-y-2 pt-2 border-t border-zinc-950">
                             {(() => {
-                              const filtered = socialPosts.filter(p =>
-                                selectedSentimentTopic === 'all' || p.topic === selectedSentimentTopic
-                              );
-                              const total = filtered.length || 1;
-                              const pos = Math.round((filtered.filter((p: any) => p.sentiment === 'positive').length / total) * 100);
-                              const neg = Math.round((filtered.filter((p: any) => p.sentiment === 'negative').length / total) * 100);
+                              const total = topicPosts.length || 1;
+                              const pos = Math.round((topicPosts.filter((p: any) => p.sentiment === 'positive').length / total) * 100);
+                              const neg = Math.round((topicPosts.filter((p: any) => p.sentiment === 'negative').length / total) * 100);
                               const neu = 100 - pos - neg;
                               const breakdown = socialPosts.length > 0
                                 ? { pos, neu, neg }
@@ -1534,7 +1773,7 @@ export default function PortalWorkspace({
                                   </div>
                                   {socialPosts.length > 0 && (
                                     <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-wide">
-                                      Basado en {filtered.length} entrada{filtered.length !== 1 ? 's' : ''} reales — IICS BD
+                                      Basado en {topicPosts.length} entrada{topicPosts.length !== 1 ? 's' : ''} reales — IICS BD
                                     </p>
                                   )}
                                 </div>
@@ -1623,7 +1862,7 @@ export default function PortalWorkspace({
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
                       
                       {/* Large Map component representation */}
-                      <div className="lg:col-span-8 bg-black border border-zinc-900 p-5 rounded-none flex flex-col justify-between relative overflow-hidden min-h-[460px]">
+                      <div className={`lg:col-span-8 bg-black border border-zinc-900 p-5 rounded-none flex flex-col justify-between relative overflow-hidden min-h-[460px] ${mapFullscreen ? 'fixed inset-0 z-50 m-0 max-w-full w-full h-full p-6' : ''}`}>
                         
                         {/* Map Header with controls */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 border-b border-zinc-900 mb-4 z-20 gap-2 w-full">
@@ -1633,10 +1872,10 @@ export default function PortalWorkspace({
                           </div>
                           
                           {/* Map Mode Buttons/Toggle */}
-                          <div className="flex items-center gap-1 bg-[#050507] border border-zinc-900 p-0.5 rounded-none">
+                          <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-4 items-center bg-[#050507] border border-zinc-900 p-1 rounded-none">
                             <button
                               onClick={() => setMapMode('vector')}
-                              className={`px-3 py-1 text-[9.5px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
+                              className={`px-2 py-1 text-[9px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
                                 mapMode === 'vector' 
                                   ? 'bg-cyan-500 text-slate-950' 
                                   : 'text-zinc-500 hover:text-zinc-300'
@@ -1646,7 +1885,7 @@ export default function PortalWorkspace({
                             </button>
                             <button
                               onClick={() => setMapMode('heatmap')}
-                              className={`px-3 py-1 text-[9.5px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
+                              className={`px-2 py-1 text-[9px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
                                 mapMode === 'heatmap' 
                                   ? 'bg-cyan-500 text-slate-950' 
                                   : 'text-zinc-500 hover:text-zinc-300'
@@ -1656,7 +1895,7 @@ export default function PortalWorkspace({
                             </button>
                             <button
                               onClick={() => setMapMode('satellite')}
-                              className={`px-3 py-1 text-[9.5px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
+                              className={`px-2 py-1 text-[9px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
                                 mapMode === 'satellite' 
                                   ? 'bg-cyan-500 text-slate-950' 
                                   : 'text-zinc-500 hover:text-zinc-300'
@@ -1664,28 +1903,67 @@ export default function PortalWorkspace({
                             >
                               Satélite Live
                             </button>
+                            <button
+                              onClick={() => setMapColorMode(mapColorMode === 'riskScore' ? 'mencionesRedes' : 'riskScore')}
+                              className={`px-2 py-1 text-[9px] font-mono font-bold uppercase transition-all duration-150 cursor-pointer ${
+                                mapColorMode === 'riskScore' 
+                                  ? 'bg-cyan-500 text-slate-950' 
+                                  : 'bg-slate-700 text-white'
+                              }`}
+                            >
+                              {mapColorMode === 'riskScore' ? 'Color por Riesgo' : 'Color por Menciones'}
+                            </button>
                           </div>
                         </div>
 
                         {/* Map content area */}
                         <div className="flex-1 w-full flex items-center justify-center relative min-h-[380px]">
                           {mapMode === 'satellite' ? (
-                            <div className="w-full h-full min-h-[380px] flex flex-col justify-between border border-zinc-900 bg-black z-10">
+                            <div className="w-full h-full min-h-[380px] flex flex-col justify-between border border-zinc-900 bg-black z-10 relative overflow-hidden">
+                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,153,255,0.12),transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(16,185,129,0.12),transparent_30%)] pointer-events-none"></div>
                               <iframe
                                 title="Google Map Cajamarca Large"
-                                src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedProvince.name + ', Cajamarca, Peru')}&t=h&z=11&output=embed&iwloc=near`}
-                                className="w-full flex-1 min-h-[360px] border-0 filter grayscale-[10%] contrast-[105%]"
+                                src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedProvince.name + ', Cajamarca, Peru')}&t=h&z=${mapZoomLevel}&output=embed&iwloc=near`}
+                                className="w-full flex-1 min-h-[360px] border-0 filter brightness-95 contrast-[105%]"
                                 allowFullScreen={false}
                                 loading="lazy"
                                 referrerPolicy="no-referrer"
                               ></iframe>
-                              <div className="bg-[#030304] border-t border-zinc-950 p-2.5 text-[10px] font-mono text-zinc-400 flex items-center justify-between">
+                              <div
+                                className="pointer-events-none absolute inset-0"
+                                style={{
+                                  backgroundColor: getProvinceColor(selectedProvince),
+                                  mixBlendMode: 'multiply',
+                                  opacity: 0.14,
+                                }}
+                              />
+                              <div className="bg-[#030304] border-t border-zinc-950 p-2.5 text-[10px] font-mono text-zinc-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                                 <span className="uppercase">
-                                  <b className="text-cyan-400">COORDENADAS SATELITALES EN VIVO:</b> {selectedProvince.name}, Cajamarca, Perú
+                                  <b className="text-cyan-400">COORDENADAS SATELITALES:</b> {selectedProvince.name}, Cajamarca, Perú
                                 </span>
                                 <span className="text-[9px] text-zinc-500 italic hidden sm:inline">
-                                  Modo híbrido satélite + relieve / Interactividad total
+                                  Zoom {mapZoomLevel}x • Vista regional en pantalla completa
                                 </span>
+                              </div>
+                              <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
+                                <button
+                                  onClick={() => setMapZoomLevel((prev) => Math.min(18, prev + 1))}
+                                  className="px-2 py-1 bg-[#0099ff] text-white text-[10px] uppercase font-bold rounded-none border border-transparent"
+                                >
+                                  +Zoom
+                                </button>
+                                <button
+                                  onClick={() => setMapZoomLevel((prev) => Math.max(8, prev - 1))}
+                                  className="px-2 py-1 bg-[#111827] text-white text-[10px] uppercase font-bold rounded-none border border-zinc-800"
+                                >
+                                  -Zoom
+                                </button>
+                                <button
+                                  onClick={() => setMapFullscreen((prev) => !prev)}
+                                  className="px-2 py-1 bg-[#0f172a] text-white text-[10px] uppercase font-bold rounded-none border border-zinc-800"
+                                >
+                                  {mapFullscreen ? 'Salir F.C.' : 'Full Pant.'}
+                                </button>
                               </div>
                             </div>
                           ) : (
@@ -1753,17 +2031,17 @@ export default function PortalWorkspace({
 
                                 {/* Renders thermal heatmap gradients in heatmap mode */}
                                 {mapMode === 'heatmap' && provinces.map((prov) => {
-                                  // Heat size is proportional to both the riskScore
-                                  const heatRadius = prov.riskScore * 13 + 22;
-                                  const fillGradient = prov.riskScore >= 7
+                                  const heatRadius = getProvinceHeatRadius(prov);
+                                  const fillGradient = getProvinceColor(prov) === '#ef4444'
                                     ? 'url(#heat-high)'
-                                    : prov.riskScore >= 4
+                                    : getProvinceColor(prov) === '#f59e0b'
                                     ? 'url(#heat-mod)'
+                                    : getProvinceColor(prov) === '#06b6d4'
+                                    ? 'url(#heat-low)'
                                     : 'url(#heat-low)';
                                   
                                   return (
                                     <g key={`heatmap-glow-${prov.id}`} className="mix-blend-screen">
-                                      {/* Core intense thermal focus */}
                                       <circle
                                         cx={prov.coordinates.x}
                                         cy={prov.coordinates.y}
@@ -1776,7 +2054,7 @@ export default function PortalWorkspace({
                                           cx={prov.coordinates.x}
                                           cy={prov.coordinates.y}
                                           r={heatRadius + 12}
-                                          stroke={prov.riskScore >= 7 ? '#ef4444' : prov.riskScore >= 4 ? '#f59e0b' : '#06b6d4'}
+                                          stroke={getProvinceColor(prov)}
                                           strokeWidth="0.5"
                                           fill="none"
                                           opacity="0.3"
@@ -1809,13 +2087,7 @@ export default function PortalWorkspace({
                                         cx={prov.coordinates.x}
                                         cy={prov.coordinates.y}
                                         r={isSelected ? '9' : '5'}
-                                        fill={
-                                          prov.riskScore >= 7
-                                            ? '#ef4444'
-                                            : prov.riskScore >= 4
-                                            ? '#f59e0b'
-                                            : '#06b6d4'
-                                        }
+                                        fill={getProvinceColor(prov)}
                                         stroke={isSelected ? '#ffffff' : 'none'}
                                         strokeWidth="2"
                                         className="transition-all duration-300"
@@ -1848,19 +2120,15 @@ export default function PortalWorkspace({
                                       <text
                                         x={prov.coordinates.x + 11}
                                         y={prov.coordinates.y + 8}
-                                        fill={
-                                          prov.riskScore >= 7
-                                            ? '#f87171'
-                                            : prov.riskScore >= 4
-                                            ? '#fbbf24'
-                                            : '#22d3ee'
-                                        }
+                                        fill={getProvinceColor(prov)}
                                         fontSize="8"
                                         fontWeight="black"
                                         fontFamily="monospace"
                                         className="select-none pointer-events-none opacity-85"
                                       >
-                                        {`R: ${prov.riskScore.toFixed(1)}`}
+                                        {mapColorMode === 'riskScore'
+                                          ? `R: ${prov.riskScore.toFixed(1)}`
+                                          : `${prov.mencionesRedes}`}
                                       </text>
                                     </g>
                                   );
@@ -2007,44 +2275,69 @@ export default function PortalWorkspace({
                             <h3 className="text-base font-black text-white font-mono uppercase tracking-tight mt-1">{selectedProvince.name}</h3>
                           </div>
 
-                          <div className="space-y-3 font-sans text-xs">
+                          <div className="grid grid-cols-1 gap-3 font-sans text-xs">
                             <div className="flex justify-between items-center bg-zinc-950 p-2.5 border border-zinc-900">
                               <span className="text-zinc-400 font-mono uppercase text-[9px]">Índice IICS:</span>
                               <span className="text-white font-mono font-bold">{selectedProvince.riskScore.toFixed(2)}</span>
                             </div>
-
                             <div className="flex justify-between items-center bg-zinc-950 p-2.5 border border-zinc-900">
                               <span className="text-zinc-400 font-mono uppercase text-[9px]">Estatus Social:</span>
-                              <span className={`font-mono font-bold uppercase text-[10px] px-1.5 py-0.2 ${
-                                selectedProvince.riskDescription === 'Alto' ? 'text-red-400' : selectedProvince.riskDescription === 'Moderado' ? 'text-yellow-400' : 'text-cyan-400'
-                              }`}>{selectedProvince.riskDescription}</span>
+                              <span className={`font-mono font-bold uppercase text-[10px] px-1.5 py-0.2 ${selectedProvince.riskDescription === 'Alto' ? 'text-red-400' : selectedProvince.riskDescription === 'Moderado' ? 'text-yellow-400' : 'text-cyan-400'}`}>{selectedProvince.riskDescription}</span>
                             </div>
-
                             <div className="flex justify-between items-center bg-zinc-950 p-2.5 border border-zinc-900">
                               <span className="text-zinc-400 font-mono uppercase text-[9px]">Menciones Redes:</span>
                               <span className="text-zinc-100 font-mono">{selectedProvince.mencionesRedes.toLocaleString()}</span>
                             </div>
+                            <div className="flex justify-between items-center bg-zinc-950 p-2.5 border border-zinc-900">
+                              <span className="text-zinc-400 font-mono uppercase text-[9px]">Color Mapa:</span>
+                              <span className="text-cyan-400 font-bold uppercase text-[10px]">{mapColorMode === 'riskScore' ? 'Riesgo' : 'Menciones'}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-zinc-950 p-2.5 border border-zinc-900">
+                              <span className="text-zinc-400 font-mono uppercase text-[9px]">Zoom Actual:</span>
+                              <span className="text-zinc-100 font-mono">{mapZoomLevel}</span>
+                            </div>
                           </div>
 
-                          <div className="bg-[#030304] border border-zinc-900 p-3 text-[11px] text-zinc-400 leading-normal">
-                            <span className="block font-mono font-bold text-zinc-500 text-[9px] uppercase tracking-wider mb-1">Mesa Temática de Alianza:</span>
-                            {selectedProvince.activeAlert ? selectedProvince.activeAlert : 'Ningún incidente reportado o asamblea convocada activa en el sistema para esta faja territorial.'}
-                          </div>
-                        </div>
+                          {selectedProvinceIndicators.length > 0 ? (
+                            <div className="bg-[#030304] border border-zinc-900 p-3 text-[11px] text-zinc-400 leading-normal">
+                              <span className="block font-mono font-bold text-zinc-500 text-[9px] uppercase tracking-wider mb-1">Indicadores Clave (provincia seleccionada)</span>
+                              <div className="space-y-2">
+                                {selectedProvinceIndicators.slice(0, 5).map((indicator: any) => (
+                                  <div key={indicator.id} className="grid grid-cols-[1fr_auto] gap-2">
+                                    <span className="text-[10px] text-zinc-300 font-mono uppercase">{indicator.indicador || indicator.categoria || 'Indicador'}</span>
+                                    <span className={`text-[10px] ${indicator.valor ? 'text-emerald-400' : 'text-zinc-500'} font-bold font-mono`}>{indicator.valor ?? 'N/A'} {indicator.unidad || ''}</span>
+                                  </div>
+                                ))}
+                                {selectedProvinceIndicators.length > 5 && (
+                                  <div className="text-[9px] text-zinc-500 font-mono uppercase">+{selectedProvinceIndicators.length - 5} indicadores más</div>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="bg-[#030304] border border-zinc-900 p-3 text-[11px] text-zinc-400 leading-normal">
+                              <span className="block font-mono font-bold text-zinc-500 text-[9px] uppercase tracking-wider mb-1">Indicadores Clave</span>
+                              <p className="text-[10px] text-zinc-500">No hay indicadores cargados para esta provincia. Usa el módulo de datos para enlazar fuentes y agrupar métricas por territorio.</p>
+                            </div>
+                          )}
 
-                        <div className="pt-4 border-t border-zinc-900">
-                          <button
-                            onClick={() => setActiveTab('provinces')}
-                            className="w-full flex items-center justify-center gap-1 bg-[#101014] hover:bg-cyan-500 hover:text-slate-950 text-zinc-300 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-850 hover:border-transparent transition-all cursor-pointer"
-                          >
-                            <span>Ver Ficha Técnica Consolidada</span>
-                            <ChevronRight className="h-3 w-3" />
-                          </button>
+                          <div className="pt-4 border-t border-zinc-900 space-y-2">
+                            <button
+                              onClick={() => setActiveTab('provinces')}
+                              className="w-full flex items-center justify-center gap-1 bg-[#101014] hover:bg-cyan-500 hover:text-slate-950 text-zinc-300 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-850 hover:border-transparent transition-all cursor-pointer"
+                            >
+                              <span>Ver Ficha Técnica Consolidada</span>
+                              <ChevronRight className="h-3 w-3" />
+                            </button>
+                            <button
+                              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                              className="w-full flex items-center justify-center gap-1 bg-[#0f172a] hover:bg-[#111827] text-zinc-300 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-850 transition-all cursor-pointer"
+                            >
+                              <span>Ir a vista completa</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
-
                     </div>
-
                   </div>
                 )}
 
@@ -2376,47 +2669,62 @@ export default function PortalWorkspace({
                             </div>
                           )}
 
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {(researchDatasets.length > 0 ? researchDatasets : [
+                              { id: 'fb-1', filename: 'IICS_social_conflict_indicators_2026_Q1.xlsx', descripcion: 'Indicadores agregados mensuales de tensiones socioambientales.', size_mb: 4.2, categoria: 'conflictos', hash_sha256: '8f9e2b1c4a037b5e', download_url: '' },
+                              { id: 'fb-2', filename: 'Cajamarca_GIS_Vulnerability_v2.zip', descripcion: 'Capas vectoriales georreferenciadas con pasivos ambientales y cuencas.', size_mb: 18.5, categoria: 'gis', hash_sha256: 'd5a49e2fc8e331b0', download_url: '' },
+                              { id: 'fb-3', filename: 'Cohesion_Social_Cajamarca_SPSS.sav', descripcion: 'Resultado de encuestas sobre cohesión agraria y confianza institucional (1,100 familias).', size_mb: 1.1, categoria: 'encuestas', hash_sha256: '1a9c0d4bb8e2bc77', download_url: '' },
+                            ]).map((ds: any) => {
+                              const isDownloading = downloadingId === ds.id;
+                              return (
+                                <div key={ds.id} className="bg-[#030304] border border-zinc-900 p-4 flex flex-col justify-between min-h-[220px]">
+                                  <div className="space-y-1.5 text-left">
+                                    <div className="flex items-center justify-between text-[10px] font-mono">
+                                      <span className="text-cyan-400 font-extrabold block uppercase">{ds.categoria}</span>
+                                      <span className="text-zinc-500 block">{ds.size_mb ? `${ds.size_mb} MB` : '—'}</span>
+                                    </div>
+                                    <h5 className="text-xs font-bold text-white font-mono break-all leading-snug">{ds.filename}</h5>
+                                    <p className="text-[11px] text-zinc-400 leading-normal">{ds.descripcion}</p>
+                                    {ds.hash_sha256 && (
+                                      <div className="flex items-center justify-between bg-black border border-zinc-950 p-2 text-[9px] font-mono text-zinc-600">
+                                        <span className="truncate w-10/12">SHA256: {ds.hash_sha256}</span>
+                                        <button onClick={() => navigator.clipboard.writeText(ds.hash_sha256)} className="text-cyan-500 hover:text-white cursor-pointer bg-transparent border-none outline-none" title="Copiar">
+                                          <Copy className="h-3.5 w-3.5" />
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="mt-4 pt-3 border-t border-zinc-950">
+                                    {isDownloading ? (
                                       <div className="space-y-1.5 font-mono text-[9px]">
                                         <div className="flex justify-between text-cyan-400">
                                           <span>Descargando desde Clúster...</span>
                                           <span>{downloadProgress}%</span>
                                         </div>
                                         <div className="w-full h-1 bg-zinc-950 overflow-hidden border border-zinc-900">
-                                          <div 
-                                            className="bg-cyan-400 h-full transition-all duration-200"
-                                            style={{ width: `${downloadProgress}%` }}
-                                          />
+                                          <div className="bg-cyan-400 h-full transition-all duration-200" style={{ width: `${downloadProgress}%` }} />
                                         </div>
                                       </div>
+                                    ) : ds.download_url ? (
+                                      <a href={ds.download_url} target="_blank" rel="noopener noreferrer"
+                                        className="w-full flex items-center justify-center gap-1.5 bg-zinc-950 hover:bg-cyan-500 text-zinc-400 hover:text-slate-950 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-900 hover:border-transparent transition-all">
+                                        <FileDown className="h-3.5 w-3.5" /><span>Descargar Dataset</span>
+                                      </a>
                                     ) : (
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setDownloadingId(ds.id);
-                                          setDownloadProgress(0);
-                                          const interval = setInterval(() => {
-                                            setDownloadProgress((prev) => {
-                                              if (prev >= 100) {
-                                                clearInterval(interval);
-                                                setTimeout(() => {
-                                                  setDownloadingId(null);
-                                                  setDownloadSuccessNotice(`Repositorio de campo "${ds.filename}" descargado con éxito.`);
-                                                  setTimeout(() => setDownloadSuccessNotice(null), 4000);
-                                                }, 300);
-                                                return 100;
-                                              }
-                                              return prev + 25;
+                                      <button type="button" onClick={() => {
+                                          setDownloadingId(ds.id); setDownloadProgress(0);
+                                          const iv = setInterval(() => {
+                                            setDownloadProgress((p) => {
+                                              if (p >= 100) { clearInterval(iv); setTimeout(() => { setDownloadingId(null); setDownloadSuccessNotice(`Dataset "${ds.filename}" descargado con éxito.`); setTimeout(() => setDownloadSuccessNotice(null), 4000); }, 300); return 100; }
+                                              return p + 25;
                                             });
                                           }, 180);
                                         }}
-                                        className="w-full flex items-center justify-center gap-1.5 bg-zinc-950 hover:bg-cyan-500 text-zinc-400 hover:text-slate-950 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-900 hover:border-transparent transition-all cursor-pointer"
-                                      >
-                                        <FileDown className="h-3.5 w-3.5" />
-                                        <span>Descargar Dataset</span>
+                                        className="w-full flex items-center justify-center gap-1.5 bg-zinc-950 hover:bg-cyan-500 text-zinc-400 hover:text-slate-950 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-900 hover:border-transparent transition-all cursor-pointer">
+                                        <FileDown className="h-3.5 w-3.5" /><span>Descargar Dataset</span>
                                       </button>
                                     )}
                                   </div>
-
                                 </div>
                               );
                             })}

@@ -9,6 +9,8 @@ export interface ProvinceData {
   activeAlert: string | null;
   coordinates: { x: number; y: number }; // Relative positions in SVG viewport
   indicators: { label: string; value: string | number }[];
+  photoUrl?: string;
+  dataSources?: string[];
 }
 
 export interface Alert {

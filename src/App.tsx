@@ -83,7 +83,9 @@ function LandingPage() {
                   alertCount: Number(dbP.alert_count),
                   keyIssues: dbP.key_issues || [],
                   activeAlert: dbP.active_alert,
-                  indicators: dbP.indicators || p.indicators
+                  indicators: dbP.indicators || p.indicators,
+                  photoUrl: dbP.photo_url || p.photoUrl,
+                  dataSources: dbP.data_sources || p.dataSources || []
                 };
               }
               return p;

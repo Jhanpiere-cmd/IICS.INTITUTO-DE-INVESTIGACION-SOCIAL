@@ -37,6 +37,8 @@ const emptyForm = {
   active_alert: '',
   key_issues: '',
   alert_count: 0,
+  photo_url: '',
+  data_sources: '',
 };
 
 export const ProvinceMetricsView: React.FC = () => {
@@ -69,6 +71,8 @@ export const ProvinceMetricsView: React.FC = () => {
       active_alert:       d.active_alert || '',
       key_issues:         Array.isArray(d.key_issues) ? d.key_issues.join(', ') : (d.key_issues || ''),
       alert_count:        Number(d.alert_count || 0),
+      photo_url:          d.photo_url || '',
+      data_sources:      Array.isArray(d.data_sources) ? d.data_sources.join(', ') : (d.data_sources || ''),
     });
   }, [selectedId, metricsMap]);
 
@@ -129,6 +133,11 @@ export const ProvinceMetricsView: React.FC = () => {
       key_issues,
       indicators,
       conflict_areas,
+      photo_url:        form.photo_url || null,
+      data_sources:     form.data_sources
+                          .split(',')
+                          .map((item: string) => item.trim())
+                          .filter(Boolean),
     };
 
     try {
@@ -419,6 +428,30 @@ export const ProvinceMetricsView: React.FC = () => {
                     placeholder="Minería Yanacocha, Expansión urbana, Servicio de agua potable..."
                     rows={2}
                     className="w-full bg-black border border-exec-border text-white text-xs px-3 py-2 rounded-none placeholder:text-gray-700 focus:outline-none focus:border-exec-blue resize-none"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
+                    URL de Foto Provincial
+                  </label>
+                  <input
+                    type="text"
+                    value={form.photo_url}
+                    onChange={e => setForm(p => ({ ...p, photo_url: e.target.value }))}
+                    placeholder="https://.../provincia.jpg"
+                    className="w-full bg-black border border-exec-border text-white text-xs px-3 py-2 rounded-none placeholder:text-gray-700 focus:outline-none focus:border-exec-blue"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
+                    Fuentes de Datos <span className="text-gray-500 normal-case font-normal">(separadas por coma)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={form.data_sources}
+                    onChange={e => setForm(p => ({ ...p, data_sources: e.target.value }))}
+                    placeholder="INEI, MINAM, IICS-Campo"
+                    className="w-full bg-black border border-exec-border text-white text-xs px-3 py-2 rounded-none placeholder:text-gray-700 focus:outline-none focus:border-exec-blue"
                   />
                 </div>
               </div>
