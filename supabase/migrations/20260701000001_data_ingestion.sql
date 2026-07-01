@@ -75,6 +75,73 @@ CREATE TRIGGER trg_research_datasets_updated_at
 
 ALTER PUBLICATION supabase_realtime ADD TABLE public.research_datasets;
 
+-- 0. CREACIÓN DE TABLAS DE ENCUESTAS SI NO EXISTEN
+CREATE TABLE IF NOT EXISTS public.surveys (
+  id           uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  event_id     uuid        REFERENCES public.events(id) ON DELETE CASCADE,
+  title        text        NOT NULL,
+  description  text,
+  slug         text        UNIQUE NOT NULL,
+  type         text        DEFAULT 'general',
+  category     text,
+  is_active    boolean     DEFAULT true,
+  ai_summary   jsonb       DEFAULT NULL,
+  created_at   timestamptz DEFAULT now(),
+  updated_at   timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.surveys ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lectura publica surveys" ON public.surveys;
+CREATE POLICY "Lectura publica surveys" ON public.surveys
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "CRUD autenticados surveys" ON public.surveys;
+CREATE POLICY "CRUD autenticados surveys" ON public.surveys
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.survey_questions (
+  id           uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  survey_id    uuid        REFERENCES public.surveys(id) ON DELETE CASCADE,
+  question     text        NOT NULL,
+  type         text        NOT NULL,
+  options      text[],
+  required     boolean     DEFAULT false,
+  order_index  integer,
+  created_at   timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.survey_questions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lectura publica survey_questions" ON public.survey_questions;
+CREATE POLICY "Lectura publica survey_questions" ON public.survey_questions
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "CRUD autenticados survey_questions" ON public.survey_questions;
+CREATE POLICY "CRUD autenticados survey_questions" ON public.survey_questions
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TABLE IF NOT EXISTS public.survey_responses (
+  id           uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  survey_id    uuid        REFERENCES public.surveys(id) ON DELETE CASCADE,
+  answers      jsonb       NOT NULL,
+  created_at   timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.survey_responses ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Lectura publica survey_responses" ON public.survey_responses;
+CREATE POLICY "Lectura publica survey_responses" ON public.survey_responses
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Insercion publica survey_responses" ON public.survey_responses;
+CREATE POLICY "Insercion publica survey_responses" ON public.survey_responses
+  FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "CRUD autenticados survey_responses" ON public.survey_responses;
+CREATE POLICY "CRUD autenticados survey_responses" ON public.survey_responses
+  FOR ALL USING (auth.role() = 'authenticated');
+
 -- 3. COLUMNA periodo_tipo en surveys para distinguir encuestas de percepcion
 -- (reutilizamos la tabla surveys existente, solo añadimos un campo opcional)
 ALTER TABLE public.surveys
