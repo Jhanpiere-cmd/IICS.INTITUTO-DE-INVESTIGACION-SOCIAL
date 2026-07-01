@@ -119,6 +119,7 @@ export default function PortalWorkspace({
   const [loadingVideo, setLoadingVideo] = useState(false);
   const [socialConflicts, setSocialConflicts] = useState<any[]>([]);
   const [loadingConflicts, setLoadingConflicts] = useState(true);
+  const [socialPosts, setSocialPosts] = useState<any[]>([]);
   const [selectedSentimentTopic, setSelectedSentimentTopic] = useState<'all' | 'mineria' | 'gobernabilidad' | 'cohesion'>('all');
   const [sentimentSearchQuery, setSentimentSearchQuery] = useState('');
 
@@ -142,6 +143,10 @@ export default function PortalWorkspace({
 
   useEffect(() => {
     fetchSocialConflicts();
+  }, []);
+
+  useEffect(() => {
+    fetchSocialPosts();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -241,6 +246,21 @@ export default function PortalWorkspace({
       };
     }
     return null;
+  };
+
+  const fetchSocialPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('social_listening')
+        .select('*')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      setSocialPosts(data || []);
+    } catch (e) {
+      console.error('Error loading social_listening in portal:', e);
+    }
   };
 
   const fetchTransmediaVideos = async () => {
@@ -1288,43 +1308,36 @@ export default function PortalWorkspace({
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[
-                          { id: 'p1', author: '@RondasChota', content: 'Asamblea general de las rondas de Chota discutiendo el plan regulador de aguas distrital. Hay desacuerdos pero la coordinación se mantiene pacífica.', topic: 'gobernabilidad', sentiment: 'neutral', date: 'Hace 10 min', location: 'Chota' },
-                          { id: 'p2', author: 'Radio Lajas', content: 'Comunidades agrarias denuncian contaminación en el riachuelo Lajas. Exigen presencia inmediata de la mesa técnica del IICS.', topic: 'mineria', sentiment: 'negative', date: 'Hace 45 min', location: 'Chota' },
-                          { id: 'p3', author: '@VozCelendin', content: 'Exitosa capacitación de la AFI en Celendín. Jóvenes muestran enorme interés en aprender sobre sociología territorial.', topic: 'cohesion', sentiment: 'positive', date: 'Hace 2 horas', location: 'Celendín' },
-                          { id: 'p4', author: 'El Informador Hualgayoc', content: 'Tensión en Hualgayoc por trabajos nocturnos en el pasivo minero cercano a la captación de agua. Vecinos se declaran en alerta.', topic: 'mineria', sentiment: 'negative', date: 'Hace 3 horas', location: 'Hualgayoc' },
-                          { id: 'p5', author: '@CajamarcaNoticias', content: 'Municipalidad Provincial de Cajamarca anuncia alianza técnica con el IICS para el catastro de cuencas de este semestre.', topic: 'gobernabilidad', sentiment: 'positive', date: 'Hace 5 horas', location: 'Cajamarca' },
-                          { id: 'p6', author: '@FrenteDefensaJaen', content: 'Falta de servicios de agua potable genera fuerte malestar en el sector norte de Jaén. Coordinan movilización preventiva.', topic: 'gobernabilidad', sentiment: 'negative', date: 'Hace 6 horas', location: 'Jaén' }
-                        ]
-                        .filter(post => post.location.toLowerCase() === selectedProvince.name.toLowerCase())
-                        .map(post => (
-                          <div key={post.id} className="bg-black border border-zinc-950 p-4 space-y-2 text-left flex flex-col justify-between">
-                            <div className="flex justify-between items-center">
-                              <span className="text-[11px] font-bold text-white font-mono">{post.author}</span>
-                              <span className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase tracking-wider border ${
-                                post.sentiment === 'positive' ? 'bg-emerald-950/20 text-emerald-400 border-emerald-900/30' :
-                                post.sentiment === 'negative' ? 'bg-red-950/20 text-red-400 border-red-900/30' :
-                                'bg-amber-950/20 text-amber-400 border-amber-900/30'
-                              }`}>
-                                {post.sentiment}
+                        {(() => {
+                          const provincePosts = socialPosts.filter(
+                            post => post.province?.toLowerCase() === selectedProvince.name.toLowerCase()
+                          );
+                          if (provincePosts.length === 0) {
+                            return (
+                              <div className="col-span-full py-8 text-center text-[10px] text-zinc-550 font-mono uppercase tracking-widest border border-dashed border-zinc-900">
+                                No hay menciones registradas recientemente en la provincia de {selectedProvince.name}.
+                              </div>
+                            );
+                          }
+                          return provincePosts.slice(0, 6).map((post: any) => (
+                            <div key={post.id} className="bg-black border border-zinc-950 p-4 space-y-2 text-left flex flex-col justify-between">
+                              <div className="flex justify-between items-center">
+                                <span className="text-[11px] font-bold text-white font-mono">{post.author}</span>
+                                <span className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase tracking-wider border ${
+                                  post.sentiment === 'positive' ? 'bg-emerald-950/20 text-emerald-400 border-emerald-900/30' :
+                                  post.sentiment === 'negative' ? 'bg-red-950/20 text-red-400 border-red-900/30' :
+                                  'bg-amber-950/20 text-amber-400 border-amber-900/30'
+                                }`}>
+                                  {post.sentiment === 'positive' ? 'Positivo' : post.sentiment === 'negative' ? 'Negativo' : 'Neutro'}
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{post.content}</p>
+                              <span className="text-[9px] font-mono text-zinc-650 block text-right">
+                                {post.published_at ? new Date(post.published_at).toLocaleDateString('es-PE', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '–'}
                               </span>
                             </div>
-                            <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">{post.content}</p>
-                            <span className="text-[9px] font-mono text-zinc-650 block text-right">{post.date}</span>
-                          </div>
-                        ))}
-                        {[
-                          { id: 'p1', author: '@RondasChota', content: 'Asamblea general de las rondas de Chota discutiendo el plan regulador de aguas distrital. Hay desacuerdos pero la coordinación se mantiene pacífica.', topic: 'gobernabilidad', sentiment: 'neutral', date: 'Hace 10 min', location: 'Chota' },
-                          { id: 'p2', author: 'Radio Lajas', content: 'Comunidades agrarias denuncian contaminación en el riachuelo Lajas. Exigen presencia inmediata de la mesa técnica del IICS.', topic: 'mineria', sentiment: 'negative', date: 'Hace 45 min', location: 'Chota' },
-                          { id: 'p3', author: '@VozCelendin', content: 'Exitosa capacitación de la AFI en Celendín. Jóvenes muestran enorme interés en aprender sobre sociología territorial.', topic: 'cohesion', sentiment: 'positive', date: 'Hace 2 horas', location: 'Celendín' },
-                          { id: 'p4', author: 'El Informador Hualgayoc', content: 'Tensión en Hualgayoc por trabajos nocturnos en el pasivo minero cercano a la captación de agua. Vecinos se declaran en alerta.', topic: 'mineria', sentiment: 'negative', date: 'Hace 3 horas', location: 'Hualgayoc' },
-                          { id: 'p5', author: '@CajamarcaNoticias', content: 'Municipalidad Provincial de Cajamarca anuncia alianza técnica con el IICS para el catastro de cuencas de este semestre.', topic: 'gobernabilidad', sentiment: 'positive', date: 'Hace 5 horas', location: 'Cajamarca' },
-                          { id: 'p6', author: '@FrenteDefensaJaen', content: 'Falta de servicios de agua potable genera fuerte malestar en el sector norte de Jaén. Coordinan movilización preventiva.', topic: 'gobernabilidad', sentiment: 'negative', date: 'Hace 6 horas', location: 'Jaén' }
-                        ].filter(post => post.location.toLowerCase() === selectedProvince.name.toLowerCase()).length === 0 && (
-                          <div className="col-span-full py-8 text-center text-[10px] text-zinc-550 font-mono uppercase tracking-widest border border-dashed border-zinc-900">
-                            No hay menciones registradas recientemente en la provincia de {selectedProvince.name}.
-                          </div>
-                        )}
+                          ));
+                        })()}
                       </div>
                     </div>
 
@@ -1448,28 +1461,39 @@ export default function PortalWorkspace({
                             ))}
                           </div>
 
-                          {/* Computed/Mock Sentiments Distribution Bar */}
+                          {/* Dynamic Sentiments Distribution from social_listening DB */}
                           <div className="space-y-2 pt-2 border-t border-zinc-950">
                             {(() => {
-                              const breakdown = 
-                                selectedSentimentTopic === 'mineria' ? { pos: 10, neu: 30, neg: 60 } :
-                                selectedSentimentTopic === 'gobernabilidad' ? { pos: 25, neu: 45, neg: 30 } :
-                                selectedSentimentTopic === 'cohesion' ? { pos: 80, neu: 15, neg: 5 } :
-                                { pos: 35, neu: 30, neg: 35 }; // all
-
+                              const filtered = socialPosts.filter(p =>
+                                selectedSentimentTopic === 'all' || p.topic === selectedSentimentTopic
+                              );
+                              const total = filtered.length || 1;
+                              const pos = Math.round((filtered.filter((p: any) => p.sentiment === 'positive').length / total) * 100);
+                              const neg = Math.round((filtered.filter((p: any) => p.sentiment === 'negative').length / total) * 100);
+                              const neu = 100 - pos - neg;
+                              const breakdown = socialPosts.length > 0
+                                ? { pos, neu, neg }
+                                : selectedSentimentTopic === 'mineria'        ? { pos: 10, neu: 30, neg: 60 }
+                                  : selectedSentimentTopic === 'gobernabilidad' ? { pos: 25, neu: 45, neg: 30 }
+                                  : selectedSentimentTopic === 'cohesion'       ? { pos: 80, neu: 15, neg: 5  }
+                                  : { pos: 35, neu: 30, neg: 35 };
                               return (
                                 <div className="space-y-3">
                                   <div className="w-full h-3 bg-zinc-950 flex overflow-hidden border border-zinc-900">
-                                    <div className="bg-emerald-500 h-full transition-all duration-300" style={{ width: `${breakdown.pos}%` }} title={`Positivo: ${breakdown.pos}%`} />
-                                    <div className="bg-amber-500 h-full transition-all duration-300" style={{ width: `${breakdown.neu}%` }} title={`Neutro: ${breakdown.neu}%`} />
-                                    <div className="bg-red-500 h-full transition-all duration-300" style={{ width: `${breakdown.neg}%` }} title={`Negativo: ${breakdown.neg}%`} />
+                                    <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${breakdown.pos}%` }} title={`Positivo: ${breakdown.pos}%`} />
+                                    <div className="bg-amber-500 h-full transition-all duration-500"  style={{ width: `${breakdown.neu}%` }} title={`Neutro: ${breakdown.neu}%`} />
+                                    <div className="bg-red-500 h-full transition-all duration-500"    style={{ width: `${breakdown.neg}%` }} title={`Negativo: ${breakdown.neg}%`} />
                                   </div>
-
                                   <div className="flex justify-between items-center text-[9px] font-mono">
                                     <span className="text-emerald-400 font-bold">Positivo ({breakdown.pos}%)</span>
                                     <span className="text-amber-400 font-bold">Neutro ({breakdown.neu}%)</span>
                                     <span className="text-red-400 font-bold">Negativo ({breakdown.neg}%)</span>
                                   </div>
+                                  {socialPosts.length > 0 && (
+                                    <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-wide">
+                                      Basado en {filtered.length} entrada{filtered.length !== 1 ? 's' : ''} reales — IICS BD
+                                    </p>
+                                  )}
                                 </div>
                               );
                             })()}
@@ -1499,34 +1523,43 @@ export default function PortalWorkspace({
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {[
-                          { id: 'p1', author: '@RondasChota', content: 'Asamblea general de las rondas de Chota discutiendo el plan regulador de aguas distrital. Hay desacuerdos pero la coordinación se mantiene pacífica.', topic: 'gobernabilidad', sentiment: 'neutral', date: 'Hace 10 min', location: 'Chota' },
-                          { id: 'p2', author: 'Radio Lajas', content: 'Comunidades agrarias denuncian contaminación en el riachuelo Lajas. Exigen presencia inmediata de la mesa técnica del IICS.', topic: 'mineria', sentiment: 'negative', date: 'Hace 45 min', location: 'Chota' },
-                          { id: 'p3', author: '@VozCelendin', content: 'Exitosa capacitación de la AFI en Celendín. Jóvenes muestran enorme interés en aprender sobre sociología territorial.', topic: 'cohesion', sentiment: 'positive', date: 'Hace 2 horas', location: 'Celendín' },
-                          { id: 'p4', author: 'El Informador Hualgayoc', content: 'Tensión en Hualgayoc por trabajos nocturnos en el pasivo minero cercano a la captación de agua. Vecinos se declaran en alerta.', topic: 'mineria', sentiment: 'negative', date: 'Hace 3 horas', location: 'Hualgayoc' },
-                          { id: 'p5', author: '@CajamarcaNoticias', content: 'Municipalidad Provincial de Cajamarca anuncia alianza técnica con el IICS para el catastro de cuencas de este semestre.', topic: 'gobernabilidad', sentiment: 'positive', date: 'Hace 5 horas', location: 'Cajamarca' },
-                          { id: 'p6', author: '@FrenteDefensaJaen', content: 'Falta de servicios de agua potable genera fuerte malestar en el sector norte de Jaén. Coordinan movilización preventiva.', topic: 'gobernabilidad', sentiment: 'negative', date: 'Hace 6 horas', location: 'Jaén' }
-                        ]
-                        .filter(post => selectedSentimentTopic === 'all' || post.topic === selectedSentimentTopic)
-                        .map(post => (
-                          <div key={post.id} className="bg-[#030304] border border-zinc-900 p-4 space-y-2.5 text-left flex flex-col justify-between hover:border-zinc-800 transition-colors">
-                            <div className="flex justify-between items-center">
-                              <span className="text-[11px] font-bold text-white font-mono">{post.author}</span>
-                              <span className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase tracking-wider border ${
-                                post.sentiment === 'positive' ? 'bg-emerald-950/20 text-emerald-400 border-emerald-900/30' :
-                                post.sentiment === 'negative' ? 'bg-red-950/20 text-red-400 border-red-900/30' :
-                                'bg-amber-950/20 text-amber-400 border-amber-900/30'
-                              }`}>
-                                {post.sentiment}
-                              </span>
+                        {(() => {
+                          const filteredPosts = socialPosts.filter((p: any) =>
+                            selectedSentimentTopic === 'all' || p.topic === selectedSentimentTopic
+                          );
+                          if (filteredPosts.length === 0) {
+                            return (
+                              <div className="col-span-full py-8 text-center text-[10px] text-zinc-550 font-mono uppercase tracking-widest border border-dashed border-zinc-900">
+                                {socialPosts.length === 0
+                                  ? 'Sin entradas en la BD — usa el módulo Escucha Social del admin para registrar la primera señal.'
+                                  : 'No hay entradas para el tópico seleccionado.'}
+                              </div>
+                            );
+                          }
+                          return filteredPosts.slice(0, 6).map((post: any) => (
+                            <div key={post.id} className="bg-[#030304] border border-zinc-900 p-4 space-y-2.5 text-left flex flex-col justify-between hover:border-zinc-800 transition-colors">
+                              <div className="flex justify-between items-center">
+                                <span className="text-[11px] font-bold text-white font-mono">{post.author}</span>
+                                <span className={`px-2 py-0.5 text-[8px] font-mono font-bold uppercase tracking-wider border ${
+                                  post.sentiment === 'positive' ? 'bg-emerald-950/20 text-emerald-400 border-emerald-900/30' :
+                                  post.sentiment === 'negative' ? 'bg-red-950/20 text-red-400 border-red-900/30' :
+                                  'bg-amber-950/20 text-amber-400 border-amber-900/30'
+                                }`}>
+                                  {post.sentiment === 'positive' ? 'Positivo' : post.sentiment === 'negative' ? 'Negativo' : 'Neutro'}
+                                </span>
+                              </div>
+                              <p className="text-[11.5px] text-zinc-300 leading-relaxed font-sans">{post.content}</p>
+                              <div className="flex justify-between items-center text-[9px] font-mono text-zinc-550 pt-2 border-t border-zinc-950">
+                                <span>Ubicación: {post.province}</span>
+                                <span>
+                                  {post.published_at
+                                    ? new Date(post.published_at).toLocaleDateString('es-PE', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })
+                                    : '–'}
+                                </span>
+                              </div>
                             </div>
-                            <p className="text-[11.5px] text-zinc-300 leading-relaxed font-sans">{post.content}</p>
-                            <div className="flex justify-between items-center text-[9px] font-mono text-zinc-550 pt-2 border-t border-zinc-950">
-                              <span>Ubicación: {post.location}</span>
-                              <span>{post.date}</span>
-                            </div>
-                          </div>
-                        ))}
+                          ));
+                        })()}
                       </div>
                     </div>
 

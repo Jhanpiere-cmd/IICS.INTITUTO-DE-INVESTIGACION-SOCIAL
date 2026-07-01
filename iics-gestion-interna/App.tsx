@@ -100,6 +100,7 @@ import { RadarView } from './components/radar/RadarView';
 import { TransmediaView } from './components/transmedia/TransmediaView';
 import { ConflictsView } from './components/conflicts/ConflictsView';
 import { ProvinceMetricsView } from './components/province-metrics/ProvinceMetricsView';
+import { SocialListeningView } from './components/social-listening/SocialListeningView';
 
 const Layout: React.FC = () => {
     const location = useLocation();
@@ -183,6 +184,7 @@ const Layout: React.FC = () => {
                         <Route path="/transmedia" element={<TransmediaView />} />
                         <Route path="/conflicts" element={<ConflictsView />} />
                         <Route path="/province-metrics" element={<ProvinceMetricsView />} />
+                        <Route path="/social-listening" element={<SocialListeningView />} />
                         <Route path="/api/youtube/callback" element={<YoutubeCallback />} />
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

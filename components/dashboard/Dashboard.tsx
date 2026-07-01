@@ -103,6 +103,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [conflictsCritical, setConflictsCritical] = useState(0);
   const [transmediaCount, setTransmediaCount] = useState(0);
   const [provinceMetricsCount, setProvinceMetricsCount] = useState(0);
+  const [socialListeningCount, setSocialListeningCount] = useState(0);
+  const [socialNegativeCount, setSocialNegativeCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -448,6 +450,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             .select('id', { count: 'exact', head: true });
           setProvinceMetricsCount(pmCount || 0);
         } catch (_) {}
+
+        // ── Escucha Social ──
+        try {
+          const { data: slData } = await supabase
+            .from('social_listening')
+            .select('id, sentiment');
+          setSocialListeningCount(slData?.length || 0);
+          setSocialNegativeCount(slData?.filter((p: any) => p.sentiment === 'negative').length || 0);
+        } catch (_) {}
       } catch (error) {
         console.error('Error loading dashboard data:', error);
       } finally {
@@ -467,6 +478,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'social_conflicts' }, () => load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'transmedia_videos' }, () => load())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'province_metrics' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'social_listening' }, () => load())
       .subscribe();
 
     return () => {
@@ -673,6 +685,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 iconColor="text-yellow-400"
                 change="con métricas BD"
                 onClick={() => navigate('/admin/province-metrics')}
+              />
+              <MetricCard
+                title="Escucha Social"
+                value={String(socialListeningCount).padStart(2, '0')}
+                icon="manage_search"
+                iconColor="text-emerald-400"
+                change={socialNegativeCount > 0 ? `${socialNegativeCount} negativos` : 'Sin negativos'}
+                changeType={socialNegativeCount > 0 ? 'negative' : 'positive'}
+                onClick={() => navigate('/admin/social-listening')}
               />
             </div>
 
