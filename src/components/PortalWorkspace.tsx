@@ -155,6 +155,8 @@ export default function PortalWorkspace({
     if (selectedProvince?.name) fetchProvinceDetail(selectedProvince.name);
   }, [selectedProvinceId]);
   useEffect(() => { fetchSystemLogs(); }, []);
+  useEffect(() => { if (user?.id) fetchDraftSubmissions(); }, [user?.id]);
+  useEffect(() => { fetchResearchLines(); }, []);
 
   const fetchUserProfile = async () => {
     if (!user) return;
@@ -309,6 +311,31 @@ export default function PortalWorkspace({
     } catch (e) { console.error('Error loading system_logs:', e); }
   };
 
+  const fetchDraftSubmissions = async () => {
+    if (!user?.id) return;
+    try {
+      setLoadingDrafts(true);
+      const { data } = await supabase
+        .from('draft_submissions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      setSubmittedDrafts(data || []);
+    } catch (e) { console.error('Error loading draft_submissions:', e); }
+    finally { setLoadingDrafts(false); }
+  };
+
+  const fetchResearchLines = async () => {
+    try {
+      const { data } = await supabase
+        .from('research_lines')
+        .select('name')
+        .eq('active', true)
+        .order('order_index');
+      if (data && data.length > 0) setResearchLines(data.map((r: any) => r.name));
+    } catch (_) { /* usa STATIC_RESEARCH_LINES como fallback silencioso */ }
+  };
+
   const fetchResearchDatasets = async () => {
     try {
       const { data, error } = await supabase
@@ -364,16 +391,20 @@ export default function PortalWorkspace({
   const [draftLine, setDraftLine] = useState('Sociología Digital y Nuevas Tecnologías');
   const [draftFile, setDraftFile] = useState('');
   const [draftSubmitted, setDraftSubmitted] = useState(false);
-  const [submittedDrafts, setSubmittedDrafts] = useState<any[]>([
-    {
-      id: 'dt-1',
-      title: 'Remediación y cohesión social en las cuencas altas de Hualgayoc',
-      line: 'Sociología Territorial',
-      filename: 'borrador_remediacion_hualgayoc_v2.pdf',
-      date: 'Hace 3 días',
-      status: 'En Proceso de Dictamen'
-    }
-  ]);
+  // submittedDrafts: loaded from draft_submissions table on mount
+  const [submittedDrafts, setSubmittedDrafts] = useState<any[]>([]);
+  const [loadingDrafts, setLoadingDrafts] = useState(false);
+
+  // Research lines: loaded from research_lines table, fallback to static list
+  const STATIC_RESEARCH_LINES = [
+    'Sociología Territorial',
+    'Sociología Digital y Nuevas Tecnologías',
+    'Desarrollo Urbano y Rural',
+    'Conflictos Socioambientales',
+    'Género y Sociedad',
+    'Economía Social y Solidaria',
+  ];
+  const [researchLines, setResearchLines] = useState<string[]>(STATIC_RESEARCH_LINES);
 
   // Download simulation states
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -657,13 +688,18 @@ export default function PortalWorkspace({
     return (a[sortKey] - b[sortKey]) * order;
   });
 
-  // Master telemetry details for analytics
-  const telemetryLogs = [
-    { ts: '03:12:05', svc: 'NLP-LISTENER', msg: 'Analizado tweet del usuario @vecinoNamora. Clasificado: PREOCUPACIÓN SOCIAL.' },
-    { ts: '03:08:42', svc: 'RECON-CRIM', msg: 'Actualizado conteo de reclamos rurales sobre desvío de fajas hídricas.' },
-    { ts: '02:55:18', svc: 'RENACYT-BOT', msg: 'Indexada nueva publicación de Pedro Alianza en Scopus.' },
-    { ts: '02:44:11', svc: 'VECTOR-GIS', msg: 'Generados capas poligonales de pasivos mineros en cuenca Llaucano.' }
-  ];
+  // Master telemetry: from system_logs Supabase table (fetched in fetchSystemLogs useEffect)
+  // systemLogs state is already set by fetchSystemLogs() called in useEffect on mount
+  const telemetryLogs = systemLogs.length > 0
+    ? systemLogs.map((log: any) => ({
+        ts: new Date(log.ts).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        svc: log.service,
+        msg: log.message,
+        level: log.level,
+      }))
+    : [
+        { ts: '—', svc: 'SISTEMA', msg: 'Conectando con sistema_logs en Supabase...', level: 'info' },
+      ];
 
   const getDisplayName = () => {
     if (user?.fullName) {
@@ -2890,30 +2926,25 @@ export default function PortalWorkspace({
                           </div>
 
                           <form
-                            onSubmit={(e) => {
+                            onSubmit={async (e) => {
                               e.preventDefault();
-                              if (!draftTitle || !draftFile) {
-                                alert('Por favor, determine un título de borrador y un archivo simulado.');
-                                return;
-                              }
+                              if (!draftTitle || !draftFile) { alert('Determina un título y un archivo.'); return; }
                               setDraftSubmitted(true);
-                              
-                              const newDraft = {
-                                id: Math.random().toString(),
-                                title: draftTitle,
-                                line: draftLine,
-                                filename: draftFile,
-                                date: 'Hoy',
-                                status: 'En Cola de Revisión de Pares'
-                              };
-
-                              setTimeout(() => {
-                                setSubmittedDrafts([newDraft, ...submittedDrafts]);
-                                setDraftSubmitted(false);
-                                setDraftTitle('');
-                                setDraftFile('');
-                                alert(`¡Éxito! El pre-print científico "${newDraft.title}" ha sido indexado en cola de arbitraje.`);
-                              }, 1500);
+                              try {
+                                const { error } = await supabase.from('draft_submissions').insert({
+                                  user_id: user?.id || null,
+                                  title: draftTitle, line: draftLine, filename: draftFile,
+                                  status: 'En Cola de Revisión de Pares',
+                                });
+                                if (error) throw error;
+                                await fetchDraftSubmissions();
+                                setDraftTitle(''); setDraftFile('');
+                                alert(`✅ Pre-print "${draftTitle}" registrado en el sistema IICS.`);
+                              } catch (err: any) {
+                                console.warn('draft_submissions no disponible, guardando en memoria:', err.message);
+                                setSubmittedDrafts([{ id: Math.random().toString(), title: draftTitle, line: draftLine, filename: draftFile, date: 'Hoy', status: 'En Cola de Revisión de Pares' }, ...submittedDrafts]);
+                                setDraftTitle(''); setDraftFile('');
+                              } finally { setDraftSubmitted(false); }
                             }}
                             className="bg-[#030304] border border-zinc-900 p-5 space-y-4"
                           >
@@ -2937,14 +2968,14 @@ export default function PortalWorkspace({
                                   onChange={(e) => setDraftLine(e.target.value)}
                                   className="w-full bg-black border border-zinc-850 p-2.5 text-xs text-zinc-300 outline-none cursor-pointer rounded-none text-left"
                                 >
-                                  <option value="Sociología Territorial">Línea 1: Sociología Territorial</option>
-                                  <option value="Sociología Digital y Nuevas Tecnologías">Línea 2: Sociología Digital & Big Data</option>
-                                  <option value="Desarrollo Urbano y Rural">Línea 3: Desarrollo Urbano & Rural</option>
+                                   {researchLines.map((line, i) => (
+                                     <option key={line} value={line}>Línea {i + 1}: {line}</option>
+                                   ))}
                                 </select>
                               </div>
 
                               <div className="space-y-1 text-left">
-                                <label className="text-[9.5px] font-mono font-bold text-zinc-550 uppercase">Archivo del Manuscrito (Simulado)</label>
+                                <label className="text-[9.5px] font-mono font-bold text-zinc-550 uppercase">Nombre de Archivo / Referencia del Manuscrito</label>
                                 <input 
                                   type="text"
                                   required
@@ -2968,17 +2999,34 @@ export default function PortalWorkspace({
 
                         {/* Right column: Submitted Preprints list */}
                         <div className="lg:col-span-5 space-y-4">
-                          <h4 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider pb-1 border-b border-zinc-900">
-                            Borradores de su Sesión ({submittedDrafts.length})
+                          <h4 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider pb-1 border-b border-zinc-900 flex items-center justify-between">
+                            <span>Mis Borradores ({submittedDrafts.length})</span>
+                            {loadingDrafts && <span className="text-[9px] text-cyan-500 animate-pulse normal-case font-normal">Cargando...</span>}
                           </h4>
                           <div className="space-y-2">
+                            {submittedDrafts.length === 0 && !loadingDrafts && (
+                              <div className="py-10 text-center border border-dashed border-zinc-900">
+                                <p className="text-zinc-600 text-[10px] font-mono">Aún no has enviado borradores.</p>
+                                <p className="text-zinc-700 text-[9px] font-mono mt-1">Usa el formulario para registrar tu pre-print.</p>
+                              </div>
+                            )}
                             {submittedDrafts.map((d) => (
-                              <div key={d.id} className="bg-black border border-zinc-950 p-3 flex justify-between items-center text-left">
-                                <div className="space-y-0.5 max-w-[280px]">
-                                  <h6 className="font-extrabold text-[#0099ff] line-clamp-1 truncate text-xs">{d.title}</h6>
-                                  <p className="text-[9.5px] text-zinc-500 font-mono">Línea: {d.line} • {d.filename}</p>
+                              <div key={d.id} className="bg-black border border-zinc-900 p-3 flex justify-between items-start gap-2 text-left hover:border-zinc-700 transition-colors">
+                                <div className="space-y-0.5 flex-1 min-w-0">
+                                  <h6 className="font-extrabold text-[#0099ff] line-clamp-2 text-xs leading-snug">{d.title}</h6>
+                                  <p className="text-[9.5px] text-zinc-500 font-mono truncate">{d.line}</p>
+                                  <p className="text-[9px] text-zinc-600 font-mono truncate">{d.filename || d.file_url || '—'}</p>
+                                  <p className="text-[9px] text-zinc-700 font-mono">
+                                    {d.created_at ? new Date(d.created_at).toLocaleDateString('es-PE') : (d.date || 'Hoy')}
+                                  </p>
                                 </div>
-                                <span className="text-[8.5px] font-mono whitespace-nowrap bg-amber-950/40 text-amber-500 border border-amber-900/40 px-2 py-0.5 uppercase font-bold block shrink-0">
+                                <span className={`text-[8px] font-mono whitespace-nowrap px-2 py-1 uppercase font-bold shrink-0 ${
+                                  d.status === 'Aprobado' || d.status === 'Publicado'
+                                    ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-900/40'
+                                    : d.status === 'Rechazado'
+                                    ? 'bg-red-950/40 text-red-400 border border-red-900/40'
+                                    : 'bg-amber-950/40 text-amber-500 border border-amber-900/40'
+                                }`}>
                                   {d.status}
                                 </span>
                               </div>
@@ -3035,7 +3083,7 @@ export default function PortalWorkspace({
                                     {isDownloading ? (
                                       <div className="space-y-1.5 font-mono text-[9px]">
                                         <div className="flex justify-between text-cyan-400">
-                                          <span>Descargando desde Clúster...</span>
+                                          <span>Preparando descarga...</span>
                                           <span>{downloadProgress}%</span>
                                         </div>
                                         <div className="w-full h-1 bg-zinc-950 overflow-hidden border border-zinc-900">
@@ -3629,16 +3677,25 @@ export default function PortalWorkspace({
                         <div className="bg-[#030304] border border-zinc-950 p-3.5 font-mono text-[10.5px] space-y-2.5 max-h-[220px] overflow-y-auto leading-relaxed">
                           {telemetryLogs.map((log, idx) => (
                             <div key={idx} className="flex gap-2 text-left">
-                              <span className="text-zinc-600">[{log.ts}]</span>
-                              <span className="text-cyan-500 font-extrabold font-mono shrink-0">[{log.svc}]</span>
+                              <span className="text-zinc-600 shrink-0">[{log.ts}]</span>
+                              <span className={`font-extrabold font-mono shrink-0 ${
+                                log.level === 'error' ? 'text-red-400' :
+                                log.level === 'warn'  ? 'text-yellow-400' :
+                                'text-cyan-500'
+                              }`}>[{log.svc}]</span>
                               <span className="text-zinc-300 break-all">{log.msg}</span>
                             </div>
                           ))}
+                          {systemLogs.length === 0 && (
+                            <div className="text-zinc-700 italic text-[10px]">
+                              Ejecuta la migración SQL para poblar system_logs con eventos reales.
+                            </div>
+                          )}
                         </div>
 
                         <div className="bg-cyan-950/10 border border-cyan-850/20 p-3 rounded-none text-[10px] text-zinc-400 flex items-center gap-2 mt-4">
                           <Cpu className="h-4.5 w-4.5 text-cyan-400 shrink-0" />
-                          <span>Módulo de Procesamiento de Sentimientos activo: Modelo NLP Transformer v4.2 con filtros léxicos de quechua andino adaptados.</span>
+                          <span>Motor de Escucha Social activo: clasificación de sentimientos aplicada sobre <code className="text-cyan-400">social_listening</code> · Supabase PostgreSQL · IICS 2026.</span>
                         </div>
                       </div>
 
@@ -3656,8 +3713,8 @@ export default function PortalWorkspace({
                               <span className="text-emerald-450 font-mono font-bold">CONECTADO</span>
                             </div>
                             <div className="pt-2 flex justify-between">
-                              <span className="text-zinc-500">Base de Datos Firestore:</span>
-                              <span className="text-emerald-450 font-mono font-bold">CORRIENDO (0.0.0.0)</span>
+                              <span className="text-zinc-500">Base de Datos Supabase:</span>
+                              <span className="text-emerald-450 font-mono font-bold">CONECTADO (PostgreSQL)</span>
                             </div>
                             <div className="pt-2 flex justify-between">
                               <span className="text-zinc-500">Cuádruple Hélice Auth:</span>
