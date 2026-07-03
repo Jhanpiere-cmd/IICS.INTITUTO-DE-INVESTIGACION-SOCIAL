@@ -121,6 +121,8 @@ export default function PortalWorkspace({
   const [socialConflicts, setSocialConflicts] = useState<any[]>([]);
   const [loadingConflicts, setLoadingConflicts] = useState(true);
   const [socialPosts, setSocialPosts] = useState<any[]>([]);
+  const [historicalSeries, setHistoricalSeries] = useState<any[]>([]);
+  const [loadingHistoricalSeries, setLoadingHistoricalSeries] = useState(true);
   const [statIndicators, setStatIndicators] = useState<any[]>([]);
   const [researchDatasets, setResearchDatasets] = useState<any[]>([]);
   const [selectedSentimentTopic, setSelectedSentimentTopic] = useState<'all' | 'mineria' | 'gobernabilidad' | 'cohesion'>('all');
@@ -148,6 +150,11 @@ export default function PortalWorkspace({
   useEffect(() => { fetchSocialPosts(); }, []);
   useEffect(() => { fetchStatIndicators(); }, []);
   useEffect(() => { fetchResearchDatasets(); }, []);
+  useEffect(() => { fetchHistoricalSeries(); }, [selectedProvinceId, provinces]);
+  useEffect(() => {
+    if (selectedProvince?.name) fetchProvinceDetail(selectedProvince.name);
+  }, [selectedProvinceId]);
+  useEffect(() => { fetchSystemLogs(); }, []);
 
   const fetchUserProfile = async () => {
     if (!user) return;
@@ -260,6 +267,48 @@ export default function PortalWorkspace({
     } catch (e) { console.error('Error loading statistical_indicators:', e); }
   };
 
+  const fetchHistoricalSeries = async () => {
+    try {
+      setLoadingHistoricalSeries(true);
+      const provinceName = provinces.find((prov) => prov.id === selectedProvinceId)?.name || selectedProvince?.name || '';
+      const { data, error } = await supabase
+        .from('province_historical_series')
+        .select('*')
+        .eq('province', provinceName)
+        .eq('status', 'published')
+        .order('period_start', { ascending: true });
+      if (error) throw error;
+      setHistoricalSeries(data || []);
+    } catch (e) {
+      console.error('Error loading province_historical_series:', e);
+      setHistoricalSeries([]);
+    } finally {
+      setLoadingHistoricalSeries(false);
+    }
+  };
+
+  const fetchProvinceDetail = async (provinceName: string) => {
+    try {
+      setLoadingProvinceDetail(true);
+      const [detailRes, districtsRes, indicatorsRes] = await Promise.all([
+        supabase.from('province_details').select('*').eq('province_name', provinceName).single(),
+        supabase.from('districts').select('*').eq('province_name', provinceName).order('tipo').order('nombre'),
+        supabase.from('province_indicators').select('*').eq('province_name', provinceName).eq('status', 'published').order('categoria').order('nombre'),
+      ]);
+      setProvinceDetail(detailRes.data || null);
+      setProvinceDistricts(districtsRes.data || []);
+      setProvinceIndicators(indicatorsRes.data || []);
+    } catch (e) { console.error('Error loading province detail:', e); }
+    finally { setLoadingProvinceDetail(false); }
+  };
+
+  const fetchSystemLogs = async () => {
+    try {
+      const { data } = await supabase.from('system_logs').select('*').order('ts', { ascending: false }).limit(20);
+      setSystemLogs(data || []);
+    } catch (e) { console.error('Error loading system_logs:', e); }
+  };
+
   const fetchResearchDatasets = async () => {
     try {
       const { data, error } = await supabase
@@ -344,6 +393,15 @@ export default function PortalWorkspace({
     { id: '90d', label: 'Último trimestre' },
   ];
 
+  // Province detail states (new tables: province_details, districts, province_indicators)
+  const [provinceDetail, setProvinceDetail] = useState<any>(null);
+  const [provinceDistricts, setProvinceDistricts] = useState<any[]>([]);
+  const [provinceIndicators, setProvinceIndicators] = useState<any[]>([]);
+  const [loadingProvinceDetail, setLoadingProvinceDetail] = useState(false);
+  const [detailDistrictFilter, setDetailDistrictFilter] = useState<'distrito'|'caserio'|'centro_poblado'|'all'>('all');
+  const [detailIndicatorCategory, setDetailIndicatorCategory] = useState<string>('all');
+  const [systemLogs, setSystemLogs] = useState<any[]>([]);
+
   const [mapZoomLevel, setMapZoomLevel] = useState(11);
   const [mapFullscreen, setMapFullscreen] = useState(false);
   const [mapColorMode, setMapColorMode] = useState<'riskScore' | 'mencionesRedes'>('riskScore');
@@ -398,69 +456,148 @@ export default function PortalWorkspace({
   };
 
   const timeframeStart = getTimeframeStart(selectedTimeframe);
-  const timeframePosts = selectedProvinceSocialPosts.filter((post: any) => {
-    const date = parsePostDate(post);
-    return date ? date >= timeframeStart : false;
-  });
 
-  const topicPosts = socialPosts.filter((post: any) => {
-    const date = parsePostDate(post);
-    return (
-      (selectedSentimentTopic === 'all' || post.topic === selectedSentimentTopic) &&
-      date && date >= timeframeStart
-    );
-  });
+  const timeframePosts = useMemo(() => {
+    return selectedProvinceSocialPosts.filter((post: any) => {
+      const date = parsePostDate(post);
+      return date ? date >= timeframeStart : false;
+    });
+  }, [selectedProvinceSocialPosts, timeframeStart]);
 
-  const monthlyLabels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-  const { trendDataset, trendPath, tensionPath, mentionMax } = useMemo(() => {
-    const trendMonths = Array.from({ length: 6 }, (_, index) => {
-      const date = new Date();
-      date.setMonth(date.getMonth() - (5 - index));
-      return { year: date.getFullYear(), month: date.getMonth(), label: monthlyLabels[date.getMonth()] };
+  const timeframeConflicts = useMemo(() => {
+    return socialConflicts.filter((conflict: any) => {
+      const provinceMatches = (conflict.province || '').toLowerCase() === selectedProvince.name.toLowerCase();
+      if (!provinceMatches) return false;
+      const date = conflict.created_at ? new Date(conflict.created_at) : null;
+      return date ? date >= timeframeStart : false;
+    });
+  }, [socialConflicts, selectedProvince.name, timeframeStart]);
+
+  const topicPosts = useMemo(() => {
+    return socialPosts.filter((post: any) => {
+      const date = parsePostDate(post);
+      return (
+        (selectedSentimentTopic === 'all' || post.topic === selectedSentimentTopic) &&
+        date && date >= timeframeStart
+      );
+    });
+  }, [socialPosts, selectedSentimentTopic, timeframeStart]);
+
+  const { trendSeries, trendPath, tensionPath, mentionMax, tensionMax } = useMemo(() => {
+    const useHistorical = (selectedTimeframe === '30d' || selectedTimeframe === '90d') && historicalSeries.length > 0;
+
+    if (useHistorical) {
+      const mentionsRows = historicalSeries.filter((item: any) => item.metric === 'social_mentions');
+      const tensionRows = historicalSeries.filter((item: any) => item.metric === 'tension_index');
+      const series = mentionsRows.slice(-6).map((item: any, index: number) => {
+        const tensionMatch = tensionRows[index] || tensionRows.find((row: any) => row.period_label === item.period_label);
+        return {
+          label: item.period_label || item.period_start?.slice(0, 7) || `P${index + 1}`,
+          mentions: Number(item.value || 0),
+          tension: Number(tensionMatch?.value || 0)
+        };
+      });
+
+      const mMax = Math.max(...series.map((item) => item.mentions), 1);
+      const chartWidth = 600;
+      const chartHeight = 220;
+      const chartPadding = 48;
+
+      const tPath = series
+        .map((point, idx) => {
+          const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / Math.max(series.length - 1, 1));
+          const y = chartHeight - chartPadding - (point.mentions / mMax) * (chartHeight - chartPadding * 2);
+          return `${x},${y}`;
+        })
+        .join(' ');
+
+      const tensPath = series
+        .map((point, idx) => {
+          const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / Math.max(series.length - 1, 1));
+          const y = chartHeight - chartPadding - (point.tension / 10) * (chartHeight - chartPadding * 2);
+          return `${x},${y}`;
+        })
+        .join(' ');
+
+      return { trendSeries: series, trendPath: tPath, tensionPath: tensPath, mentionMax: mMax, tensionMax: 10 };
+    }
+
+    const bucketCount = selectedTimeframe === '24h' ? 6 : selectedTimeframe === '7d' ? 7 : 6;
+    const buckets = Array.from({ length: bucketCount }, (_, index) => {
+      const now = new Date();
+      let start = new Date(now);
+      let end = new Date(now);
+
+      if (selectedTimeframe === '24h') {
+        start.setHours(now.getHours() - (bucketCount - 1 - index) * 4);
+        end = new Date(start);
+        end.setHours(start.getHours() + 4);
+      } else if (selectedTimeframe === '7d') {
+        start.setDate(now.getDate() - (bucketCount - 1 - index));
+        end = new Date(start);
+        end.setDate(start.getDate() + 1);
+      } else if (selectedTimeframe === '30d') {
+        start.setDate(now.getDate() - (bucketCount - 1 - index) * 5);
+        end = new Date(start);
+        end.setDate(start.getDate() + 5);
+      } else {
+        start.setMonth(now.getMonth() - (bucketCount - 1 - index));
+        end = new Date(start);
+        end.setMonth(start.getMonth() + 1);
+      }
+
+      const bucketPosts = timeframePosts.filter((post: any) => {
+        const postDate = parsePostDate(post);
+        return postDate && postDate >= start && postDate < end;
+      });
+
+      const negativePosts = bucketPosts.filter((post: any) => post.sentiment === 'negative').length;
+      const positivePosts = bucketPosts.filter((post: any) => post.sentiment === 'positive').length;
+      const baselineMentions = Math.max(40, Math.round((selectedProvince.mencionesRedes || 100) / Math.max(6, bucketCount)));
+      const mentions = bucketPosts.length > 0
+        ? Math.max(80, bucketPosts.length * 140 + positivePosts * 30 + negativePosts * 50)
+        : Math.round(baselineMentions * (0.75 + index * 0.08));
+      const tension = bucketPosts.length > 0
+        ? Math.min(10, 2.2 + negativePosts * 0.8 + bucketPosts.length * 0.16 + selectedProvince.riskScore * 0.25)
+        : Math.min(10, selectedProvince.riskScore * (0.6 + index * 0.05));
+
+      let label = '';
+      if (selectedTimeframe === '24h') {
+        label = `${start.getHours().toString().padStart(2, '0')}h`;
+      } else if (selectedTimeframe === '7d') {
+        label = start.toLocaleDateString('es-PE', { day: '2-digit', month: 'short' });
+      } else if (selectedTimeframe === '30d') {
+        label = `${start.getDate()}/${start.getMonth() + 1}`;
+      } else {
+        label = start.toLocaleDateString('es-PE', { month: 'short' });
+      }
+
+      return { label, mentions, tension };
     });
 
-    const dataset = trendMonths.map((month, index) => {
-      const monthPosts = selectedProvinceSocialPosts.filter((post: any) => {
-        const date = parsePostDate(post);
-        return date && date.getFullYear() === month.year && date.getMonth() === month.month;
-      }).length;
-
-      const mentionScale = selectedProvince.mencionesRedes || 1;
-      const mentions = monthPosts > 0 ? monthPosts * 720 : Math.round(mentionScale * (0.15 + index * 0.1));
-      const tension = monthPosts > 0
-        ? Math.min(10, 3 + monthPosts * 0.6)
-        : Math.min(10, selectedProvince.riskScore * (0.85 + index * 0.03));
-
-      return {
-        ...month,
-        mentions,
-        tension
-      };
-    });
-
-    const mMax = Math.max(...dataset.map((item) => item.mentions), 1);
+    const mMax = Math.max(...buckets.map((item) => item.mentions), 1);
     const chartWidth = 600;
     const chartHeight = 220;
     const chartPadding = 48;
 
-    const tPath = dataset
+    const tPath = buckets
       .map((point, idx) => {
-        const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / (dataset.length - 1));
+        const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / Math.max(buckets.length - 1, 1));
         const y = chartHeight - chartPadding - (point.mentions / mMax) * (chartHeight - chartPadding * 2);
         return `${x},${y}`;
       })
       .join(' ');
 
-    const tensPath = dataset
+    const tensPath = buckets
       .map((point, idx) => {
-        const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / (dataset.length - 1));
+        const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / Math.max(buckets.length - 1, 1));
         const y = chartHeight - chartPadding - (point.tension / 10) * (chartHeight - chartPadding * 2);
         return `${x},${y}`;
       })
       .join(' ');
 
-    return { trendDataset: dataset, trendPath: tPath, tensionPath: tensPath, mentionMax: mMax };
-  }, [selectedProvinceId, provinces, socialPosts, selectedTimeframe]);
+    return { trendSeries: buckets, trendPath: tPath, tensionPath: tensPath, mentionMax: mMax, tensionMax: 10 };
+  }, [historicalSeries, timeframePosts, selectedProvince.mencionesRedes, selectedProvince.riskScore, selectedTimeframe]);
 
   // Rotate custom notices on the mini ticker automatically
   useEffect(() => {
@@ -472,36 +609,6 @@ export default function PortalWorkspace({
     }, 4500);
     return () => clearInterval(interval);
   }, [alerts.length]);
-
-  // Simulated sparkline chart for risk trend
-  const getTrendPoints = (id: string) => {
-    const baseIndex = id.length * 3;
-    const values = [
-      ((baseIndex + 2) % 6) + 2,
-      ((baseIndex + 5) % 6) + 3,
-      ((baseIndex + 1) % 6) + 2.5,
-      ((baseIndex + 7) % 6) + 4,
-      ((baseIndex + 3) % 6) + 3.8,
-      selectedProvince.riskScore
-    ];
-    return values;
-  };
-
-  const trendValues = getTrendPoints(selectedProvince.id);
-  const maxVal = 10;
-  const width = 180;
-  const height = 70;
-  const padding = 5;
-  const xSpan = (width - padding * 2) / (trendValues.length - 1);
-  const pointsString = trendValues
-    .map((val, idx) => {
-      const x = padding + idx * xSpan;
-      const y = height - padding - (val / maxVal) * (height - padding * 2);
-      return `${x},${y}`;
-    })
-    .join(' ');
-
-  const areaString = `${padding},${height - padding} ${pointsString} ${width - padding},${height - padding}`;
 
   // Handle reporting simulated incident
   const [reportingAlertToDb, setReportingAlertToDb] = useState(false);
@@ -956,7 +1063,7 @@ export default function PortalWorkspace({
                           
                           <div className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-900/10 px-2.5 py-1 rounded-none">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>{socialConflicts.length} evento{socialConflicts.length !== 1 ? 's' : ''} activo{socialConflicts.length !== 1 ? 's' : ''}</span>
+                            <span>{timeframeConflicts.length} señal{timeframeConflicts.length !== 1 ? 'es' : ''} en {timeframeOptions.find((opt) => opt.id === selectedTimeframe)?.label.toLowerCase()}</span>
                           </div>
                         </div>
 
@@ -985,46 +1092,66 @@ export default function PortalWorkspace({
 
                           <div className="sm:col-span-5 text-xs text-zinc-400 leading-relaxed font-sans px-2">
                             <p className="font-semibold text-zinc-300">Determinación Territorial:</p>
-                            La provincia de <b className="text-white">{selectedProvince.name}</b> registra un coeficiente de vulnerabilidad {selectedProvince.riskDescription.toLowerCase()}. Cuenta con {selectedProvince.alertCount} alerta(s) registradas y un flujo constante en telecomunales.
+                            <p>
+                              La provincia de <b className="text-white">{selectedProvince.name}</b> registra un coeficiente de vulnerabilidad {selectedProvince.riskDescription.toLowerCase()}.
+                              En este periodo hay <b className="text-white">{timeframePosts.length}</b> menciones reales en escucha social, <b className="text-white">{timeframeConflicts.length}</b> señal{timeframeConflicts.length !== 1 ? 'es' : ''} de conflicto y <b className="text-white">{selectedProvinceIndicators.length}</b> indicador{selectedProvinceIndicators.length !== 1 ? 'es' : ''} disponible{selectedProvinceIndicators.length !== 1 ? 's' : ''} en la base.
+                            </p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <span className="text-[10px] text-cyan-400 font-mono bg-cyan-950/30 border border-cyan-800/15 px-2 py-0.5">Menciones: {timeframePosts.length}</span>
+                              <span className="text-[10px] text-red-400 font-mono bg-red-950/30 border border-red-800/15 px-2 py-0.5">Conflictos: {timeframeConflicts.length}</span>
+                              <span className="text-[10px] text-amber-400 font-mono bg-amber-950/30 border border-amber-800/15 px-2 py-0.5">Indicadores: {selectedProvinceIndicators.length}</span>
+                            </div>
                           </div>
 
                           {/* Chart SVG */}
-                          <div className="sm:col-span-3 flex flex-col items-end">
-                            <div className="w-[150px] h-[55px] relative">
-                              <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
-                                <defs>
-                                  <linearGradient id="chartGrad-heavy" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#0099ff" stopOpacity="0.45" />
-                                    <stop offset="100%" stopColor="#0099ff" stopOpacity="0.0" />
-                                  </linearGradient>
-                                </defs>
-                                <polygon points={areaString} fill="url(#chartGrad-heavy)" />
+                          <div className="sm:col-span-3 flex flex-col items-end gap-2">
+                            <div className="w-full max-w-[260px] bg-black/40 border border-zinc-900 p-2">
+                              <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500 mb-2">
+                                <span className="uppercase tracking-[0.18em]">{historicalSeries.length > 0 && (selectedTimeframe === '30d' || selectedTimeframe === '90d') ? 'Series históricas' : 'Evolución real'}</span>
+                                <span>{timeframePosts.length} menciones</span>
+                              </div>
+                              <svg viewBox="0 0 600 220" className="w-full h-[95px] overflow-visible">
+                                <line x1="48" y1="176" x2="552" y2="176" stroke="#1f2937" strokeDasharray="3,3" />
+                                <line x1="48" y1="132" x2="552" y2="132" stroke="#1f2937" strokeDasharray="3,3" />
+                                <line x1="48" y1="88" x2="552" y2="88" stroke="#1f2937" strokeDasharray="3,3" />
                                 <polyline
                                   fill="none"
                                   stroke="#0099ff"
                                   strokeWidth="2.5"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  points={pointsString}
+                                  points={trendPath}
                                 />
-                                {trendValues.map((val, idx) => {
-                                  const x = padding + idx * xSpan;
-                                  const y = height - padding - (val / maxVal) * (height - padding * 2);
-                                  const isLast = idx === trendValues.length - 1;
+                                <polyline
+                                  fill="none"
+                                  stroke="#ef4444"
+                                  strokeWidth="2"
+                                  strokeDasharray="4,2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  points={tensionPath}
+                                />
+                                {trendSeries.map((point, idx) => {
+                                  const chartWidth = 600;
+                                  const chartHeight = 220;
+                                  const chartPadding = 48;
+                                  const x = chartPadding + idx * ((chartWidth - chartPadding * 2) / Math.max(trendSeries.length - 1, 1));
+                                  const y = chartHeight - chartPadding - (point.mentions / mentionMax) * (chartHeight - chartPadding * 2);
+                                  const tensionY = chartHeight - chartPadding - (point.tension / tensionMax) * (chartHeight - chartPadding * 2);
                                   return (
-                                    <circle
-                                      key={idx}
-                                      cx={x}
-                                      cy={y}
-                                      r={isLast ? 4 : 2}
-                                      fill={isLast ? '#0099ff' : '#4b5563'}
-                                      className={isLast ? 'animate-ping' : ''}
-                                    />
+                                    <g key={`${point.label}-${idx}`}>
+                                      <circle cx={x} cy={y} r="3" fill="#0099ff" />
+                                      <circle cx={x} cy={tensionY} r="2.2" fill="#ef4444" />
+                                      <text x={x - 10} y="208" fill="#71717a" fontSize="8" fontFamily="monospace">{point.label}</text>
+                                    </g>
                                   );
                                 })}
                               </svg>
                             </div>
-                            <span className="text-[9px] font-mono text-zinc-500 mt-1.5 uppercase">vs. mes anterior</span>
+                            <div className="flex items-center gap-2 text-[9px] font-mono text-zinc-500">
+                              <span className="text-cyan-400">● Menciones</span>
+                              <span className="text-red-400">● Tensión</span>
+                            </div>
                           </div>
 
                         </div>
@@ -1242,10 +1369,15 @@ export default function PortalWorkspace({
                               ))}
                             </div>
 
-                            <div className="bg-amber-950/20 border border-amber-900/15 p-2 rounded-none text-[10px] text-amber-300 flex items-center gap-1.5">
-                              <Flame className="h-4 w-4 text-amber-500 shrink-0" />
-                              <span>Foco Caliente Geolocalizado: <b>HUALGAYOC (Índice Combustión 7.8)</b></span>
-                            </div>
+                            {(() => {
+                              const hotspot = [...provinces].sort((a, b) => b.riskScore - a.riskScore)[0];
+                              return hotspot ? (
+                                <div className="bg-amber-950/20 border border-amber-900/15 p-2 rounded-none text-[10px] text-amber-300 flex items-center gap-1.5">
+                                  <Flame className="h-4 w-4 text-amber-500 shrink-0" />
+                                  <span>Foco Caliente Geolocalizado: <b>{hotspot.name.toUpperCase()} (Índice Combustión {hotspot.riskScore.toFixed(1)})</b></span>
+                                </div>
+                              ) : null;
+                            })()}
                           </div>
 
                         </div>
@@ -1264,10 +1396,20 @@ export default function PortalWorkspace({
                             <span className="text-[9px] font-mono font-black text-cyan-400 bg-cyan-950/20 border border-cyan-800/15 px-2 py-0.5">ESCUCHA ACTIVA API</span>
                             <h3 className="text-xs font-black text-white font-mono uppercase tracking-wider mt-1">Menciones Mediáticas</h3>
                           </div>
-                          <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/20 px-1.5 py-0.5 border border-emerald-900/10 font-bold flex items-center gap-1">
-                            <ArrowUp className="h-3 w-3" />
-                            <span>+23%</span>
-                          </span>
+                          {(() => {
+                            const now = Date.now();
+                            const h48 = 48 * 3600 * 1000;
+                            const recent = socialPosts.filter((p: any) => { const d = p.published_at ? new Date(p.published_at).getTime() : 0; return d > now - h48; }).length;
+                            const prior  = socialPosts.filter((p: any) => { const d = p.published_at ? new Date(p.published_at).getTime() : 0; return d > now - h48 * 2 && d <= now - h48; }).length;
+                            const delta  = prior > 0 ? Math.round(((recent - prior) / prior) * 100) : null;
+                            if (delta === null) return null;
+                            return (
+                              <span className={`text-[9px] font-mono px-1.5 py-0.5 border font-bold flex items-center gap-1 ${delta >= 0 ? 'text-emerald-400 bg-emerald-950/20 border-emerald-900/10' : 'text-red-400 bg-red-950/20 border-red-900/10'}`}>
+                                {delta >= 0 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+                                <span>{delta >= 0 ? '+' : ''}{delta}%</span>
+                              </span>
+                            );
+                          })()}
                         </div>
 
                         <div className="space-y-4">
@@ -1281,18 +1423,37 @@ export default function PortalWorkspace({
                             <span className="text-xs text-zinc-400 font-mono">Últimas 48 horas</span>
                           </div>
 
-                          {/* Sparkline mini bars custom CSS */}
+                          {/* Sparkline mini bars — últimas 12 horas desde social_listening */}
                           <div className="flex items-end justify-between h-8 gap-1 p-1 bg-[#020203] border border-zinc-900/50">
-                            {[30, 48, 22, 65, 38, 80, 52, 95, 60, 72, 88, 70].map((h, idx) => (
-                              <div key={idx} className="flex-1 bg-zinc-900 h-full relative overflow-hidden group">
-                                <motion.div 
-                                  initial={{ height: 0 }}
-                                  animate={{ height: `${h}%` }}
-                                  transition={{ duration: 1.2, delay: idx * 0.04 }}
-                                  className="absolute bottom-0 left-0 right-0 bg-cyan-400 group-hover:bg-[#0099ff] transition-colors"
-                                />
-                              </div>
-                            ))}
+                            {(() => {
+                              const now = Date.now();
+                              const SLOTS = 12;
+                              const slotMs = 3600 * 1000;
+                              const buckets = Array.from({ length: SLOTS }, (_, i) => {
+                                const slotStart = now - (SLOTS - i) * slotMs;
+                                const slotEnd   = now - (SLOTS - 1 - i) * slotMs;
+                                return socialPosts.filter((p: any) => {
+                                  const d = p.published_at ? new Date(p.published_at).getTime() : 0;
+                                  return d >= slotStart && d < slotEnd;
+                                }).length;
+                              });
+                              const maxVal = Math.max(...buckets, 1);
+                              const hasData = buckets.some(b => b > 0);
+                              const display = hasData
+                                ? buckets.map(b => Math.max(5, Math.round((b / maxVal) * 100)))
+                                : [15, 20, 17, 25, 20, 30, 22, 35, 28, 38, 30, 35];
+                              return display.map((h, idx) => (
+                                <div key={idx} className="flex-1 bg-zinc-900 h-full relative overflow-hidden group"
+                                  title={hasData ? `Hora -${SLOTS - idx}: ${buckets[idx]} posts` : 'Sin datos aún'}>
+                                  <motion.div
+                                    initial={{ height: 0 }}
+                                    animate={{ height: `${h}%` }}
+                                    transition={{ duration: 1.2, delay: idx * 0.04 }}
+                                    className={`absolute bottom-0 left-0 right-0 transition-colors ${hasData ? 'bg-cyan-400 group-hover:bg-[#0099ff]' : 'bg-zinc-700 group-hover:bg-zinc-500'}`}
+                                  />
+                                </div>
+                              ));
+                            })()}
                           </div>
                         </div>
 
@@ -1489,97 +1650,279 @@ export default function PortalWorkspace({
                       </div>
                     </div>
 
-                    {/* Detailed dossier layout */}
-                    <div className="bg-black border border-zinc-900 p-5 rounded-none grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 select-none">
-                      <div className="bg-zinc-950 border border-zinc-900 overflow-hidden">
-                        {selectedProvince.photoUrl ? (
-                          <img
-                            src={selectedProvince.photoUrl}
-                            alt={`Foto de ${selectedProvince.name}`}
-                            className="w-full h-56 object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-56 bg-zinc-900 grid place-items-center text-zinc-500 text-sm uppercase tracking-[0.22em]">
-                            Foto provincial no disponible
-                          </div>
-                        )}
+                    {/* ═══ PANEL DETALLE PROVINCIAL ROBUSTO ═══ */}
+                    <div className="space-y-4">
 
-                        <div className="p-4 space-y-4">
-                          <div>
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Filtro Temporal</span>
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {timeframeOptions.map((option) => (
-                                <button
-                                  key={option.id}
-                                  type="button"
-                                  onClick={() => setSelectedTimeframe(option.id as any)}
-                                  className={`text-[11px] border px-3 py-2 rounded-none font-mono transition-colors ${
-                                    selectedTimeframe === option.id
-                                      ? 'bg-cyan-500 text-slate-950 border-cyan-500'
-                                      : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:border-cyan-500 hover:text-white'
-                                  }`}
-                                >
-                                  {option.label}
+                      {/* Hero — foto + KPIs básicos */}
+                      <div className="bg-black border border-zinc-900 overflow-hidden">
+                        <div className="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)]">
+                          {/* Foto + info básica */}
+                          <div className="relative">
+                            {(provinceDetail?.photo_url || selectedProvince.photoUrl) ? (
+                              <img
+                                src={provinceDetail?.photo_url || selectedProvince.photoUrl}
+                                alt={selectedProvince.name}
+                                className="w-full h-52 xl:h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-52 xl:h-full bg-gradient-to-br from-zinc-900 to-zinc-950 grid place-items-center">
+                                <div className="text-center space-y-2">
+                                  <MapPin className="h-10 w-10 text-zinc-700 mx-auto" />
+                                  <span className="text-zinc-600 text-xs font-mono uppercase tracking-widest">Sin foto</span>
+                                </div>
+                              </div>
+                            )}
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                              <span className="text-[9px] font-mono text-cyan-400 uppercase tracking-widest">Dossier Provincial IICS</span>
+                              <h3 className="text-2xl font-black text-white font-mono uppercase leading-tight">{selectedProvince.name}</h3>
+                              {provinceDetail?.capital && (
+                                <span className="text-xs text-zinc-300 font-mono">Capital: {provinceDetail.capital}</span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* KPIs y descripción */}
+                          <div className="p-5 space-y-4">
+                            {/* Stats básicos */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                              <div className="bg-zinc-950 border border-zinc-900 p-3 text-center">
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">Riesgo IICS</span>
+                                <span className={`text-xl font-black font-mono block mt-1 ${selectedProvince.riskScore >= 7 ? 'text-red-400' : selectedProvince.riskScore >= 4 ? 'text-yellow-400' : 'text-cyan-400'}`}>
+                                  {selectedProvince.riskScore.toFixed(1)}
+                                </span>
+                                <span className="text-[9px] text-zinc-600 font-mono">/10 · {selectedProvince.riskDescription}</span>
+                              </div>
+                              <div className="bg-zinc-950 border border-zinc-900 p-3 text-center">
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">Alertas</span>
+                                <span className="text-xl font-black font-mono text-amber-400 block mt-1">{selectedProvince.alertCount}</span>
+                                <span className="text-[9px] text-zinc-600 font-mono">activas</span>
+                              </div>
+                              <div className="bg-zinc-950 border border-zinc-900 p-3 text-center">
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">Menciones</span>
+                                <span className="text-xl font-black font-mono text-white block mt-1">{selectedProvince.mencionesRedes.toLocaleString()}</span>
+                                <span className="text-[9px] text-zinc-600 font-mono">en redes</span>
+                              </div>
+                              <div className="bg-zinc-950 border border-zinc-900 p-3 text-center">
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">Población</span>
+                                <span className="text-xl font-black font-mono text-white block mt-1">
+                                  {provinceDetail?.poblacion_estimada ? (provinceDetail.poblacion_estimada / 1000).toFixed(0) + 'k' : '—'}
+                                </span>
+                                <span className="text-[9px] text-zinc-600 font-mono">hab. estimados</span>
+                              </div>
+                            </div>
+
+                            {/* Descripción de la BD */}
+                            {provinceDetail?.descripcion && (
+                              <div className="bg-zinc-950/50 border border-zinc-900 p-3">
+                                <span className="text-[9px] font-mono text-cyan-500 uppercase tracking-widest block mb-1">Descripción Territorial</span>
+                                <p className="text-xs text-zinc-300 leading-relaxed">{provinceDetail.descripcion}</p>
+                              </div>
+                            )}
+
+                            {/* Economía + Fuentes */}
+                            <div className="grid grid-cols-2 gap-3">
+                              {provinceDetail?.economia_principal?.length > 0 && (
+                                <div>
+                                  <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest block mb-1.5">Actividad Económica</span>
+                                  <div className="flex flex-wrap gap-1">
+                                    {provinceDetail.economia_principal.map((eco: string) => (
+                                      <span key={eco} className="text-[9px] font-mono text-emerald-400 bg-emerald-950/20 border border-emerald-900/20 px-1.5 py-0.5">{eco}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {(provinceDetail?.data_sources || selectedProvince.dataSources)?.length > 0 && (
+                                <div>
+                                  <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest block mb-1.5">Fuentes de Datos</span>
+                                  <div className="flex flex-wrap gap-1">
+                                    {(provinceDetail?.data_sources || selectedProvince.dataSources || []).map((src: string) => (
+                                      <span key={src} className="text-[9px] font-mono text-zinc-400 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5">{src}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Filtro temporal */}
+                            <div>
+                              <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest block mb-1.5">Período de Análisis</span>
+                              <div className="flex flex-wrap gap-2">
+                                {timeframeOptions.map((opt) => (
+                                  <button key={opt.id} type="button"
+                                    onClick={() => setSelectedTimeframe(opt.id as any)}
+                                    className={`text-[10px] border px-2.5 py-1.5 font-mono transition-colors cursor-pointer ${selectedTimeframe === opt.id ? 'bg-cyan-500 text-slate-950 border-cyan-500' : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-cyan-500 hover:text-white'}`}>
+                                    {opt.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Historia & Cultura */}
+                      {(provinceDetail?.historia || provinceDetail?.cultura) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {provinceDetail?.historia && (
+                            <div className="bg-black border border-zinc-900 p-4">
+                              <span className="text-[9px] font-mono text-amber-400 uppercase tracking-widest font-bold block mb-2 flex items-center gap-1.5">
+                                Historia
+                              </span>
+                              <p className="text-xs text-zinc-400 leading-relaxed">{provinceDetail.historia}</p>
+                            </div>
+                          )}
+                          {provinceDetail?.cultura && (
+                            <div className="bg-black border border-zinc-900 p-4">
+                              <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest font-bold block mb-2">
+                                Cultura & Tradiciones
+                              </span>
+                              <p className="text-xs text-zinc-400 leading-relaxed">{provinceDetail.cultura}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Indicadores múltiples por categoría */}
+                      {(provinceIndicators.length > 0 || selectedProvince.indicators.length > 0) && (
+                        <div className="bg-black border border-zinc-900 p-5 space-y-4">
+                          <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                            <span className="text-xs font-bold font-mono text-white uppercase flex items-center gap-1.5">
+                              <Activity className="h-4 w-4 text-cyan-400" />
+                              Indicadores Territoriales
+                            </span>
+                            {/* Category filter */}
+                            <div className="flex gap-1 flex-wrap">
+                              {['all','economico','social','ambiental','seguridad','salud','educacion'].map(cat => (
+                                <button key={cat} type="button"
+                                  onClick={() => setDetailIndicatorCategory(cat)}
+                                  className={`text-[8px] font-mono uppercase px-2 py-1 border cursor-pointer transition-all ${detailIndicatorCategory === cat ? 'bg-cyan-500 text-slate-950 border-cyan-500' : 'bg-zinc-950 text-zinc-500 border-zinc-800 hover:text-white hover:border-zinc-600'}`}>
+                                  {cat === 'all' ? 'Todos' : cat}
                                 </button>
                               ))}
                             </div>
                           </div>
 
-                          <div className="space-y-2">
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Contexto de Fuentes</span>
-                            {selectedProvince.dataSources && selectedProvince.dataSources.length > 0 ? (
-                              <div className="flex flex-wrap gap-2">
-                                {selectedProvince.dataSources.map((source) => (
-                                  <span key={source} className="text-[10px] font-mono text-zinc-200 bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-none">
-                                    {source}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {/* Real indicators from province_indicators table */}
+                            {provinceIndicators
+                              .filter(ind => detailIndicatorCategory === 'all' || ind.categoria === detailIndicatorCategory)
+                              .map(ind => (
+                              <div key={ind.id} className="bg-zinc-950 border border-zinc-900 p-3 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className={`text-[8px] font-mono uppercase font-bold px-1.5 py-0.5 ${
+                                    ind.categoria === 'economico' ? 'text-emerald-400 bg-emerald-950/20' :
+                                    ind.categoria === 'ambiental' ? 'text-green-400 bg-green-950/20' :
+                                    ind.categoria === 'social'    ? 'text-blue-400 bg-blue-950/20' :
+                                    ind.categoria === 'seguridad' ? 'text-red-400 bg-red-950/20' :
+                                    ind.categoria === 'salud'     ? 'text-pink-400 bg-pink-950/20' :
+                                    'text-purple-400 bg-purple-950/20'
+                                  }`}>{ind.categoria}</span>
+                                  {ind.tendencia === 'subida' && <ArrowUp className="h-3 w-3 text-red-400" />}
+                                  {ind.tendencia === 'bajada' && <ArrowDown className="h-3 w-3 text-emerald-400" />}
+                                  {ind.tendencia === 'estable' && <span className="text-[8px] text-zinc-600 font-mono">━</span>}
+                                </div>
+                                <span className="text-[10px] text-zinc-400 font-mono block">{ind.nombre}</span>
+                                <div className="flex items-baseline gap-1">
+                                  <span className="text-base font-black text-white font-mono">
+                                    {typeof ind.valor === 'number' ? ind.valor.toLocaleString() : ind.valor}
                                   </span>
-                                ))}
+                                  <span className="text-[9px] text-zinc-500 font-mono">{ind.unidad}</span>
+                                </div>
+                                {ind.fuente && <span className="text-[8px] text-zinc-600 font-mono block">Fuente: {ind.fuente} · {ind.periodo}</span>}
                               </div>
-                            ) : (
-                              <p className="text-[11px] text-zinc-500">No hay fuentes registradas para esta provincia.</p>
+                            ))}
+                            {/* Fallback: hardcoded indicators from province data */}
+                            {provinceIndicators.length === 0 && selectedProvince.indicators.map((ind: any) => (
+                              <div key={ind.label} className="bg-zinc-950 border border-zinc-900 p-3">
+                                <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">{ind.label}</span>
+                                <span className="text-white font-extrabold font-mono text-sm block mt-1">{ind.value}</span>
+                                <span className="text-[8px] text-zinc-700 font-mono">Fuente: datos locales</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Gráfica histórica provincial */}
+                      {historicalSeries.length > 0 && (
+                        <div className="bg-black border border-zinc-900 p-5 space-y-3">
+                          <div className="flex items-center justify-between border-b border-zinc-900 pb-2">
+                            <span className="text-xs font-bold font-mono text-white uppercase">Tendencia Histórica</span>
+                            <span className="text-[9px] font-mono text-zinc-500">province_historical_series · {selectedProvince.name}</span>
+                          </div>
+                          <svg viewBox="0 0 600 140" className="w-full h-32">
+                            <line x1="0" y1="28" x2="600" y2="28" stroke="#18181b" strokeDasharray="3,3" />
+                            <line x1="0" y1="70" x2="600" y2="70" stroke="#18181b" strokeDasharray="3,3" />
+                            <line x1="0" y1="112" x2="600" y2="112" stroke="#18181b" strokeDasharray="3,3" />
+                            {trendSeries.length > 0 && (
+                              <>
+                                <polyline fill="none" stroke="#06b6d4" strokeWidth="2.5" points={trendPath} />
+                                <polyline fill="none" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="4,2" points={tensionPath} />
+                                {trendSeries.map((pt, idx) => {
+                                  const W = 600, H = 140, P = 30;
+                                  const x = P + idx * ((W - P*2) / Math.max(trendSeries.length - 1, 1));
+                                  const y1 = H - P - (pt.mentions / Math.max(mentionMax, 1)) * (H - P*2);
+                                  const y2 = H - P - (pt.tension / 10) * (H - P*2);
+                                  return (
+                                    <g key={pt.label}>
+                                      <circle cx={x} cy={y1} r="3" fill="#06b6d4" />
+                                      <circle cx={x} cy={y2} r="3" fill="#ef4444" />
+                                      <text x={x - 8} y={H - 2} fill="#71717a" fontSize="8" fontFamily="monospace">{pt.label}</text>
+                                    </g>
+                                  );
+                                })}
+                              </>
                             )}
-                          </div>
-
-                          <div className="space-y-1">
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Resumen del período</span>
-                            <p className="text-xs leading-relaxed text-zinc-400">
-                              Visualización adaptada a <span className="text-white font-semibold">{timeframeOptions.find((opt) => opt.id === selectedTimeframe)?.label}</span>. Los indicadores se muestran como punto de partida para comparar riesgo, alertas y cohesión local.
-                            </p>
+                          </svg>
+                          <div className="flex gap-4 text-[9px] font-mono">
+                            <span className="flex items-center gap-1 text-cyan-400"><span className="w-3 h-0.5 bg-cyan-400 inline-block"></span>Menciones</span>
+                            <span className="flex items-center gap-1 text-red-400"><span className="w-3 h-0.5 bg-red-400 inline-block"></span>Tensión</span>
                           </div>
                         </div>
-                      </div>
+                      )}
 
-                      <div className="space-y-5 text-left">
-                        <div className="space-y-2.5">
-                          <span className="block text-[8px] font-mono text-zinc-500 tracking-widest uppercase">Dossier Analítico de</span>
-                          <h4 className="text-lg font-black text-white font-mono uppercase tracking-tight leading-none">{selectedProvince.name}</h4>
-                          <p className="text-xs text-zinc-350 leading-relaxed font-sans">
-                            Inspección de las variables demográficas y territoriales. La captación hídrica y los pasivos acumulados representan desafíos clave. El IICS ejerce escucha activa las 24 horas sobre este polo comitente.
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
-                          {selectedProvince.indicators.map((ind) => (
-                            <div key={ind.label} className="bg-zinc-950 border border-zinc-900 p-3 text-left">
-                              <span className="block text-[9px] font-mono text-zinc-500 uppercase tracking-wider">{ind.label}</span>
-                              <span className="text-white font-extrabold font-mono text-sm block mt-1">{ind.value}</span>
+                      {/* Distritos y caseríos */}
+                      {provinceDistricts.length > 0 && (
+                        <div className="bg-black border border-zinc-900 p-5 space-y-4">
+                          <div className="flex items-center justify-between border-b border-zinc-900 pb-2 flex-wrap gap-2">
+                            <span className="text-xs font-bold font-mono text-white uppercase flex items-center gap-1.5">
+                              <Landmark className="h-4 w-4 text-cyan-400" />
+                              Distritos, Caseríos y Centros Poblados
+                              <span className="text-zinc-600 font-normal">({provinceDistricts.length})</span>
+                            </span>
+                            <div className="flex gap-1">
+                              {(['all','distrito','caserio','centro_poblado'] as const).map(tipo => (
+                                <button key={tipo} type="button"
+                                  onClick={() => setDetailDistrictFilter(tipo)}
+                                  className={`text-[8px] font-mono uppercase px-2 py-1 border cursor-pointer transition-all ${detailDistrictFilter === tipo ? 'bg-cyan-500 text-slate-950 border-cyan-500' : 'bg-zinc-950 text-zinc-500 border-zinc-800 hover:text-white'}`}>
+                                  {tipo === 'all' ? 'Todos' : tipo === 'centro_poblado' ? 'C. Poblado' : tipo}
+                                </button>
+                              ))}
                             </div>
-                          ))}
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-72 overflow-y-auto pr-1">
+                            {provinceDistricts
+                              .filter(d => detailDistrictFilter === 'all' || d.tipo === detailDistrictFilter)
+                              .map(d => (
+                              <div key={d.id} className="bg-zinc-950 border border-zinc-900 p-3 space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-white text-xs font-mono truncate">{d.nombre}</span>
+                                  <span className={`text-[8px] font-mono px-1.5 py-0.5 ${
+                                    d.tipo === 'distrito' ? 'text-cyan-400 bg-cyan-950/20' :
+                                    d.tipo === 'caserio'  ? 'text-amber-400 bg-amber-950/20' :
+                                    'text-purple-400 bg-purple-950/20'
+                                  }`}>{d.tipo}</span>
+                                </div>
+                                {d.capital && <span className="text-[9px] text-zinc-500 font-mono block">Capital: {d.capital}</span>}
+                                {d.poblacion && <span className="text-[9px] text-zinc-500 font-mono block">Pob: {d.poblacion.toLocaleString()} hab.</span>}
+                                {d.altitud_msnm && <span className="text-[9px] text-zinc-600 font-mono block">{d.altitud_msnm} msnm</span>}
+                                {d.descripcion && <p className="text-[9px] text-zinc-500 leading-relaxed line-clamp-2">{d.descripcion}</p>}
+                              </div>
+                            ))}
+                          </div>
                         </div>
+                      )}
 
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          <div className="bg-zinc-950 border border-zinc-900 p-4 text-sm text-zinc-300">
-                            <span className="block text-[9px] font-mono uppercase tracking-widest text-zinc-500">Nivel de Riesgo</span>
-                            <p className="mt-2 text-white font-black text-2xl">{selectedProvince.riskScore.toFixed(1)} / 10</p>
-                            <p className="mt-1 text-xs text-zinc-400">Riesgo {selectedProvince.riskDescription}</p>
-                          </div>
-                          <div className="bg-zinc-950 border border-zinc-900 p-4 text-sm text-zinc-300">
-                            <span className="block text-[9px] font-mono uppercase tracking-widest text-zinc-500">Alertas Locales</span>
-                            <p className="mt-2 text-white font-black text-2xl">{selectedProvince.alertCount}</p>
-                            <p className="mt-1 text-xs text-zinc-400">alerta(s) activas en el período seleccionado</p>
-                          </div>
-                        </div>
-                      </div>
                     </div>
 
                     {/* Provincial Social Listening Feed */}
@@ -1656,62 +1999,58 @@ export default function PortalWorkspace({
                           </div>
                         </div>
 
-                        {/* Complete custom vector Line Chart representing recharts style */}
+                        {/* ── Dynamic Line Chart — usa trendSeries (useMemo real data) ── */}
                         <div className="h-64 bg-zinc-950/50 border border-zinc-900 flex items-end justify-between p-4 relative">
-                          
-                          {/* Grid Y-axis indicators */}
+                          {/* Grid Y-axis labels */}
                           <div className="absolute top-2 left-2 flex flex-col justify-between h-56 text-[8px] font-mono text-zinc-650 opacity-80">
-                            <span>10 (Altisimo)</span>
+                            <span>10 (Altísimo)</span>
                             <span>7.5 (Elevado)</span>
                             <span>5.0 (Moderado)</span>
                             <span>2.5 (Estable)</span>
                             <span>0 (Nulo)</span>
                           </div>
 
-                          <svg viewBox="0 0 600 220" className="w-full h-full text-zinc-700 overflow-visible z-10 px-6">
-                            {/* Gridlines */}
-                            <line x1="0" y1="44" x2="600" y2="44" stroke="#1c1917" strokeDasharray="3,3" />
-                            <line x1="0" y1="88" x2="600" y2="88" stroke="#1c1917" strokeDasharray="3,3" />
-                            <line x1="0" y1="132" x2="600" y2="132" stroke="#1c1917" strokeDasharray="3,3" />
-                            <line x1="0" y1="176" x2="600" y2="176" stroke="#1c1917" strokeDasharray="3,3" />
+                          {trendSeries.length === 0 ? (
+                            <div className="w-full flex items-center justify-center h-full text-zinc-600 text-xs font-mono">
+                              Sin datos para el período — agrega entradas en province_historical_series o social_listening
+                            </div>
+                          ) : (
+                            <svg viewBox="0 0 600 220" className="w-full h-full text-zinc-700 overflow-visible z-10 px-6">
+                              {/* Gridlines */}
+                              <line x1="0" y1="44" x2="600" y2="44" stroke="#1c1917" strokeDasharray="3,3" />
+                              <line x1="0" y1="88" x2="600" y2="88" stroke="#1c1917" strokeDasharray="3,3" />
+                              <line x1="0" y1="132" x2="600" y2="132" stroke="#1c1917" strokeDasharray="3,3" />
+                              <line x1="0" y1="176" x2="600" y2="176" stroke="#1c1917" strokeDasharray="3,3" />
 
-                            {/* Data Lines paths */}
-                            {/* Redes Mentions data coordinates (Jan -> Jun) */}
-                            {/* [Jan: 4.2k, Feb: 5.5s, Mar: 3.8s, Apr: 8.5s, May: 11k, Jun: 12.5k] */}
-                            <polyline
-                              fill="none"
-                              stroke="#06b6d4"
-                              strokeWidth="3.2"
-                              points="50,165 150,140 250,155 350,90 450,55 550,35"
-                            />
-                            {/* Physical conflict Index coordinates */}
-                            {/* [Jan: 3.2, Feb: 3.6, Mar: 4.1, Apr: 5.8, May: 6.9, Jun: 8.2] */}
-                            <polyline
-                              fill="none"
-                              stroke="#ef4444"
-                              strokeWidth="3.2"
-                              strokeDasharray="4,2"
-                              points="50,180 150,170 250,160 350,110 450,85 550,60"
-                            />
+                              {/* Menciones line (cyan) — from trendPath computed in useMemo */}
+                              <polyline fill="none" stroke="#06b6d4" strokeWidth="3.2" points={trendPath} />
+                              {/* Tensión line (red dashed) — from tensionPath computed in useMemo */}
+                              <polyline fill="none" stroke="#ef4444" strokeWidth="3.2" strokeDasharray="4,2" points={tensionPath} />
 
-                            {/* Nodes dots */}
-                            {[
-                              {x: 50, y1: 165, y2: 180, lbl: 'Ene'},
-                              {x: 150, y1: 140, y2: 170, lbl: 'Feb'},
-                              {x: 250, y1: 155, y2: 160, lbl: 'Mar'},
-                              {x: 350, y1: 90, y2: 110, lbl: 'Abr'},
-                              {x: 450, y1: 55, y2: 85, lbl: 'May'},
-                              {x: 550, y1: 35, y2: 60, lbl: 'Jun'}
-                            ].map((nd) => (
-                              <g key={nd.lbl}>
-                                <circle cx={nd.x} cy={nd.y1} r="4" fill="#06b6d4" className="hover:scale-125 transition-transform" />
-                                <circle cx={nd.x} cy={nd.y2} r="4" fill="#ef4444" className="hover:scale-125 transition-transform" />
-                                <text x={nd.x - 10} y="210" fill="#a1a1aa" fontSize="9" fontFamily="monospace">{nd.lbl}</text>
-                              </g>
-                            ))}
-                          </svg>
+                              {/* Data nodes with tooltips */}
+                              {trendSeries.map((pt, idx) => {
+                                const chartW = 600; const chartH = 220; const pad = 48;
+                                const x  = pad + idx * ((chartW - pad * 2) / Math.max(trendSeries.length - 1, 1));
+                                const y1 = chartH - pad - (pt.mentions / Math.max(mentionMax, 1)) * (chartH - pad * 2);
+                                const y2 = chartH - pad - (pt.tension   / 10) * (chartH - pad * 2);
+                                return (
+                                  <g key={pt.label}>
+                                    <circle cx={x} cy={y1} r="4" fill="#06b6d4">
+                                      <title>{pt.label}: {pt.mentions.toLocaleString()} menciones</title>
+                                    </circle>
+                                    <circle cx={x} cy={y2} r="4" fill="#ef4444">
+                                      <title>{pt.label}: tensión {pt.tension.toFixed(1)}/10</title>
+                                    </circle>
+                                    <text x={x - 8} y="215" fill="#a1a1aa" fontSize="9" fontFamily="monospace">{pt.label}</text>
+                                  </g>
+                                );
+                              })}
+                            </svg>
+                          )}
 
-                          <div className="absolute bottom-1 right-2 text-[8px] font-mono text-zinc-650 opacity-80 uppercase">[ Proyección Semestral de Conflictos - IICS 2026 ]</div>
+                          <div className="absolute bottom-1 right-2 text-[8px] font-mono text-zinc-650 opacity-80 uppercase">
+                            [ {historicalSeries.length > 0 ? 'Serie Histórica BD' : 'Social Listening'} · {selectedProvince.name} · {selectedTimeframe.toUpperCase()} ]
+                          </div>
                         </div>
 
                       </div>
@@ -1753,12 +2092,10 @@ export default function PortalWorkspace({
                               const pos = Math.round((topicPosts.filter((p: any) => p.sentiment === 'positive').length / total) * 100);
                               const neg = Math.round((topicPosts.filter((p: any) => p.sentiment === 'negative').length / total) * 100);
                               const neu = 100 - pos - neg;
-                              const breakdown = socialPosts.length > 0
-                                ? { pos, neu, neg }
-                                : selectedSentimentTopic === 'mineria'        ? { pos: 10, neu: 30, neg: 60 }
-                                  : selectedSentimentTopic === 'gobernabilidad' ? { pos: 25, neu: 45, neg: 30 }
-                                  : selectedSentimentTopic === 'cohesion'       ? { pos: 80, neu: 15, neg: 5  }
-                                  : { pos: 35, neu: 30, neg: 35 };
+                              const noRealData = socialPosts.length === 0;
+                              const breakdown = noRealData
+                                ? { pos: 0, neu: 0, neg: 0 }
+                                : { pos, neu, neg };
                               return (
                                 <div className="space-y-3">
                                   <div className="w-full h-3 bg-zinc-950 flex overflow-hidden border border-zinc-900">

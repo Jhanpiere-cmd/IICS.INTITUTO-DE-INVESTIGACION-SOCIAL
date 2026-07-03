@@ -100,6 +100,7 @@ import { RadarView } from './components/radar/RadarView';
 import { TransmediaView } from './components/transmedia/TransmediaView';
 import { ConflictsView } from './components/conflicts/ConflictsView';
 import { ProvinceMetricsView } from './components/province-metrics/ProvinceMetricsView';
+import { ProvinciasDetalleAdmin } from './components/province-metrics/ProvinciasDetalleAdmin';
 import { SocialListeningView } from './components/social-listening/SocialListeningView';
 
 const Layout: React.FC = () => {
@@ -135,6 +136,8 @@ const Layout: React.FC = () => {
             case '/whiteboard': return 'Pizarra Neural';
             case '/radar': return 'Radar Estratégico';
             case '/transmedia': return 'Difusión Transmedia';
+            case '/province-detail': return 'Gestión Territorial Detallada';
+            case '/province-metrics': return 'Métricas Provinciales';
             default: return 'SGR-ACS';
         }
     };
@@ -184,6 +187,7 @@ const Layout: React.FC = () => {
                         <Route path="/transmedia" element={<TransmediaView />} />
                         <Route path="/conflicts" element={<ConflictsView />} />
                         <Route path="/province-metrics" element={<ProvinceMetricsView />} />
+                        <Route path="/province-detail" element={<ProvinciasDetalleAdmin />} />
                         <Route path="/social-listening" element={<SocialListeningView />} />
                         <Route path="/api/youtube/callback" element={<YoutubeCallback />} />
                         <Route path="*" element={<Navigate to="/" replace />} />
