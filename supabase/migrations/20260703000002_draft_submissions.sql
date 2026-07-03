@@ -81,8 +81,8 @@ CREATE TRIGGER set_draft_updated_at
 CREATE OR REPLACE VIEW public.v_draft_submissions AS
 SELECT
   ds.*,
-  p.full_name AS author_name,
-  p.email     AS author_email
+  p."fullName"  AS author_name,
+  p."email"     AS author_email
 FROM public.draft_submissions ds
 LEFT JOIN public.profiles p ON p.id = ds.user_id;
 
