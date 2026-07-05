@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS public.province_details (
 );
 
 ALTER TABLE public.province_details ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read province_details" ON public.province_details;
 CREATE POLICY "Public read province_details" ON public.province_details FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Auth write province_details" ON public.province_details;
 CREATE POLICY "Auth write province_details"  ON public.province_details FOR ALL USING (auth.role() = 'authenticated');
 
 -- 2. DISTRICTS — distritos, caseríos, centros poblados
@@ -52,7 +54,9 @@ CREATE INDEX IF NOT EXISTS idx_districts_parent    ON public.districts(parent_di
 CREATE INDEX IF NOT EXISTS idx_districts_tipo      ON public.districts(tipo);
 
 ALTER TABLE public.districts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read districts" ON public.districts;
 CREATE POLICY "Public read districts" ON public.districts FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Auth write districts" ON public.districts;
 CREATE POLICY "Auth write districts"  ON public.districts FOR ALL USING (auth.role() = 'authenticated');
 
 -- 3. PROVINCE_INDICATORS — indicadores múltiples por categoría
@@ -77,7 +81,9 @@ CREATE INDEX IF NOT EXISTS idx_prov_ind_categoria ON public.province_indicators(
 CREATE INDEX IF NOT EXISTS idx_prov_ind_status    ON public.province_indicators(status);
 
 ALTER TABLE public.province_indicators ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read province_indicators" ON public.province_indicators;
 CREATE POLICY "Public read province_indicators" ON public.province_indicators FOR SELECT USING (status = 'published');
+DROP POLICY IF EXISTS "Auth write province_indicators" ON public.province_indicators;
 CREATE POLICY "Auth write province_indicators"  ON public.province_indicators FOR ALL USING (auth.role() = 'authenticated');
 
 -- 4. SYSTEM_LOGS — reemplaza telemetryLogs hardcodeado
@@ -94,7 +100,9 @@ CREATE INDEX IF NOT EXISTS idx_system_logs_ts      ON public.system_logs(ts DESC
 CREATE INDEX IF NOT EXISTS idx_system_logs_service ON public.system_logs(service);
 
 ALTER TABLE public.system_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Auth read system_logs" ON public.system_logs;
 CREATE POLICY "Auth read system_logs"  ON public.system_logs FOR SELECT USING (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "Auth write system_logs" ON public.system_logs;
 CREATE POLICY "Auth write system_logs" ON public.system_logs FOR ALL   USING (auth.role() = 'authenticated');
 
 -- ============================================================
