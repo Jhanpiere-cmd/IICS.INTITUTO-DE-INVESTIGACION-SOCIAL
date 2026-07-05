@@ -22,11 +22,13 @@ CREATE INDEX IF NOT EXISTS idx_research_lines_order  ON public.research_lines(or
 ALTER TABLE public.research_lines ENABLE ROW LEVEL SECURITY;
 
 -- Cualquiera puede leer las líneas activas (select del formulario público)
+DROP POLICY IF EXISTS "Public read research_lines" ON public.research_lines;
 CREATE POLICY "Public read research_lines"
   ON public.research_lines FOR SELECT
   USING (active = true);
 
 -- Solo admins/directores pueden crear/modificar
+DROP POLICY IF EXISTS "Admins manage research_lines" ON public.research_lines;
 CREATE POLICY "Admins manage research_lines"
   ON public.research_lines FOR ALL
   USING (

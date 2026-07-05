@@ -30,19 +30,23 @@ CREATE INDEX IF NOT EXISTS idx_draft_created ON public.draft_submissions(created
 -- RLS: usuarios ven sus propios borradores; admins ven todos
 ALTER TABLE public.draft_submissions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users read own drafts" ON public.draft_submissions;
 CREATE POLICY "Users read own drafts"
   ON public.draft_submissions FOR SELECT
   USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Auth users insert drafts" ON public.draft_submissions;
 CREATE POLICY "Auth users insert drafts"
   ON public.draft_submissions FOR INSERT
   WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Auth users update own drafts" ON public.draft_submissions;
 CREATE POLICY "Auth users update own drafts"
   ON public.draft_submissions FOR UPDATE
   USING (user_id = auth.uid());
 
 -- Admins ven todo (requiere rol 'admin' en profiles.role)
+DROP POLICY IF EXISTS "Admins read all drafts" ON public.draft_submissions;
 CREATE POLICY "Admins read all drafts"
   ON public.draft_submissions FOR SELECT
   USING (
@@ -53,6 +57,7 @@ CREATE POLICY "Admins read all drafts"
     )
   );
 
+DROP POLICY IF EXISTS "Admins update all drafts" ON public.draft_submissions;
 CREATE POLICY "Admins update all drafts"
   ON public.draft_submissions FOR UPDATE
   USING (
