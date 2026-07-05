@@ -676,9 +676,17 @@ export default function PortalWorkspace({
 
   // Filter & sort provinces for 'provinces' tab
   const filteredProvinces = provinces.filter((p) => {
-    const matchesQuery = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         p.keyIssues.some((issue) => issue.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesQuery;
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return true;
+    const blob = [
+      p.name,
+      (p as any).capital || '',
+      (p as any).riskDescription || '',
+      (p as any).activeAlert || '',
+      ...(p.keyIssues || []),
+      ...(p.indicators || []).map((ind: any) => `${ind.label} ${ind.value}`),
+    ].join(' ').toLowerCase();
+    return q.split(/\s+/).every((word) => blob.includes(word));
   }).sort((a, b) => {
     let order = 1;
     if (sortDirection === 'desc') order = -1;
@@ -3106,7 +3114,7 @@ export default function PortalWorkspace({
                                           }, 180);
                                         }}
                                         className="w-full flex items-center justify-center gap-1.5 bg-zinc-950 hover:bg-cyan-500 text-zinc-400 hover:text-slate-950 font-mono py-2 text-[10px] uppercase font-bold border border-zinc-900 hover:border-transparent transition-all cursor-pointer">
-                                        <FileDown className="h-3.5 w-3.5" /><span>Descargar Dataset</span>
+                                        <FileDown className="h-3.5 w-3.5" /><span>Simular Descarga</span>
                                       </button>
                                     )}
                                   </div>
