@@ -175,7 +175,7 @@ export default function PortalWorkspace({
 
   const handleRegisterProposal = async (e: FormEvent) => {
     e.preventDefault();
-    if (!proposalForm.clientName || !proposalForm.title || !proposalForm.value) {
+    if (!proposalForm.clientName || !proposalForm.title) {
       alert('Por favor, determine los campos requeridos (*).');
       return;
     }
@@ -186,12 +186,12 @@ export default function PortalWorkspace({
         .insert({
           title: proposalForm.title,
           client_name: proposalForm.clientName,
-          value: parseFloat(proposalForm.value),
+          value: 0,
           description: proposalForm.description,
           status: 'Borrador'
         });
       if (error) throw error;
-      alert('¡Solicitud de propuesta comercial registrada exitosamente! Nuestro equipo de finanzas la evaluará en el tablero CRM.');
+      alert('¡Solicitud de propuesta comercial registrada exitosamente! Nuestro equipo evaluará y valorizará el requerimiento.');
       setProposalForm({ clientName: '', title: '', value: '', description: '' });
     } catch (err) {
       console.error('Error inserting consulting proposal:', err);
@@ -3395,15 +3395,13 @@ export default function PortalWorkspace({
                     </div>
                   </div>
                 )}
-
-                {/* VIEW: SERVICIOS DE CONSULTORÍA Y SOSTENIBILIDAD */}
                 {activeTab === 'consulting' && (
                   <div className="space-y-6 text-left">
                     <div className="space-y-1">
-                      <span className="text-[9px] font-mono tracking-widest text-[#0099ff] font-bold uppercase bg-cyan-950/20 border border-cyan-800/10 px-2.5 py-0.5">Sostenibilidad Comercial</span>
-                      <h2 className="text-base font-black text-white uppercase mt-1.5 font-sans">Servicios de Consultoría Científica</h2>
-                      <p className="text-xs text-zinc-400">
-                        El IICS financia sus investigaciones independientes a través de soluciones metodológicas de alta precisión para organizaciones públicas y privadas.
+                      <span className="text-[9px] font-mono tracking-widest text-[#0099ff] font-bold uppercase bg-cyan-950/20 border border-cyan-800/10 px-2.5 py-0.5">Sostenibilidad Científica Privada</span>
+                      <h2 className="text-base font-black text-white uppercase mt-1.5 font-sans">Consultoría de Precisión & Sostenibilidad</h2>
+                      <p className="text-xs text-zinc-400 leading-relaxed max-w-3xl">
+                        El IICS es un **instituto científico privado e independiente**. Financiamos el sostenimiento técnico del *Observatorio Regional* y el *Laboratorio de Sociología Digital* a través de consultorías especializadas de alta precisión para el sector privado, cooperación internacional y desarrollo territorial.
                       </p>
                     </div>
 
@@ -3411,29 +3409,29 @@ export default function PortalWorkspace({
                       {/* Left column: Services portfolio */}
                       <div className="lg:col-span-7 space-y-4">
                         <h4 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider border-b border-zinc-900 pb-1">
-                          Portafolio de Especialidades IICS
+                          Portafolio de Especialidades Científicas
                         </h4>
                         
                         <div className="grid grid-cols-1 gap-4">
                           {[
                             {
-                              title: 'SIG & Catastro Multitemporal',
-                              desc: 'Diseño de capas geoespaciales, digitalización de parcelas territoriales y modelamiento cartográfico para proyectos socioambientales.',
+                              title: 'Inteligencia Territorial & GIS',
+                              desc: 'Modelamiento geoespacial, catastro multitemporal, cartografía social de disputas y demarcaciones territoriales avanzadas mediante drones y QGIS.',
                               icon: MapPin
                             },
                             {
-                              title: 'NLP & Escucha Social Territorial',
-                              desc: 'Minería de opinión pública en tiempo real mediante algoritmos de inteligencia artificial aplicados a redes sociales, prensa y foros locales.',
+                              title: 'Ciencia de Datos & NLP Social',
+                              desc: 'Minería cualitativa y de opinión pública en tiempo real mediante algoritmos NLP y análisis de sentimientos de precisión sobre redes sociales, foros y prensa local.',
                               icon: LineChart
                             },
                             {
-                              title: 'Estudios de Impacto Social',
-                              desc: 'Líneas base cuantitativas y cualitativas, etnografía comunitaria directa y modelamiento de cohesión para resolución de disputas mineras.',
+                              title: 'Estudios de Impacto & Relaciones Comunitarias',
+                              desc: 'Diagnósticos socioeconómicos de línea base, etnografía comunitaria directa y mediación científica de conflictos socioambientales para el sector extractivo.',
                               icon: Landmark
                             },
                             {
-                              title: 'Talleres Metodológicos Corporativos',
-                              desc: 'Programas in-house y consultoría de diseño metodológico en Zotero corporativo, Atlas.ti y metodologías de sociología digital de precisión.',
+                              title: 'Capacitación Metodológica Corporativa',
+                              desc: 'Programas in-house avanzados y consultoría de diseño metodológico en Atlas.ti, QGIS, Zotero corporativo y sociología digital de precisión.',
                               icon: BookOpen
                             }
                           ].map((svc, idx) => {
@@ -3457,19 +3455,22 @@ export default function PortalWorkspace({
                       <div className="lg:col-span-5 bg-[#050506] border border-zinc-900 p-5 space-y-4">
                         <h4 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider border-b border-zinc-900 pb-1 flex items-center gap-1.5">
                           <Briefcase className="h-4.5 w-4.5 text-[#0099ff]" />
-                          Solicitar Propuesta Comercial
+                          Solicitar Propuesta Científica / Comercial
                         </h4>
+                        <p className="text-[10px] text-zinc-500 leading-relaxed font-mono">
+                          Envíe su requerimiento técnico. El equipo directivo del IICS analizará el alcance del proyecto y registrará la cotización/valorización correspondiente para su cuenta en el panel.
+                        </p>
 
                         <form onSubmit={handleRegisterProposal} className="space-y-4">
                           <div className="space-y-1.5">
-                            <label className="text-[9.5px] font-mono font-bold text-zinc-550 uppercase block">Cliente / Empresa Solicitante *</label>
+                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Cliente / Empresa Solicitante *</label>
                             <input
                               type="text"
                               required
                               value={proposalForm.clientName}
                               onChange={e => setProposalForm({ ...proposalForm, clientName: e.target.value })}
                               className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none uppercase"
-                              placeholder="Ej. Minera o Entidad Pública"
+                              placeholder="Ej. Minera Michiquillay o Entidad Privada"
                             />
                           </div>
 
@@ -3486,25 +3487,14 @@ export default function PortalWorkspace({
                           </div>
 
                           <div className="space-y-1.5">
-                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Presupuesto Estimado (Soles / USD) *</label>
-                            <input
-                              type="number"
-                              required
-                              value={proposalForm.value}
-                              onChange={e => setProposalForm({ ...proposalForm, value: e.target.value })}
-                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none"
-                              placeholder="Ej. 15000"
-                            />
-                          </div>
-
-                          <div className="space-y-1.5">
-                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Alcance / Descripción del Requerimiento</label>
+                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Alcance / Descripción del Requerimiento *</label>
                             <textarea
                               value={proposalForm.description}
                               onChange={e => setProposalForm({ ...proposalForm, description: e.target.value })}
-                              rows={4}
+                              required
+                              rows={5}
                               className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none resize-none"
-                              placeholder="Detalles de la consultoría..."
+                              placeholder="Describa el alcance del servicio, objetivos y resultados esperados..."
                             />
                           </div>
 

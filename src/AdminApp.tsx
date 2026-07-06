@@ -17,6 +17,7 @@ import { CalendarViewNew } from '@/components/calendar/CalendarViewNew';
 import { MeetingsView } from '@/components/meetings/MeetingsView';
 import { NewsView } from '@/components/news/NewsView';
 import { EditorialView } from '@/components/news/EditorialView';
+import { ConsultingView } from '@/components/consulting/ConsultingView';
 import { ProposalsView } from '@/components/proposals/ProposalsView';
 import { BenefitsView } from '@/components/benefits/BenefitsView';
 import { AlliancesView } from '@/components/alliances/AlliancesView';
@@ -137,6 +138,7 @@ const Layout: React.FC = () => {
                         <Route path="benefits" element={<BenefitsView />} />
                         <Route path="alliances" element={<AlliancesView />} />
                         <Route path="finance" element={<FinanceView />} />
+                        <Route path="consulting" element={<ConsultingView />} />
                         <Route path="training" element={<TrainingView />} />
                         <Route path="users" element={<UserManagement />} />
                         <Route path="settings" element={<SettingsView />} />

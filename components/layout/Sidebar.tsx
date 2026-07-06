@@ -45,6 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/admin/users', icon: 'group', label: 'Usuarios' },
         { path: '/admin/alliances', icon: 'handshake', label: 'Alianzas' },
         { path: '/admin/finance', icon: 'account_balance_wallet', label: 'Gestión Financiera' },
+        { path: '/admin/consulting', icon: 'business_center', label: 'Proyectos y Sostenibilidad' },
         { path: '/admin/whiteboard', icon: 'edit_square', label: 'Pizarra Neural' },
         { path: '/admin/radar', icon: 'radar', label: 'Radar ACS' },
     ];
