@@ -140,28 +140,6 @@ export default function PortalWorkspace({
   const [loadingProposals, setLoadingProposals] = useState(false);
   const [showProposalForm, setShowProposalForm] = useState(false);
 
-  useEffect(() => {
-    fetchAfiCourses();
-    fetchUserProfile();
-  }, [user]);
-
-  useEffect(() => {
-    fetchTransmediaVideos();
-  }, []);
-
-  useEffect(() => { fetchSocialConflicts(); }, []);
-  useEffect(() => { fetchSocialPosts(); }, []);
-  useEffect(() => { fetchStatIndicators(); }, []);
-  useEffect(() => { fetchResearchDatasets(); }, []);
-  useEffect(() => { fetchHistoricalSeries(); }, [selectedProvinceId, provinces]);
-  useEffect(() => {
-    if (selectedProvince?.name) fetchProvinceDetail(selectedProvince.name);
-  }, [selectedProvinceId]);
-  useEffect(() => { fetchSystemLogs(); }, []);
-  useEffect(() => { if (user?.id) fetchDraftSubmissions(); }, [user?.id]);
-  useEffect(() => { if (user?.id) fetchUserProposals(); }, [user?.id]);
-  useEffect(() => { fetchResearchLines(); }, []);
-
   const fetchUserProfile = async () => {
     if (!user) return;
     try {
@@ -194,6 +172,28 @@ export default function PortalWorkspace({
       setLoadingProposals(false);
     }
   };
+
+  useEffect(() => {
+    fetchAfiCourses();
+    fetchUserProfile();
+  }, [user]);
+
+  useEffect(() => {
+    fetchTransmediaVideos();
+  }, []);
+
+  useEffect(() => { fetchSocialConflicts(); }, []);
+  useEffect(() => { fetchSocialPosts(); }, []);
+  useEffect(() => { fetchStatIndicators(); }, []);
+  useEffect(() => { fetchResearchDatasets(); }, []);
+  useEffect(() => { fetchHistoricalSeries(); }, [selectedProvinceId, provinces]);
+  useEffect(() => {
+    if (selectedProvince?.name) fetchProvinceDetail(selectedProvince.name);
+  }, [selectedProvinceId]);
+  useEffect(() => { fetchSystemLogs(); }, []);
+  useEffect(() => { if (user?.id) fetchDraftSubmissions(); }, [user?.id]);
+  useEffect(() => { if (user?.id) fetchUserProposals(); }, [user?.id]);
+  useEffect(() => { fetchResearchLines(); }, []);
 
   const handleRegisterProposal = async (e: FormEvent) => {
     e.preventDefault();
