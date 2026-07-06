@@ -16,6 +16,7 @@ import { UserManagement } from '@/components/users/UserManagement';
 import { CalendarViewNew } from '@/components/calendar/CalendarViewNew';
 import { MeetingsView } from '@/components/meetings/MeetingsView';
 import { NewsView } from '@/components/news/NewsView';
+import { EditorialView } from '@/components/news/EditorialView';
 import { ProposalsView } from '@/components/proposals/ProposalsView';
 import { BenefitsView } from '@/components/benefits/BenefitsView';
 import { AlliancesView } from '@/components/alliances/AlliancesView';
@@ -131,6 +132,7 @@ const Layout: React.FC = () => {
                         <Route path="events" element={<EventsView />} />
                         <Route path="events/moderator/:eventId" element={<EventsView />} />
                         <Route path="news" element={<NewsView />} />
+                        <Route path="editorial" element={<EditorialView />} />
                         <Route path="proposals" element={<ProposalsView />} />
                         <Route path="benefits" element={<BenefitsView />} />
                         <Route path="alliances" element={<AlliancesView />} />
