@@ -136,6 +136,9 @@ export default function PortalWorkspace({
     description: ''
   });
   const [submittingProposal, setSubmittingProposal] = useState(false);
+  const [userProposals, setUserProposals] = useState<any[]>([]);
+  const [loadingProposals, setLoadingProposals] = useState(false);
+  const [showProposalForm, setShowProposalForm] = useState(false);
 
   useEffect(() => {
     fetchAfiCourses();
@@ -156,6 +159,7 @@ export default function PortalWorkspace({
   }, [selectedProvinceId]);
   useEffect(() => { fetchSystemLogs(); }, []);
   useEffect(() => { if (user?.id) fetchDraftSubmissions(); }, [user?.id]);
+  useEffect(() => { if (user?.id) fetchUserProposals(); }, [user?.id]);
   useEffect(() => { fetchResearchLines(); }, []);
 
   const fetchUserProfile = async () => {
@@ -170,6 +174,24 @@ export default function PortalWorkspace({
       setAvatarUrl(data?.avatarUrl || null);
     } catch (err) {
       console.error('Error fetching user profile in portal:', err);
+    }
+  };
+
+  const fetchUserProposals = async () => {
+    if (!user?.id) return;
+    setLoadingProposals(true);
+    try {
+      const { data, error } = await supabase
+        .from('consulting_proposals')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setUserProposals(data || []);
+    } catch (err) {
+      console.error('Error fetching user proposals:', err);
+    } finally {
+      setLoadingProposals(false);
     }
   };
 
@@ -188,11 +210,13 @@ export default function PortalWorkspace({
           client_name: proposalForm.clientName,
           value: 0,
           description: proposalForm.description,
-          status: 'Borrador'
+          status: 'Borrador',
+          user_id: user?.id || null
         });
       if (error) throw error;
-      alert('¡Solicitud de propuesta comercial registrada exitosamente! Nuestro equipo evaluará y valorizará el requerimiento.');
+      alert('¡Solicitud de propuesta registrada exitosamente! Podrá ver el estado y valorización de su proyecto en la lista de solicitudes.');
       setProposalForm({ clientName: '', title: '', value: '', description: '' });
+      fetchUserProposals();
     } catch (err) {
       console.error('Error inserting consulting proposal:', err);
       alert('Hubo un error al procesar su solicitud de propuesta.');
@@ -3396,105 +3420,197 @@ export default function PortalWorkspace({
                   </div>
                 )}
                 {activeTab === 'consulting' && (
-                  <div className="space-y-6 text-left">
-                    <div className="space-y-1">
-                      <span className="text-[9px] font-mono tracking-widest text-[#0099ff] font-bold uppercase bg-cyan-950/20 border border-cyan-800/10 px-2.5 py-0.5">Sostenibilidad Científica Privada</span>
-                      <h2 className="text-base font-black text-white uppercase mt-1.5 font-sans">Consultoría de Precisión & Sostenibilidad</h2>
-                      <p className="text-xs text-zinc-400 leading-relaxed max-w-3xl">
-                        El IICS es un **instituto científico privado e independiente**. Financiamos el sostenimiento técnico del *Observatorio Regional* y el *Laboratorio de Sociología Digital* a través de consultorías especializadas de alta precisión para el sector privado, cooperación internacional y desarrollo territorial.
+                  <div className="space-y-8 text-left animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {/* Header */}
+                    <div className="space-y-2 border-b border-zinc-900 pb-5">
+                      <span className="text-[9px] font-mono tracking-widest text-cyan-400 font-bold uppercase bg-cyan-950/20 border border-cyan-800/10 px-2.5 py-0.5">
+                        Sostenibilidad Científica Privada
+                      </span>
+                      <h2 className="text-xl font-black text-white uppercase mt-1.5 font-sans tracking-tight">
+                        Consultoría de Precisión & Sostenibilidad
+                      </h2>
+                      <p className="text-xs text-zinc-400 leading-relaxed max-w-4xl font-sans">
+                        El IICS es un{' '}
+                        <strong className="text-zinc-100 font-extrabold">
+                          instituto científico privado e independiente
+                        </strong>
+                        . Financiamos el sostenimiento técnico del{' '}
+                        <em className="text-cyan-400 font-sans not-italic font-bold">
+                          Observatorio Regional
+                        </em>{' '}
+                        y el{' '}
+                        <em className="text-cyan-400 font-sans not-italic font-bold">
+                          Laboratorio de Sociología Digital
+                        </em>{' '}
+                        a través de consultorías especializadas de alta precisión para el sector privado, cooperación internacional y desarrollo territorial.
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                      {/* Left column: Services portfolio */}
-                      <div className="lg:col-span-7 space-y-4">
-                        <h4 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider border-b border-zinc-900 pb-1">
-                          Portafolio de Especialidades Científicas
-                        </h4>
-                        
-                        <div className="grid grid-cols-1 gap-4">
-                          {[
-                            {
-                              title: 'Inteligencia Territorial & GIS',
-                              desc: 'Modelamiento geoespacial, catastro multitemporal, cartografía social de disputas y demarcaciones territoriales avanzadas mediante drones y QGIS.',
-                              icon: MapPin
-                            },
-                            {
-                              title: 'Ciencia de Datos & NLP Social',
-                              desc: 'Minería cualitativa y de opinión pública en tiempo real mediante algoritmos NLP y análisis de sentimientos de precisión sobre redes sociales, foros y prensa local.',
-                              icon: LineChart
-                            },
-                            {
-                              title: 'Estudios de Impacto & Relaciones Comunitarias',
-                              desc: 'Diagnósticos socioeconómicos de línea base, etnografía comunitaria directa y mediación científica de conflictos socioambientales para el sector extractivo.',
-                              icon: Landmark
-                            },
-                            {
-                              title: 'Capacitación Metodológica Corporativa',
-                              desc: 'Programas in-house avanzados y consultoría de diseño metodológico en Atlas.ti, QGIS, Zotero corporativo y sociología digital de precisión.',
-                              icon: BookOpen
-                            }
-                          ].map((svc, idx) => {
-                            const SvcIcon = svc.icon;
-                            return (
-                              <div key={idx} className="bg-[#030304] border border-zinc-900 p-4 flex gap-4 items-start">
-                                <div className="p-2.5 bg-zinc-950 border border-zinc-850 text-cyan-400">
-                                  <SvcIcon className="h-5 w-5" />
-                                </div>
-                                <div className="space-y-1">
-                                  <h5 className="text-sm font-extrabold text-white uppercase">{svc.title}</h5>
-                                  <p className="text-[11px] text-zinc-400 leading-relaxed">{svc.desc}</p>
-                                </div>
-                              </div>
-                            );
-                          })}
+                    {/* Main Layout Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                      {/* Left Column (8 cols): Projects Tracker / Empty State */}
+                      <div className="lg:col-span-8 space-y-6">
+                        <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
+                          <h3 className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                            <Activity className="h-4 w-4 text-cyan-400" />
+                            Mis Proyectos & Consultorías Solicitadas
+                          </h3>
+                          <span className="text-[10px] font-mono text-zinc-500">
+                            {userProposals.length} Registros
+                          </span>
                         </div>
+
+                        {loadingProposals ? (
+                          <div className="py-12 flex justify-center items-center border border-zinc-900">
+                            <Clock className="h-5 w-5 text-cyan-400 animate-spin mr-2" />
+                            <span className="text-xs text-zinc-500 font-mono uppercase">Cargando proyectos...</span>
+                          </div>
+                        ) : userProposals.length === 0 ? (
+                          <div className="py-16 px-6 text-center border border-dashed border-zinc-900 bg-zinc-950/20 flex flex-col items-center justify-center space-y-4">
+                            <div className="p-4 bg-zinc-900 border border-zinc-800 text-zinc-600 animate-pulse">
+                              <Briefcase className="h-8 w-8" />
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-extrabold text-white uppercase tracking-wider">No tienes proyectos o consultorías activas</h4>
+                              <p className="text-[11px] text-zinc-500 max-w-md mx-auto leading-relaxed">
+                                Desde aquí podrás seguir en tiempo real la valorización (precio), el estado comercial y la fase operativa de tus proyectos.
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                const formEl = document.getElementById('solicitar-consultoria-form');
+                                if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
+                              }}
+                              className="px-4 py-2 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500 hover:text-black font-mono text-[9px] uppercase font-black tracking-widest transition-all rounded-none cursor-pointer"
+                            >
+                              Solicitar Nueva Consultoría
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-4">
+                            {userProposals.map((p) => {
+                              // Phase percentages helper
+                              const getPercent = (fase: string) => {
+                                switch (fase) {
+                                  case 'Diseño Metodológico': return 20;
+                                  case 'Trabajo de Campo': return 40;
+                                  case 'Análisis de Datos / NLP': return 65;
+                                  case 'Entregable Final': return 85;
+                                  case 'Completado': return 100;
+                                  default: return 5;
+                                }
+                              };
+                              const pct = getPercent(p.fase);
+
+                              return (
+                                <div key={p.id} className="bg-[#030304] border border-zinc-900 hover:border-zinc-800 p-5 space-y-4 transition-all">
+                                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                                    <div>
+                                      <h4 className="text-sm font-extrabold text-white uppercase tracking-wide leading-tight">{p.title}</h4>
+                                      <span className="text-[9px] text-zinc-500 font-mono mt-1 block">
+                                        Registrado: {new Date(p.created_at).toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                      </span>
+                                    </div>
+                                    <div className="shrink-0">
+                                      <span className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase border ${
+                                        p.status === 'Aprobada' ? 'bg-emerald-950/20 border-emerald-900/40 text-emerald-400' :
+                                        p.status === 'En Negociación' ? 'bg-amber-950/20 border-amber-900/40 text-amber-400' :
+                                        p.status === 'Rechazada' ? 'bg-red-950/20 border-red-900/40 text-red-400' :
+                                        'bg-zinc-900 border-zinc-800 text-zinc-400'
+                                      }`}>
+                                        {p.status === 'Borrador' ? 'En Evaluación' : p.status}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div className="space-y-1 text-xs">
+                                    <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest block">Alcance Técnico del Requerimiento</span>
+                                    <p className="text-zinc-400 leading-relaxed font-sans text-[11px] whitespace-pre-line">{p.description}</p>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-zinc-900/60 items-end">
+                                    <div>
+                                      <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest block mb-0.5">Valorización Asignada</span>
+                                      {Number(p.value) === 0 ? (
+                                        <div className="flex items-center text-amber-500/95 gap-1.5 font-mono text-[10px] uppercase font-bold animate-pulse">
+                                          <Clock className="h-3.5 w-3.5" />
+                                          <span>Pendiente de Valorización</span>
+                                        </div>
+                                      ) : (
+                                        <span className="text-base font-black text-white font-mono">
+                                          S/ {Number(p.value).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <div>
+                                      <div className="flex justify-between text-[8px] font-mono text-zinc-500 uppercase tracking-widest mb-1.5">
+                                        <span>Fase: {p.fase || 'No Iniciado'}</span>
+                                        <span>{pct}%</span>
+                                      </div>
+                                      <div className="w-full h-1 bg-zinc-900 rounded-none overflow-hidden border border-zinc-800/40">
+                                        <div 
+                                          className={`h-full transition-all duration-500 ${
+                                            p.status === 'Rechazada' ? 'bg-red-900' : 'bg-cyan-500'
+                                          }`} 
+                                          style={{ width: `${pct}%` }} 
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
 
-                      {/* Right column: Request proposal form */}
-                      <div className="lg:col-span-5 bg-[#050506] border border-zinc-900 p-5 space-y-4">
-                        <h4 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider border-b border-zinc-900 pb-1 flex items-center gap-1.5">
-                          <Briefcase className="h-4.5 w-4.5 text-[#0099ff]" />
-                          Solicitar Propuesta Científica / Comercial
-                        </h4>
-                        <p className="text-[10px] text-zinc-500 leading-relaxed font-mono">
-                          Envíe su requerimiento técnico. El equipo directivo del IICS analizará el alcance del proyecto y registrará la cotización/valorización correspondiente para su cuenta en el panel.
-                        </p>
+                      {/* Right Column (4 cols): Solicitar form */}
+                      <div id="solicitar-consultoria-form" className="lg:col-span-4 bg-[#050506] border border-zinc-900 p-5 space-y-4 text-left">
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider border-b border-zinc-900 pb-1.5 flex items-center gap-1.5">
+                            <PlusCircle className="h-4.5 w-4.5 text-cyan-400" />
+                            Nueva Solicitud de Proyecto
+                          </h4>
+                          <p className="text-[10px] text-zinc-550 leading-relaxed font-mono">
+                            Asociado a tu cuenta corporativa: <span className="text-zinc-400 font-bold">{user?.email}</span>
+                          </p>
+                        </div>
 
                         <form onSubmit={handleRegisterProposal} className="space-y-4">
                           <div className="space-y-1.5">
-                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Cliente / Empresa Solicitante *</label>
+                            <label className="text-[9.5px] font-mono font-bold text-zinc-500 uppercase block">Nombre de Empresa o Entidad *</label>
                             <input
                               type="text"
                               required
                               value={proposalForm.clientName}
                               onChange={e => setProposalForm({ ...proposalForm, clientName: e.target.value })}
-                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none uppercase"
+                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none uppercase transition-all"
                               placeholder="Ej. Minera Michiquillay o Entidad Privada"
                             />
                           </div>
 
                           <div className="space-y-1.5">
-                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Título del Requerimiento / Proyecto *</label>
+                            <label className="text-[9.5px] font-mono font-bold text-zinc-500 uppercase block">Título del Proyecto / Asunto *</label>
                             <input
                               type="text"
                               required
                               value={proposalForm.title}
                               onChange={e => setProposalForm({ ...proposalForm, title: e.target.value })}
-                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none uppercase"
+                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none uppercase transition-all"
                               placeholder="Ej. Catastro SIG Hualgayoc"
                             />
                           </div>
 
                           <div className="space-y-1.5">
-                            <label className="text-[9.5px] font-mono font-bold text-zinc-555 uppercase block">Alcance / Descripción del Requerimiento *</label>
+                            <label className="text-[9.5px] font-mono font-bold text-zinc-500 uppercase block">Alcance, Objetivos y Requerimiento *</label>
                             <textarea
                               value={proposalForm.description}
                               onChange={e => setProposalForm({ ...proposalForm, description: e.target.value })}
                               required
-                              rows={5}
-                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none resize-none"
-                              placeholder="Describa el alcance del servicio, objetivos y resultados esperados..."
+                              rows={6}
+                              className="w-full bg-[#030304] border border-zinc-855 p-2.5 text-xs text-white outline-none focus:border-cyan-500 rounded-none resize-none transition-all"
+                              placeholder="Describa a detalle las necesidades del servicio, la zona geográfica o comunidad, y los resultados esperados..."
                             />
                           </div>
 
@@ -3503,13 +3619,58 @@ export default function PortalWorkspace({
                             disabled={submittingProposal}
                             className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-slate-950 font-mono text-[10px] uppercase font-black tracking-widest transition-all cursor-pointer rounded-none"
                           >
-                            {submittingProposal ? 'Procesando Propuesta...' : 'Registrar Solicitud de Propuesta'}
+                            {submittingProposal ? 'Procesando Requerimiento...' : 'Enviar Solicitud al IICS'}
                           </button>
                         </form>
                       </div>
                     </div>
+
+                    {/* Specialties Section - Shifted to Bottom as a minor showcase */}
+                    <div className="space-y-4 pt-6 border-t border-zinc-900">
+                      <h4 className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">
+                        Nuestras Especialidades Científicas & Capacidades
+                      </h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                          {
+                            title: 'Inteligencia Territorial & GIS',
+                            desc: 'Modelamiento geoespacial, catastro multitemporal, cartografía social de disputas y análisis mediante drones y QGIS.',
+                            icon: MapPin
+                          },
+                          {
+                            title: 'Ciencia de Datos & NLP Social',
+                            desc: 'Minería de opinión pública en tiempo real mediante algoritmos NLP y análisis de sentimientos de precisión territorial.',
+                            icon: LineChart
+                          },
+                          {
+                            title: 'Estudios de Impacto & RC',
+                            desc: 'Diagnósticos socioeconómicos de línea base, etnografía directa y mediación científica de conflictos para el sector extractivo.',
+                            icon: Landmark
+                          },
+                          {
+                            title: 'Capacitación Metodológica',
+                            desc: 'Programas corporativos avanzados y diseño metodológico en Atlas.ti, QGIS y sociología digital de precisión.',
+                            icon: BookOpen
+                          }
+                        ].map((svc, idx) => {
+                          const SvcIcon = svc.icon;
+                          return (
+                            <div key={idx} className="bg-[#030304]/60 border border-zinc-900 p-4 space-y-2 hover:border-zinc-800 transition-all flex flex-col justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="p-1.5 bg-zinc-900 border border-zinc-800 text-cyan-400">
+                                  <SvcIcon className="h-4 w-4" />
+                                </div>
+                                <h5 className="text-[11px] font-extrabold text-white uppercase tracking-wider">{svc.title}</h5>
+                              </div>
+                              <p className="text-[10px] text-zinc-500 leading-relaxed font-sans">{svc.desc}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 )}
+
 
                 {/* VIEW: DATOS & ENCUESTAS */}
                 {activeTab === 'data' && (
