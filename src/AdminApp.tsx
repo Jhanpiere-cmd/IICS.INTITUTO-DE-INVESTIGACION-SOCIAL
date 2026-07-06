@@ -47,6 +47,7 @@ import { RadarView } from '@/components/radar/RadarView';
 import { TransmediaView } from '@/components/transmedia/TransmediaView';
 import { ConflictsView } from '@/components/conflicts/ConflictsView';
 import { ProvinceMetricsView } from '@/components/province-metrics/ProvinceMetricsView';
+import { ProvinciasDetalleAdmin } from '@/components/province-metrics/ProvinciasDetalleAdmin';
 import { SocialListeningView } from '@/components/social-listening/SocialListeningView';
 import { DataIngestionView } from '@/components/data-ingestion/DataIngestionView';
 
@@ -151,6 +152,7 @@ const Layout: React.FC = () => {
                         <Route path="transmedia" element={<TransmediaView />} />
                         <Route path="conflicts" element={<ConflictsView />} />
                         <Route path="province-metrics" element={<ProvinceMetricsView />} />
+                        <Route path="province-detail" element={<ProvinciasDetalleAdmin />} />
                         <Route path="social-listening" element={<SocialListeningView />} />
                         <Route path="data-ingestion" element={<DataIngestionView />} />
                         <Route path="api/youtube/callback" element={<YoutubeCallback />} />
