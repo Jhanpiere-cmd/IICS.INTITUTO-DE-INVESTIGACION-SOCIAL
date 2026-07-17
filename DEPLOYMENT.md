@@ -24,21 +24,31 @@ VITE_OPENAI_API_KEY=[Tu clave de OpenAI]
 VITE_DEEPSEEK_API_KEY=[Tu clave de DeepSeek]
 ```
 
-## Configuración en Netlify
-
-1. Ve a tu dashboard de Netlify
-2. Selecciona tu sitio
-3. Ve a **Site settings** → **Build & deploy** → **Environment variables**
-4. Agrega las variables de entorno listadas arriba
-5. Haz **Redeploy** del sitio
-
 ## Configuración en Vercel
 
-1. Ve a tu dashboard de Vercel
-2. Selecciona tu proyecto
+1. Ve a tu dashboard de Vercel: https://vercel.com/dashboard
+2. Selecciona tu proyecto IICS
 3. Ve a **Settings** → **Environment Variables**
-4. Agrega las variables de entorno listadas arriba
-5. Haz **Redeploy** del proyecto
+4. Agrega las siguientes variables de entorno:
+
+**Variables CRÍTICAS (requeridas para login):**
+```
+VITE_SUPABASE_URL=https://kgplubpzrkjyrawafkll.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtncGx1YnB6cmtqeXJhd2Fma2xsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NzYwMjksImV4cCI6MjA5ODI1MjAyOX0.eU-fE12tSmoZjVuvi2R4j2t91GxttCx5hkOvF5RgqlI
+```
+
+**Variables opcionales (para funcionalidades de IA):**
+```
+VITE_GEMINI_API_KEY=[Tu clave de Gemini API]
+VITE_OPENROUTER_API_KEY=[Tu clave de OpenRouter]
+VITE_MERCURY_API_KEY=[Tu clave de Mercury]
+VITE_GROQ_API_KEY=[Tu clave de Groq]
+VITE_OPENAI_API_KEY=[Tu clave de OpenAI]
+VITE_DEEPSEEK_API_KEY=[Tu clave de DeepSeek]
+```
+
+5. Haz **Redeploy** del proyecto desde la pestaña **Deployments**
+6. Selecciona el deployment más reciente y haz clic en **Redeploy**
 
 ## Verificación
 
