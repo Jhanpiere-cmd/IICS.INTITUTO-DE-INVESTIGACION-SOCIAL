@@ -26,7 +26,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/admin/secretaria', icon: 'folder_managed', label: 'Gestión Documental' },
         { path: '/admin/news', icon: 'article', label: 'Noticias' },
         { path: '/admin/editorial', icon: 'menu_book', label: 'Gestión Editorial' },
-        { path: '/admin/conflicts', icon: 'crisis_alert', label: 'Conflictos Sociales' },
+        { path: '/admin/conflicts', icon: 'crisis_alert', label: 'Conflictos y Alertas' },
         { path: '/admin/province-metrics', icon: 'analytics', label: 'Métricas Provinciales' },
         { path: '/admin/province-detail', icon: 'map', label: 'Gestión Territorial' },
         { path: '/admin/social-listening', icon: 'manage_search', label: 'Escucha Social' },
