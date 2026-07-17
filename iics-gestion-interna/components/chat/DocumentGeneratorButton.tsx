@@ -152,14 +152,14 @@ export const DocumentGeneratorButton: React.FC<DocumentGeneratorProps> = ({
             {/* Modal de configuración */}
             {mostrarModal && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-exec-card border border-exec-border rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
 
                         {/* Header */}
-                        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                        <div className="p-6 border-b border-exec-border">
+                            <h2 className="text-2xl font-bold text-foreground">
                                 📄 Generador de Documentos Word
                             </h2>
-                            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                            <p className="text-sm text-muted-foreground mt-1">
                                 Crea documentos profesionales con logos institucionales
                             </p>
                         </div>
@@ -186,7 +186,7 @@ export const DocumentGeneratorButton: React.FC<DocumentGeneratorProps> = ({
 
                             {/* Selector de tipo manual */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
+                                <label className="block text-sm font-medium text-foreground mb-3">
                                     Tipo de Documento
                                 </label>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
