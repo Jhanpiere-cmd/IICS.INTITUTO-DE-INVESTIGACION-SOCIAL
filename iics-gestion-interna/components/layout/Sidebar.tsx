@@ -18,33 +18,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     const navItems = [
         { path: '/admin', icon: 'home', label: 'Inicio' },
-        { path: '/admin/tasks', icon: 'task_alt', label: 'Tareas' },
-        { path: '/admin/calendar', icon: 'calendar_month', label: 'Calendario' },
+        { path: '/admin/tasks', icon: 'check_circle', label: 'Tareas' },
+        { path: '/admin/calendar', icon: 'calendar_today', label: 'Calendario' },
         { path: '/admin/meetings', icon: 'groups', label: 'Reuniones' },
-        { path: '/admin/events', icon: 'campaign', label: 'Eventos' },
-        { path: '/admin/communications', icon: 'mail', label: 'Correo' },
-        { path: '/admin/secretaria', icon: 'folder_managed', label: 'Gestión Documental' },
-        { path: '/admin/news', icon: 'article', label: 'Noticias' },
-        { path: '/admin/conflicts', icon: 'crisis_alert', label: 'Conflictos Sociales' },
+        { path: '/admin/events', icon: 'event', label: 'Eventos' },
+        { path: '/admin/communications', icon: 'email', label: 'Correo' },
+        { path: '/admin/secretaria', icon: 'folder', label: 'Gestión Documental' },
+        { path: '/admin/news', icon: 'newspaper', label: 'Noticias' },
+        { path: '/admin/conflicts', icon: 'warning', label: 'Conflictos Sociales' },
         { path: '/admin/province-metrics', icon: 'analytics', label: 'Métricas Provinciales' },
         { path: '/admin/province-detail', icon: 'map', label: 'Gestión Territorial' },
-        { path: '/admin/social-listening', icon: 'manage_search', label: 'Escucha Social' },
-        { path: '/admin/data-ingestion', icon: 'dataset', label: 'Ingesta de Datos' },
-        { path: '/admin/transmedia', icon: 'video_library', label: 'Difusión Transmedia' },
-        { path: '/admin/media', icon: 'movie_edit', label: 'Gestión Audiovisual' },
+        { path: '/admin/social-listening', icon: 'search', label: 'Escucha Social' },
+        { path: '/admin/data-ingestion', icon: 'storage', label: 'Ingesta de Datos' },
+        { path: '/admin/transmedia', icon: 'play_circle', label: 'Difusión Transmedia' },
+        { path: '/admin/media', icon: 'videocam', label: 'Gestión Audiovisual' },
         { path: '/admin/whatsapp', icon: 'chat', label: 'WhatsApp' },
         { path: '/admin/proposals', icon: 'lightbulb', label: 'Propuestas' },
-        { path: '/admin/chat', icon: 'smart_toy', label: 'Asistente IA' },
+        { path: '/admin/chat', icon: 'psychology', label: 'Asistente IA' },
         { path: '/admin/surveys', icon: 'poll', label: 'Encuestas' },
         { path: '/admin/reports', icon: 'bar_chart', label: 'Reportes' },
         { path: '/admin/benefits', icon: 'card_giftcard', label: 'Beneficios' },
         { path: '/admin/training', icon: 'school', label: 'Capacitaciones' },
-        { path: '/admin/certificates', icon: 'license', label: 'Certificados' },
+        { path: '/admin/certificates', icon: 'workspace_premium', label: 'Certificados' },
         { path: '/admin/birthdays', icon: 'cake', label: 'Cumpleaños' },
-        { path: '/admin/users', icon: 'group', label: 'Usuarios' },
+        { path: '/admin/users', icon: 'people', label: 'Usuarios' },
         { path: '/admin/alliances', icon: 'handshake', label: 'Alianzas' },
-        { path: '/admin/finance', icon: 'account_balance_wallet', label: 'Gestión Financiera' },
-        { path: '/admin/whiteboard', icon: 'edit_square', label: 'Pizarra Neural' },
+        { path: '/admin/finance', icon: 'account_balance', label: 'Gestión Financiera' },
+        { path: '/admin/whiteboard', icon: 'draw', label: 'Pizarra Neural' },
         { path: '/admin/radar', icon: 'radar', label: 'Radar ACS' },
     ];
 
@@ -91,10 +91,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             key={item.path}
                             to={item.path}
                             title={isCollapsed ? item.label : undefined}
-                            className={`flex items-center py-2.5 text-sm font-medium rounded-none transition-all ${isActive(item.path)
+                            className={`flex items-center py-2.5 px-3 text-sm font-medium rounded-none transition-all ${isActive(item.path)
                                 ? 'bg-[#111] text-white border border-exec-border'
                                 : 'text-gray-400 hover:text-white hover:bg-[#111]'
-                                } ${isCollapsed ? 'md:justify-center justify-start md:px-0 px-3 w-10 mx-auto aspect-square' : 'justify-start px-3 gap-3'}`}
+                                } ${isCollapsed ? 'md:justify-center justify-start md:px-0 px-3 w-10 mx-auto aspect-square' : 'justify-start gap-3'}`}
                         >
                             <span className="material-symbols-outlined notranslate text-[20px] shrink-0" translate="no">{item.icon}</span>
                             <span className={`whitespace-nowrap transition-all duration-300 ${isCollapsed ? 'md:hidden block' : 'block'}`}>
