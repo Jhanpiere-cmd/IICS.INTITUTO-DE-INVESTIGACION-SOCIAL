@@ -1512,7 +1512,7 @@ const StatCard = ({
 
   return (
     <Card
-      className={`cursor-pointer hover:shadow-xl transition-all duration-300 border-none shadow-lg bg-white dark:bg-slate-900 group relative overflow-hidden`}
+      className={`cursor-pointer hover:shadow-xl transition-all duration-300 border-none shadow-lg bg-exec-card group relative overflow-hidden`}
       onClick={onClick}
     >
       <div className={`absolute top-0 right-0 w-24 h-24 rounded-full -mr-8 -mt-8 opacity-20 group-hover:scale-150 transition-transform duration-500 ${colorStyles[color].split(' ')[0].replace('/20', '')}`}></div>
@@ -1524,9 +1524,9 @@ const StatCard = ({
           {/* <span className="text-xs font-medium text-green-500 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">+12%</span> */}
         </div>
         <div>
-          <p className="text-xs md:text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mt-1">{value}</h3>
-          <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-2 font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+          <p className="text-xs md:text-sm font-medium text-muted-foreground">{title}</p>
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground mt-1">{value}</h3>
+          <p className="text-xs text-exec-blue mt-2 font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">
             {change} <Icons.ChevronRight className="w-3 h-3" />
           </p>
         </div>
