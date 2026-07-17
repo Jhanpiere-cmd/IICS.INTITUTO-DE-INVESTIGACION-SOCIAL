@@ -136,11 +136,20 @@
 
   /* === MATERIAL SYMBOLS === */
   .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
     font-variation-settings:
       'FILL' 0,
       'wght' 400,
       'GRAD' 0,
       'opsz' 20;
+    font-size: 20px;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
   }
 
   /* === SGR CORPORATE BLUE === */
