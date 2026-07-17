@@ -506,12 +506,12 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
             
             {hideHeader && (
               <div className="flex justify-end gap-2 mb-4">
-                <div className="flex bg-exec-dark rounded-none p-1">
+                <div className="flex bg-gray-100 dark:bg-slate-700 rounded-none p-1">
                   <button
                     onClick={() => setViewMode('month')}
                     className={`flex-1 sm:flex-none px-3 py-1.5 rounded-none transition-colors flex items-center justify-center gap-2 text-sm ${viewMode === 'month'
-                      ? 'bg-exec-card shadow-sm text-exec-blue'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                       }`}
                   >
                     <Calendar className="w-4 h-4" />
@@ -520,8 +520,8 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
                   <button
                     onClick={() => setViewMode('week')}
                     className={`flex-1 sm:flex-none px-3 py-1.5 rounded-none transition-colors flex items-center justify-center gap-2 text-sm ${viewMode === 'week'
-                      ? 'bg-exec-card shadow-sm text-exec-blue'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'
                       }`}
                   >
                     <CalendarDays className="w-4 h-4" />
@@ -533,7 +533,7 @@ export const CalendarViewNew: React.FC<CalendarViewNewProps> = ({ hideHeader = f
                     setEngineMode('manual');
                     setShowEngine(true);
                   }}
-                  className="px-4 py-2 bg-exec-blue text-white rounded-none hover:bg-blue-600 transition-colors flex items-center justify-center gap-2 text-sm"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-none hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 text-sm"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Reunión</span>

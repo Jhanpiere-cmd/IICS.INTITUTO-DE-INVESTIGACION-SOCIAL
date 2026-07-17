@@ -374,33 +374,33 @@ export const CalendarView: React.FC = () => {
 
       {showNewMeeting && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-          <div className="bg-exec-card border border-exec-border rounded-lg w-full max-w-md p-6 space-y-4 shadow-xl">
-            <h3 className="text-lg font-semibold text-foreground">Nueva Reunión</h3>
+          <div className="bg-white dark:bg-slate-900 rounded-lg w-full max-w-md p-6 space-y-4 border dark:border-slate-800 shadow-xl">
+            <h3 className="text-lg font-semibold dark:text-white">Nueva Reunión</h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm mb-1 text-muted-foreground">Título</label>
-                <input className="w-full border border-exec-border rounded px-3 py-2 bg-exec-dark text-foreground" value={meetingForm.title} onChange={(e) => setMeetingForm({ ...meetingForm, title: e.target.value })} />
+                <label className="block text-sm mb-1 dark:text-gray-300">Título</label>
+                <input className="w-full border dark:border-slate-700 rounded px-3 py-2 dark:bg-slate-800 dark:text-white" value={meetingForm.title} onChange={(e) => setMeetingForm({ ...meetingForm, title: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm mb-1 text-muted-foreground">Fecha y hora</label>
-                <input type="datetime-local" className="w-full border border-exec-border rounded px-3 py-2 bg-exec-dark text-foreground" value={meetingForm.scheduled_at} onChange={(e) => setMeetingForm({ ...meetingForm, scheduled_at: e.target.value })} />
+                <label className="block text-sm mb-1 dark:text-gray-300">Fecha y hora</label>
+                <input type="datetime-local" className="w-full border dark:border-slate-700 rounded px-3 py-2 dark:bg-slate-800 dark:text-white" value={meetingForm.scheduled_at} onChange={(e) => setMeetingForm({ ...meetingForm, scheduled_at: e.target.value })} />
               </div>
               <div>
-                <label className="block text-sm mb-1 text-muted-foreground">Ubicación</label>
-                <input className="w-full border border-exec-border rounded px-3 py-2 bg-exec-dark text-foreground" value={meetingForm.location} onChange={(e) => setMeetingForm({ ...meetingForm, location: e.target.value })} placeholder="Ej: Aula 201, Virtual, etc." />
+                <label className="block text-sm mb-1 dark:text-gray-300">Ubicación</label>
+                <input className="w-full border dark:border-slate-700 rounded px-3 py-2 dark:bg-slate-800 dark:text-white" value={meetingForm.location} onChange={(e) => setMeetingForm({ ...meetingForm, location: e.target.value })} placeholder="Ej: Aula 201, Virtual, etc." />
               </div>
               <div>
-                <label className="block text-sm mb-1 text-muted-foreground">Enlace (opcional)</label>
-                <input className="w-full border border-exec-border rounded px-3 py-2 bg-exec-dark text-foreground" value={meetingForm.location_link} onChange={(e) => setMeetingForm({ ...meetingForm, location_link: e.target.value })} placeholder="https://meet.google.com/..." />
+                <label className="block text-sm mb-1 dark:text-gray-300">Enlace (opcional)</label>
+                <input className="w-full border dark:border-slate-700 rounded px-3 py-2 dark:bg-slate-800 dark:text-white" value={meetingForm.location_link} onChange={(e) => setMeetingForm({ ...meetingForm, location_link: e.target.value })} placeholder="https://meet.google.com/..." />
               </div>
               <div>
-                <label className="block text-sm mb-1 text-muted-foreground">Descripción</label>
-                <textarea className="w-full border border-exec-border rounded px-3 py-2 bg-exec-dark text-foreground" rows={3} value={meetingForm.description} onChange={(e) => setMeetingForm({ ...meetingForm, description: e.target.value })} />
+                <label className="block text-sm mb-1 dark:text-gray-300">Descripción</label>
+                <textarea className="w-full border dark:border-slate-700 rounded px-3 py-2 dark:bg-slate-800 dark:text-white" rows={3} value={meetingForm.description} onChange={(e) => setMeetingForm({ ...meetingForm, description: e.target.value })} />
               </div>
             </div>
             <div className="flex gap-2 justify-end pt-2">
-              <button className="px-3 py-2 border border-exec-border rounded text-muted-foreground hover:bg-exec-dark" onClick={() => setShowNewMeeting(false)}>Cancelar</button>
-              <button className="px-3 py-2 bg-exec-blue text-white rounded hover:bg-blue-600 transition-colors" onClick={handleCreateMeeting}>Crear</button>
+              <button className="px-3 py-2 border dark:border-slate-700 rounded dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800" onClick={() => setShowNewMeeting(false)}>Cancelar</button>
+              <button className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors" onClick={handleCreateMeeting}>Crear</button>
             </div>
           </div>
         </div>
@@ -408,15 +408,15 @@ export const CalendarView: React.FC = () => {
 
       {selectedMeeting && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-          <div className="bg-exec-card border border-exec-border rounded-lg w-full max-w-2xl p-6 space-y-4 shadow-xl">
+          <div className="bg-white dark:bg-slate-900 rounded-lg w-full max-w-2xl p-6 space-y-4 border dark:border-slate-800 shadow-xl">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-foreground">Reunión: {selectedMeeting.title}</h3>
-              <button className="text-sm text-muted-foreground hover:text-foreground" onClick={() => { setSelectedMeeting(null); setParticipants([]); }}>Cerrar</button>
+              <h3 className="text-lg font-semibold dark:text-white">Reunión: {selectedMeeting.title}</h3>
+              <button className="text-sm dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onClick={() => { setSelectedMeeting(null); setParticipants([]); }}>Cerrar</button>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <p className="text-sm text-muted-foreground">{new Date(selectedMeeting.scheduled_at).toLocaleString()}</p>
-                <p className="text-sm text-foreground"><strong>Ubicación:</strong> {selectedMeeting.location || 'Sin ubicación'}</p>
+                <p className="text-sm text-muted-foreground dark:text-gray-400">{new Date(selectedMeeting.scheduled_at).toLocaleString()}</p>
+                <p className="text-sm dark:text-gray-200"><strong>Ubicación:</strong> {selectedMeeting.location || 'Sin ubicación'}</p>
                 {selectedMeeting.location_link && (
                   <p className="text-sm"><strong>Enlace:</strong> <a href={selectedMeeting.location_link} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline dark:text-indigo-400">{selectedMeeting.location_link}</a></p>
                 )}

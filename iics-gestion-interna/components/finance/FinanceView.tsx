@@ -1528,10 +1528,10 @@ export function FinanceView() {
                         >
                             <ArrowLeft className="w-4 h-4" /> Volver al Dashboard Global
                         </button>
-                        <div className="bg-exec-card border border-exec-border p-6 rounded-2xl shadow-sm">
-                            <h2 className="text-2xl font-bold mb-4 text-foreground">{selectedActivity?.title}</h2>
-                            <p className="text-muted-foreground mb-6">{selectedActivity?.description}</p>
-                            <p className="text-center text-muted-foreground">Detalles de actividad disponibles en el Dashboard Global filtrando por fecha.</p>
+                        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm">
+                            <h2 className="text-2xl font-bold mb-4">{selectedActivity?.title}</h2>
+                            <p className="text-gray-500 mb-6">{selectedActivity?.description}</p>
+                            <p className="text-center text-gray-500">Detalles de actividad disponibles en el Dashboard Global filtrando por fecha.</p>
                         </div>
                     </div>
                 )

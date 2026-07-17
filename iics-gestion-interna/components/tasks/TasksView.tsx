@@ -61,24 +61,24 @@ export const TasksView: React.FC<TasksViewProps> = ({ tasks }) => {
         const blanks = Array.from({ length: firstDay }, (_, i) => i);
 
         return (
-            <div className="bg-exec-card border border-exec-border rounded-lg shadow p-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4">
                 <div className="flex justify-between items-center mb-4">
-                    <button onClick={prevMonth} className="p-2 hover:bg-exec-dark rounded-full"><Icons.ChevronLeft className="w-5 h-5" /></button>
+                    <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-full"><Icons.ChevronLeft className="w-5 h-5" /></button>
                     <h3 className="text-lg font-bold">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</h3>
-                    <button onClick={nextMonth} className="p-2 hover:bg-exec-dark rounded-full"><Icons.ChevronRight className="w-5 h-5" /></button>
+                    <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-full"><Icons.ChevronRight className="w-5 h-5" /></button>
                 </div>
-                <div className="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-muted-foreground">
+                <div className="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-gray-500 dark:text-gray-400">
                     <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
                 </div>
                 <div className="grid grid-cols-7 gap-2">
-                    {blanks.map(i => <div key={`blank-${i}`} className="h-24 bg-exec-dark/50 rounded-lg"></div>)}
+                    {blanks.map(i => <div key={`blank-${i}`} className="h-24 bg-gray-50 dark:bg-slate-700/50 rounded-lg"></div>)}
                     {daysArray.map(day => {
                         const dateStr = new Date(currentDate.getFullYear(), currentDate.getMonth(), day).toDateString();
                         const dayTasks = filteredTasks.filter(t => new Date(t.dueDate).toDateString() === dateStr);
 
                         return (
-                            <div key={day} className="h-24 bg-exec-card border border-exec-border rounded-lg p-2 overflow-y-auto hover:shadow-md transition-shadow relative">
-                                <span className={`text-sm font-semibold ${new Date().toDateString() === dateStr ? 'bg-exec-blue text-white w-6 h-6 flex items-center justify-center rounded-full' : ''}`}>{day}</span>
+                            <div key={day} className="h-24 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg p-2 overflow-y-auto hover:shadow-md transition-shadow relative">
+                                <span className={`text-sm font-semibold ${new Date().toDateString() === dateStr ? 'bg-indigo-600 text-white w-6 h-6 flex items-center justify-center rounded-full' : ''}`}>{day}</span>
                                 <div className="mt-1 space-y-1">
                                     {dayTasks.map(t => (
                                         <div key={t.id} className={`text-[10px] p-1 rounded truncate cursor-pointer ${getStatusBadgeClass(t.status)}`} title={t.title}>
@@ -104,16 +104,16 @@ export const TasksView: React.FC<TasksViewProps> = ({ tasks }) => {
                             <CardDescription>Visualiza, filtra y gestiona todas las tareas del equipo.</CardDescription>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="flex bg-exec-dark p-1 rounded-lg">
+                            <div className="flex bg-gray-100 p-1 rounded-lg">
                                 <button
                                     onClick={() => setViewMode('list')}
-                                    className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-exec-card shadow text-exec-blue' : 'text-muted-foreground hover:text-foreground'}`}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-white dark:bg-slate-700 shadow text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
                                 >
                                     <Icons.List className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={() => setViewMode('calendar')}
-                                    className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-exec-card shadow text-exec-blue' : 'text-muted-foreground hover:text-foreground'}`}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-white dark:bg-slate-700 shadow text-indigo-600 dark:text-indigo-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
                                 >
                                     <Icons.Calendar className="w-4 h-4" />
                                 </button>
@@ -132,7 +132,7 @@ export const TasksView: React.FC<TasksViewProps> = ({ tasks }) => {
                                 placeholder="Buscar por título..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full bg-exec-card border border-exec-border rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-exec-blue text-foreground"
+                                className="w-full bg-white dark:bg-slate-800 border border-border dark:border-slate-700 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary dark:text-white"
                             />
                         </div>
                         {/* More filters can be added here */}
@@ -140,9 +140,9 @@ export const TasksView: React.FC<TasksViewProps> = ({ tasks }) => {
                 </CardHeader>
                 <CardContent>
                     {viewMode === 'list' ? (
-                        <div className="border border-exec-border rounded-lg overflow-hidden">
-                            <table className="min-w-full divide-y divide-exec-border">
-                                <thead className="bg-exec-dark">
+                        <div className="border dark:border-slate-700 rounded-lg overflow-hidden">
+                            <table className="min-w-full divide-y divide-border dark:divide-slate-700">
+                                <thead className="bg-gray-50 dark:bg-slate-900">
                                     <tr>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wider">Tarea</th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground dark:text-gray-400 uppercase tracking-wider">Asignado a</th>
@@ -152,14 +152,14 @@ export const TasksView: React.FC<TasksViewProps> = ({ tasks }) => {
                                         <th scope="col" className="relative px-6 py-3"><span className="sr-only">Edit</span></th>
                                     </tr>
                                 </thead>
-                                <tbody className="bg-exec-card divide-y divide-exec-border">
+                                <tbody className="bg-white dark:bg-slate-800 divide-y divide-border dark:divide-slate-700">
                                     {filteredTasks.map(task => {
                                         const user = findUser(task.assignedTo);
                                         return (
-                                            <tr key={task.id} className="hover:bg-exec-dark/50">
+                                            <tr key={task.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50">
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-medium text-foreground">{task.title}</div>
-                                                    <div className="text-sm text-muted-foreground truncate max-w-xs">{task.description}</div>
+                                                    <div className="text-sm font-medium text-foreground dark:text-white">{task.title}</div>
+                                                    <div className="text-sm text-muted-foreground dark:text-gray-400 truncate max-w-xs">{task.description}</div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center">
@@ -167,7 +167,7 @@ export const TasksView: React.FC<TasksViewProps> = ({ tasks }) => {
                                                             <img className="h-8 w-8 rounded-full" src={user?.avatarUrl} alt={user?.fullName} />
                                                         </div>
                                                         <div className="ml-3">
-                                                            <div className="text-sm font-medium text-foreground">{user?.fullName}</div>
+                                                            <div className="text-sm font-medium text-foreground dark:text-white">{user?.fullName}</div>
                                                         </div>
                                                     </div>
                                                 </td>
