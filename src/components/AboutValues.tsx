@@ -679,7 +679,7 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                   El IICS no funciona de forma lineal. Configuramos un sistema en red de aportaciones donde estudiantes, directores y científicos RENACYT establecen loops de validación mutua.
                 </p>
                 
-                <div className="p-4 glass-card border border-white/[0.04] text-[11px] text-zinc-400 rounded-xl leading-relaxed">
+                <div className="p-4 glass-card border border-white/[0.04] text-[11px] text-zinc-400 rounded-none leading-relaxed">
                   <strong>Soporte Operativo UNC:</strong> El engranaje material cuenta además con el apoyo de bachilleres y alumnos voluntarios encargados de recopilar información de campo, digitalizar mapas andinos y validar el flujo de la Consola.
                 </div>
               </div>
@@ -780,11 +780,11 @@ export default function AboutValues({ onLearnMoreClick, isSubPage = false }: Abo
                       key={v.id} 
                       onMouseEnter={() => setHoveredPillar(idx)}
                       onMouseLeave={() => setHoveredPillar(null)}
-                      className="glass-card glass-card-hover rounded-xl p-6 flex flex-col justify-between h-full group"
+                      className="glass-card glass-card-hover rounded-none p-6 flex flex-col justify-between h-full group"
                     >
                       <div>
                         <div className="flex items-center gap-3 mb-3 border-b border-white/[0.06] pb-2.5">
-                          <div className="p-2 bg-cyan-950/30 border border-cyan-500/25 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-all duration-300 rounded-lg">
+                          <div className="p-2 bg-cyan-950/30 border border-cyan-500/25 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-all duration-300 rounded-none">
                             <IconComponent className="h-4.5 w-4.5" />
                           </div>
                           <h4 className="text-sm sm:text-base lg:text-lg font-extrabold text-white uppercase tracking-wider font-sans group-hover:text-cyan-300 transition-colors leading-snug">

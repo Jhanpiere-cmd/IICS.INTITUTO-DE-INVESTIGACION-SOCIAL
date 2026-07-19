@@ -63,9 +63,9 @@ export default function FeatureGrid() {
       longDesc: 'Aplicamos herramientas sofisticadas de inteligencia artificial y ciencia de datos a fenómenos sociales. Procesamos corpus masivos provenientes de redes sociales, medios digitales e interacción vecinal para identificar sentimientos colectivos y patrones de opinión con modelos NLP.',
       icon: Cpu,
       stats: [
-        { label: 'MODELO CORE', value: 'BERT-IICS-V2' },
-        { label: 'PRECISIÓN', value: '88.5% SCORE' },
-        { label: 'ANALÍTICA', value: 'NLP REGIONAL' }
+        { label: 'MODELO CORE', value: 'BERT-IICS-V2', illustrative: true },
+        { label: 'PRECISIÓN', value: '88.5% SCORE', illustrative: true },
+        { label: 'ANALÍTICA', value: 'NLP REGIONAL', illustrative: false }
       ]
     },
     {
@@ -126,12 +126,12 @@ export default function FeatureGrid() {
     switch (id) {
       case 'observatorio':
         return (
-          <div className="glass-card rounded-xl p-6 font-mono text-[11px] w-full max-w-md mx-auto">
+          <div className="glass-card rounded-none p-6 font-mono text-[11px] w-full max-w-md mx-auto">
             <div className="flex justify-between items-center text-gray-500 mb-4 border-b border-gray-950 pb-2">
               <span className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase tracking-wider">
                 <Activity className="h-3.5 w-3.5 animate-pulse" /> INDICADOR DE TENSIÓN
               </span>
-              <span className="text-[#0099ff] font-bold animate-pulse">SISTEMA OSC VIVO</span>
+              <span className="text-amber-400/80 font-bold uppercase tracking-wider">Demo ilustrativa</span>
             </div>
             
             <div className="space-y-4">
@@ -158,10 +158,10 @@ export default function FeatureGrid() {
 
       case 'laboratorio':
         return (
-          <div className="glass-card rounded-xl p-6 font-mono text-[11px] w-full max-w-md mx-auto">
+          <div className="glass-card rounded-none p-6 font-mono text-[11px] w-full max-w-md mx-auto">
             <div className="flex justify-between items-center text-gray-500 mb-4 border-b border-gray-950 pb-2">
               <span className="text-cyan-400 font-bold uppercase tracking-wider">ANALIZADOR NLP SENTIMENTS</span>
-              <span className="text-emerald-400 font-bold">ACTIVO</span>
+              <span className="text-amber-400/80 font-bold uppercase tracking-wider">Demo ilustrativa</span>
             </div>
             
             <div className="space-y-3">
@@ -187,22 +187,22 @@ export default function FeatureGrid() {
 
       case 'academia':
         return (
-          <div className="glass-card rounded-xl p-6 w-full max-w-md mx-auto">
+          <div className="glass-card rounded-none p-6 w-full max-w-md mx-auto">
             <div className="flex justify-between items-center text-gray-500 font-mono text-[10px] mb-4 border-b border-white/[0.06] pb-2">
               <span className="text-cyan-400 font-bold uppercase tracking-wider">ESTADÍSTICAS BECARIOS</span>
               <span className="text-emerald-400 font-bold">CONVOCATORIA ABIERTA</span>
             </div>
 
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="glass-card rounded-lg p-4">
+              <div className="glass-card rounded-none p-4">
                 <span className="text-2xl font-black text-white font-mono block">25</span>
                 <span className="text-[9px] text-cyan-400 font-mono font-bold mt-1 block uppercase tracking-tight">Becarios</span>
               </div>
-              <div className="glass-card rounded-lg p-4">
+              <div className="glass-card rounded-none p-4">
                 <span className="text-2xl font-black text-white font-mono block">4</span>
                 <span className="text-[9px] text-gray-500 font-mono font-bold mt-1 block uppercase tracking-tight">Mentores</span>
               </div>
-              <div className="glass-card rounded-lg p-4">
+              <div className="glass-card rounded-none p-4">
                 <span className="text-2xl font-black text-white font-mono block">100%</span>
                 <span className="text-[9px] text-emerald-400 font-mono font-bold mt-1 block uppercase tracking-tight">Sustento</span>
               </div>
@@ -212,21 +212,21 @@ export default function FeatureGrid() {
 
       case 'editorial':
         return (
-          <div className="glass-card rounded-xl p-6 w-full max-w-md mx-auto">
+          <div className="glass-card rounded-none p-6 w-full max-w-md mx-auto">
             <div className="flex justify-between items-center text-gray-500 font-mono text-[10px] mb-4 border-b border-white/[0.06] pb-2">
               <span className="text-cyan-400 font-bold uppercase tracking-wider">ÚLTIMO REPOSITORIO CIENTÍFICO</span>
               <span className="text-[#0099ff] font-bold">LIVE PRESS</span>
             </div>
 
             <div className="space-y-2.5">
-              <div className="glass-card rounded-lg p-3 flex justify-between items-center gap-3 hover:border-cyan-500/25 transition-all duration-300">
+              <div className="glass-card rounded-none p-3 flex justify-between items-center gap-3 hover:border-cyan-500/25 transition-all duration-300">
                 <div className="truncate">
                   <span className="text-[8px] text-cyan-400 font-mono font-bold block">SCOPUS PAPER</span>
                   <span className="text-xs font-bold text-white block truncate">Mapeo del Corredor Minero Norte 2026</span>
                 </div>
                 <TrendingUp className="h-4 w-4 text-cyan-400 shrink-0" />
               </div>
-              <div className="glass-card rounded-lg p-3 flex justify-between items-center gap-3 hover:border-purple-500/25 transition-all duration-300">
+              <div className="glass-card rounded-none p-3 flex justify-between items-center gap-3 hover:border-purple-500/25 transition-all duration-300">
                 <div className="truncate">
                   <span className="text-[8px] text-purple-400 font-mono font-bold block">REPOSITORIO IICS</span>
                   <span className="text-xs font-bold text-white block truncate">Inteligencia Comunitaria y Escucha Social</span>
@@ -239,7 +239,7 @@ export default function FeatureGrid() {
 
       case 'documentales':
         return (
-          <div className="glass-card rounded-xl p-5 overflow-hidden aspect-[2.4/1] w-full max-w-md mx-auto flex flex-col justify-between">
+          <div className="glass-card rounded-none p-5 overflow-hidden aspect-[2.4/1] w-full max-w-md mx-auto flex flex-col justify-between">
             <div className="flex items-center justify-between text-gray-500 font-mono text-[9px] border-b border-gray-950 pb-2">
               <span className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase tracking-wider">
                 <Volume2 className="h-3.5 w-3.5 animate-pulse" /> AUDIO WAVEFORM
@@ -265,7 +265,7 @@ export default function FeatureGrid() {
 
       case 'tecnologia':
         return (
-          <div className="glass-card rounded-xl w-full max-w-md mx-auto text-left font-mono overflow-hidden">
+          <div className="glass-card rounded-none w-full max-w-md mx-auto text-left font-mono overflow-hidden">
             {/* Window title bar */}
             <div className="bg-gray-950/80 border-b border-gray-900 px-4 py-2.5 flex justify-between items-center text-[10px]">
               <span className="text-[#0099ff] font-bold tracking-tight uppercase flex items-center gap-2">
@@ -421,6 +421,9 @@ export default function FeatureGrid() {
           <p className="text-xs sm:text-sm text-gray-400 mt-2 font-sans leading-relaxed max-w-2xl">
             Nuestra estructura de trabajo es completamente integral. Articulamos tecnología de precisión, análisis de opinión pública, formación de cuadros técnicos e incidencia social para consolidar un valor científico único en el norte peruano.
           </p>
+          <p className="text-[10px] font-mono text-amber-400/70 mt-3 uppercase tracking-wider">
+            Las visualizaciones interactivas de esta sección usan datos ilustrativos de demostración.
+          </p>
         </div>
 
         {/* Scroll driven continuous layout - information on one side, clean visualization on the other */}
@@ -477,7 +480,12 @@ export default function FeatureGrid() {
                     {item.stats.map((stat, statIdx) => (
                       <div key={statIdx} className="text-left">
                         <span className="text-[10px] text-gray-400 block font-mono font-bold uppercase tracking-wider">{stat.label}</span>
-                        <span className="text-[12px] text-white font-semibold block mt-0.5 leading-none">{stat.value}</span>
+                        <span className="text-[12px] text-white font-semibold block mt-0.5 leading-none">
+                          {stat.value}
+                          {'illustrative' in stat && stat.illustrative && (
+                            <span className="text-[8px] text-amber-400/80 font-mono font-bold uppercase tracking-wider block mt-1">Ilustrativo</span>
+                          )}
+                        </span>
                       </div>
                     ))}
                   </div>

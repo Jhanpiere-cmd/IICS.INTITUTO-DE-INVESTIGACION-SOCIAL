@@ -74,10 +74,13 @@ export default function InteractiveMapSection({
             </div>
 
             {/* General Highlights Counter List */}
-            <div className="grid grid-cols-2 gap-x-6 gap-y-8 border-t border-gray-800/80 pt-10 mt-12 select-none">
+            <p className="text-[9px] font-mono text-amber-400/60 uppercase tracking-wider mb-4">
+              * Cifras con asterisco: referencia ilustrativa de demostración
+            </p>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-8 border-t border-gray-800/80 pt-10 mt-4 select-none">
               <div>
                 <span className="block text-4xl font-extrabold tracking-tight text-white font-mono glow-text-cyan">
-                  125
+                  125*
                 </span>
                 <span className="block text-xs text-gray-400 mt-1 font-medium font-sans">
                   Indicadores monitoreados
@@ -104,7 +107,7 @@ export default function InteractiveMapSection({
 
               <div>
                 <span className="block text-4xl font-extrabold tracking-tight text-cyan-400 font-mono">
-                  +50
+                  +50*
                 </span>
                 <span className="block text-xs text-gray-400 mt-1 font-medium font-sans">
                   Fuentes de información
@@ -115,7 +118,7 @@ export default function InteractiveMapSection({
           </div>
 
           {/* Center Column: Interactive Network Map */}
-          <div className="lg:col-span-5 flex items-center justify-center relative min-h-[480px] glass-card rounded-xl p-4 overflow-hidden">
+          <div className="lg:col-span-5 flex items-center justify-center relative min-h-[480px] glass-card rounded-none p-4 overflow-hidden">
             
             {/* Holographic scanner active beams */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500/25 to-transparent animate-pulse"></div>
@@ -261,7 +264,7 @@ export default function InteractiveMapSection({
                   initial={{ opacity: 0, scale: 0.95, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                  className="absolute bottom-6 left-1/2 -translate-x-1/2 glass-card rounded-xl px-4 py-2.5 shadow-2xl text-left min-w-[200px] z-20"
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 glass-card rounded-none px-4 py-2.5 shadow-2xl text-left min-w-[200px] z-20"
                 >
                   {(() => {
                     const hp = provinces.find((p) => p.id === hoveredProvinceId);
@@ -296,7 +299,7 @@ export default function InteractiveMapSection({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -15 }}
                 transition={{ duration: 0.2 }}
-                className="glass-card rounded-xl p-6 shadow-xl text-left h-full flex flex-col justify-between"
+                className="glass-card rounded-none p-6 shadow-xl text-left h-full flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between border-b border-gray-800 pb-3.5 mb-4">

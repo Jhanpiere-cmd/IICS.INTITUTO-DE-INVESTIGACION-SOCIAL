@@ -284,10 +284,19 @@ function LandingPage() {
 
       </main>
 
-      <Footer onOpenNosotros={() => {
-        setActiveTab('nosotros');
-        setActiveModal('nosotros');
-      }} />
+      <Footer
+        onOpenNosotros={() => {
+          setActiveTab('nosotros');
+          setActiveModal('nosotros');
+        }}
+        onOpenPortal={() => setActiveModal('portal')}
+        onOpenPublicaciones={() => {
+          setActiveTab('publicaciones');
+          setActiveModal('publicaciones');
+        }}
+        onOpenAcademia={() => setActiveModal('academia')}
+        onOpenDocumentales={() => setActiveModal('documentales')}
+      />
 
       {/* DETAILED INTERACTIVE POPUPS PORTALS */}
       <ModalPortal

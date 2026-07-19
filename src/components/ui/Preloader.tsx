@@ -79,10 +79,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     }
     if (percent >= 40) {
       newLogs.push('[NET] Enlace de datos de 13 provincias establecido.');
-      newLogs.push('[AI] Cargando modelos NLP BERT-IICS-V2...');
+      newLogs.push('[AI] Demo: modelos NLP BERT-IICS-V2 (ilustrativo)...');
     }
     if (percent >= 65) {
-      newLogs.push('[AI] Analizador semántico activo. Precisión: 88.5%.');
+      newLogs.push('[AI] Demo: analizador semántico con precisión ilustrativa 88.5%.');
       newLogs.push('[SEC] Sincronizando firmas criptográficas y Becas AFI...');
     }
     if (percent >= 90) {

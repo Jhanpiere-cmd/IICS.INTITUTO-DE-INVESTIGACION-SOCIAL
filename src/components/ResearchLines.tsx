@@ -55,7 +55,7 @@ export default function ResearchLines({ lines, onOpenDetails }: ResearchLinesPro
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: idx * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => onOpenDetails(line)}
-              className="group flex flex-col justify-between glass-card glass-card-hover rounded-xl p-5 cursor-pointer h-full text-left"
+              className="group flex flex-col justify-between glass-card glass-card-hover rounded-none p-5 cursor-pointer h-full text-left"
             >
               <div>
                 {/* Icon and Title horizontally aligned to be compact with no dead space */}
