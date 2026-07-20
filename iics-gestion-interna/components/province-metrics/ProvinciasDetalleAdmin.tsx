@@ -4,7 +4,7 @@ import { useToast } from '../ui/ToastContext';
 import {
   Save, Loader2, MapPin, Plus, Trash2, Edit3, ChevronDown, ChevronRight,
   TrendingUp, TrendingDown, Minus, Image, Globe, Building2, Mountain,
-  Users, Activity, AlertTriangle, BookOpen, Landmark, Trees
+  Users, Activity, AlertTriangle, BookOpen, Landmark, Trees, UploadCloud, X
 } from 'lucide-react';
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -132,6 +132,8 @@ export const ProvinciasDetalleAdmin: React.FC = () => {
   const [detail, setDetail] = useState<ProvinceDetail>(emptyDetail('Cajamarca'));
   const [districts, setDistricts] = useState<District[]>([]);
   const [indicators, setIndicators] = useState<ProvinceIndicator[]>([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Form states
   const [economiaInput, setEconomiaInput] = useState('');
@@ -169,6 +171,50 @@ export const ProvinciasDetalleAdmin: React.FC = () => {
   }, [provinceName]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // ── Upload image to Supabase Storage ────────────────────────────────────────
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      showToast({ message: 'Formato no válido. Solo se acepta: JPG, PNG, WebP, GIF', type: 'error' });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast({ message: 'El archivo es muy grande. Máximo 5MB', type: 'error' });
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const fileName = `${provinceName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.${file.name.split('.').pop()}`;
+      const filePath = `province-images/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('province-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('province-images')
+        .getPublicUrl(filePath);
+
+      setDetail({ ...detail, photo_url: publicUrl });
+      setImagePreview(publicUrl);
+      showToast({ message: '✅ Imagen cargada exitosamente', type: 'success' });
+    } catch (e: any) {
+      console.error('Error uploading image:', e);
+      showToast({ message: e.message || 'Error al cargar imagen', type: 'error' });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   // ── Save province detail ──────────────────────────────────────────────────
   const handleSaveDetail = async (e: React.FormEvent) => {
@@ -359,12 +405,52 @@ export const ProvinciasDetalleAdmin: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest block mb-1">Foto de Portada (URL)</label>
-                    <input className="w-full bg-black border border-zinc-800 text-white text-xs p-2 font-mono focus:border-cyan-500 outline-none"
-                      value={detail.photo_url || ''} onChange={e => setDetail({...detail, photo_url: e.target.value})} placeholder="https://... o URL de Supabase Storage" />
-                    {detail.photo_url && (
-                      <img src={detail.photo_url} alt="Preview" className="mt-2 h-24 w-full object-cover border border-zinc-800" onError={e => (e.currentTarget.style.display='none')} />
-                    )}
+                    <label className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest block mb-1">Foto de Portada</label>
+                    <div className="space-y-2">
+                      {/* Upload Button */}
+                      <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 px-3 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-mono cursor-pointer transition-colors">
+                          <UploadCloud className="h-4 w-4" />
+                          <span>Subir Imagen</span>
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                            onChange={handleImageUpload}
+                            disabled={uploadingImage}
+                            className="hidden"
+                          />
+                        </label>
+                        {uploadingImage && <Loader2 className="h-4 w-4 text-cyan-400 animate-spin" />}
+                      </div>
+
+                      {/* URL Input (optional) */}
+                      <input className="w-full bg-black border border-zinc-800 text-white text-xs p-2 font-mono focus:border-cyan-500 outline-none"
+                        value={detail.photo_url || ''} onChange={e => setDetail({...detail, photo_url: e.target.value})} placeholder="O ingresa URL directa..." />
+
+                      {/* Preview */}
+                      {(detail.photo_url || imagePreview) && (
+                        <div className="relative">
+                          <img
+                            src={detail.photo_url || imagePreview}
+                            alt="Preview"
+                            className="mt-2 h-32 w-full object-cover border border-zinc-800 rounded-none"
+                            onError={e => (e.currentTarget.style.display='none')}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDetail({ ...detail, photo_url: '' });
+                              setImagePreview(null);
+                            }}
+                            className="absolute top-2 right-2 p-1 bg-black/80 hover:bg-red-500 text-white rounded-full transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      )}
+
+                      <p className="text-[8px] text-zinc-500 font-mono">Formatos aceptados: JPG, PNG, WebP, GIF (máx. 5MB)</p>
+                    </div>
                   </div>
 
                   <div>
