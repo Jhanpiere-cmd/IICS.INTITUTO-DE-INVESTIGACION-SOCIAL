@@ -52,6 +52,7 @@ import { ProvinceMetricsView } from '@/components/province-metrics/ProvinceMetri
 import { ProvinciasDetalleAdmin } from '@/components/province-metrics/ProvinciasDetalleAdmin';
 import { SocialListeningView } from '@/components/social-listening/SocialListeningView';
 import { DataIngestionView } from '@/components/data-ingestion/DataIngestionView';
+import { PortalWebView } from '@/components/portal/PortalWebView';
 
 // ErrorBoundary Global
 class AppErrorBoundary extends React.Component<
@@ -159,6 +160,7 @@ const Layout: React.FC = () => {
                         <Route path="province-detail" element={<ProvinciasDetalleAdmin />} />
                         <Route path="social-listening" element={<SocialListeningView />} />
                         <Route path="data-ingestion" element={<DataIngestionView />} />
+                        <Route path="portal-web" element={<PortalWebView />} />
                         <Route path="api/youtube/callback" element={<YoutubeCallback />} />
                         <Route path="*" element={<Navigate to="/admin" replace />} />
                     </Routes>

@@ -9,6 +9,7 @@ import PublicationsSection from './PublicationsSection';
 import { FallingPattern } from './ui/falling-pattern';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { LandingAboutContent } from '../../lib/siteContent';
 
 interface ModalPortalProps {
   provinces: ProvinceData[];
@@ -16,6 +17,7 @@ interface ModalPortalProps {
   activeModal: 'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | 'academia' | null;
   onClose: () => void;
   selectedResearchLine: ResearchLine | null;
+  aboutContent?: LandingAboutContent;
   onSubmitSimulatedAlert: (newAlert: Alert) => void;
   isLoggedIn: boolean;
   onLogin: (status: boolean) => void;
@@ -29,6 +31,7 @@ export default function ModalPortal({
   activeModal,
   onClose,
   selectedResearchLine,
+  aboutContent,
   onSubmitSimulatedAlert,
   isLoggedIn,
   onLogin,
@@ -327,7 +330,7 @@ export default function ModalPortal({
             if (onOpenPortal) {
               setTimeout(() => { onOpenPortal(); }, 100);
             }
-          }} />
+          }} content={aboutContent} />
         </div>
 
         {/* Footer */}

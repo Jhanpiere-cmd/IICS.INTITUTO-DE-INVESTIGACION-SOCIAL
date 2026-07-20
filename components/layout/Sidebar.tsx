@@ -23,6 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/admin/meetings', icon: 'groups', label: 'Reuniones' },
         { path: '/admin/events', icon: 'campaign', label: 'Eventos' },
         { path: '/admin/communications', icon: 'mail', label: 'Correo' },
+        { path: '/admin/portal-web', icon: 'language', label: 'Portal Web' },
         { path: '/admin/secretaria', icon: 'folder_managed', label: 'Gestión Documental' },
         { path: '/admin/news', icon: 'article', label: 'Noticias' },
         { path: '/admin/editorial', icon: 'menu_book', label: 'Gestión Editorial' },

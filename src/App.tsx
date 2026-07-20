@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import AdminApp from '@/src/AdminApp';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { DEFAULT_LANDING_ABOUT, DEFAULT_LANDING_HERO, LandingAboutContent, LandingHeroContent, normalizeAboutContent, normalizeHeroContent } from '../lib/siteContent';
 import Header from './components/Header';
 import Preloader from './components/ui/Preloader';
 import Hero from './components/Hero';
@@ -12,6 +13,7 @@ import FeatureGrid from './components/FeatureGrid';
 import ResearchLines from './components/ResearchLines';
 import InteractiveMapSection from './components/InteractiveMapSection';
 import InstitutionalModel from './components/InstitutionalModel';
+import EventsLandingSection from './components/EventsLandingSection';
 import PublicationsSection from './components/PublicationsSection';
 import Footer from './components/Footer';
 import ModalPortal from './components/ModalPortal';
@@ -27,6 +29,8 @@ function LandingPage() {
   const [provinces, setProvinces] = useState<ProvinceData[]>(provincesData);
   const [alerts, setAlerts] = useState<Alert[]>(alertsData);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>('cajamarca');
+  const [heroContent, setHeroContent] = useState<LandingHeroContent>(DEFAULT_LANDING_HERO);
+  const [aboutContent, setAboutContent] = useState<LandingAboutContent>(DEFAULT_LANDING_ABOUT);
 
   // Load alerts from Supabase dynamically on mount
   useEffect(() => {
@@ -60,6 +64,50 @@ function LandingPage() {
       }
     };
     fetchDbAlerts();
+  }, []);
+
+  useEffect(() => {
+    const fetchHeroContent = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_landing_hero')
+          .select('*')
+          .eq('id', 'main')
+          .eq('is_published', true)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (data) {
+          setHeroContent(normalizeHeroContent(data as Partial<LandingHeroContent>));
+        }
+      } catch (err) {
+        console.warn('Landing hero fallback activo:', err);
+      }
+    };
+
+    fetchHeroContent();
+  }, []);
+
+  useEffect(() => {
+    const fetchAboutContent = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_about_content')
+          .select('*')
+          .eq('id', 'main')
+          .eq('is_published', true)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (data) {
+          setAboutContent(normalizeAboutContent(data as Partial<LandingAboutContent>));
+        }
+      } catch (err) {
+        console.warn('Landing about fallback activo:', err);
+      }
+    };
+
+    fetchAboutContent();
   }, []);
 
   // Load province metrics from Supabase dynamically on mount
@@ -155,6 +203,7 @@ function LandingPage() {
         { id: 'investigacion', element: document.getElementById('lineas-investigacion') },
         { id: 'observatorio', element: document.getElementById('observatorio') },
         { id: 'valores', element: document.getElementById('modelo-institucional') || document.getElementById('valores') },
+        { id: 'eventos', element: document.getElementById('eventos-publicos') },
         { id: 'publicaciones', element: document.getElementById('publicaciones') },
       ];
 
@@ -247,14 +296,15 @@ function LandingPage() {
         
         {/* HERO BLOCK WITH COMPLEX MOCKUP FOR OBSERVATORIO */}
         <Hero 
+          content={heroContent}
           onExploreClick={() => { console.log('Hero: onExploreClick (portal)'); setActiveModal('portal'); }}
           onWorkClick={() => { console.log('Hero: onWorkClick (publicaciones)'); setActiveModal('publicaciones'); }}
           onDocumentalesClick={() => { console.log('Hero: onDocumentalesClick'); setActiveModal('documentales'); }}
           onAfiClick={() => { console.log('Hero: onAfiClick (academia)'); setActiveModal('academia'); }}
         >
           <img 
-            src="/computador-iics.png" 
-            alt="Sistema IICS Observatorio" 
+            src={heroContent.image_url || DEFAULT_LANDING_HERO.image_url}
+            alt={heroContent.image_alt || DEFAULT_LANDING_HERO.image_alt}
             className="w-[110%] max-w-none h-auto object-contain transition-transform duration-700 hover:scale-[1.03] drop-shadow-[0_20px_50px_rgba(0,153,255,0.25)] lg:-translate-x-6 select-none pointer-events-none animate-float-slow" 
           />
         </Hero>
@@ -278,6 +328,9 @@ function LandingPage() {
 
         {/* MODELO DE CUÁDRUPLE HÉLICE, MISIÓN, VISIÓN Y OBJETIVOS ESTRATÉGICOS */}
         <InstitutionalModel />
+
+        {/* AGENDA PUBLICA SINCRONIZADA CON EL MODULO INTERNO DE EVENTOS */}
+        <EventsLandingSection />
 
         {/* REPOSITORIO DE PUBLICACIONES INDEXADAS */}
         <PublicationsSection isSubPage={false} onViewAll={() => setActiveModal('publicaciones')} />
@@ -304,6 +357,7 @@ function LandingPage() {
         alerts={alerts}
         activeModal={activeModal}
         selectedResearchLine={selectedResearchLine}
+        aboutContent={aboutContent}
         isLoggedIn={isLoggedIn}
         onLogin={() => {}}
         onClose={() => {

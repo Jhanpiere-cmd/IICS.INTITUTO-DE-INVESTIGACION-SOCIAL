@@ -22,6 +22,7 @@ export default function Header({ onOpenPortal, onNavigate, activeSection, isLogg
     { label: 'Investigación', id: 'investigacion', path: '#lineas-investigacion' },
     { label: 'Observatorio', id: 'observatorio', path: '#observatorio' },
     { label: 'Formación', id: 'valores', path: '#modelo-institucional' },
+    { label: 'Eventos', id: 'eventos', path: '#eventos-publicos' },
     { label: 'Publicaciones', id: 'publicaciones', path: '#publicaciones' },
     { label: 'Contacto', id: 'contacto', path: '#footer' },
   ];
