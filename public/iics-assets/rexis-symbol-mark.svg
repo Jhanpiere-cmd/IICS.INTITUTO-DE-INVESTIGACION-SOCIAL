@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Símbolo REXIS</title>
+  <desc id="desc">Marca geométrica de investigación y recuperación de conocimiento.</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="64" cy="64" rx="43" ry="27" stroke="#0AD7E6" stroke-width="3.5" transform="rotate(-28 64 64)"/>
+    <circle cx="64" cy="64" r="31" stroke="#0AD7E6" stroke-width="3.5"/>
+    <path d="M21 64h86" stroke="#B9E7EA" stroke-width="2" opacity=".86"/>
+    <path d="M43 91 86 37" stroke="#0AD7E6" stroke-width="6"/>
+    <path d="m82 37 11 1-7 9" stroke="#0AD7E6" stroke-width="4"/>
+    <circle cx="64" cy="64" r="6" fill="#0AD7E6" stroke="none"/>
+  </g>
+</svg>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'motion/react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import AdminApp from '@/src/AdminApp';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -23,8 +23,10 @@ import { FallingPattern } from './components/ui/falling-pattern';
 
 import { provincesData, alertsData, emergentThemesData, researchLinesData } from './data';
 import { ProvinceData, Alert, ResearchLine } from './types';
+import IicsLanding from './iics/IicsLanding';
 
-function LandingPage() {
+function LandingPage({ openPortal = false }: { openPortal?: boolean }) {
+  const navigate = useNavigate();
   // Application Data States
   const [provinces, setProvinces] = useState<ProvinceData[]>(provincesData);
   const [alerts, setAlerts] = useState<Alert[]>(alertsData);
@@ -148,7 +150,7 @@ function LandingPage() {
   }, []);
 
   // Modal Control States
-  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | 'academia' | null>(null);
+  const [activeModal, setActiveModal] = useState<'portal' | 'alerts' | 'research' | 'nosotros' | 'publicaciones' | 'documentales' | 'academia' | null>(() => openPortal ? 'portal' : null);
   const [selectedResearchLine, setSelectedResearchLine] = useState<ResearchLine | null>(null);
   const [initialPortalTab, setInitialPortalTab] = useState<'datasets' | 'afi' | 'alerts' | undefined>(undefined);
 
@@ -364,6 +366,7 @@ function LandingPage() {
           setActiveModal(null);
           setSelectedResearchLine(null);
           setInitialPortalTab(undefined);
+          if (openPortal) navigate('/');
         }}
         onSubmitSimulatedAlert={handleAddProposedAlert}
         onOpenPortal={() => setActiveModal('portal')}
@@ -378,7 +381,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/admin/*" element={<AdminApp />} />
-      <Route path="/*" element={<LandingPage />} />
+      <Route path="/portal" element={<LandingPage openPortal />} />
+      <Route path="/*" element={<IicsLanding />} />
     </Routes>
   );
 }
